@@ -1,3 +1,10 @@
+# Max-approved cmake folders
+build
+build-debug
+build-release
+debug
+release
+
 # Compiled Object files
 *.slo
 *.lo
