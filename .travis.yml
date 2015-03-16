@@ -1,0 +1,12 @@
+language: cpp
+compiler:
+  - gcc
+before_install:
+    # Update package lists
+  - sudo apt-get update -qq
+    # Should be provided, but make sure it's updated
+  - sudo apt-get install cmake
+    # Install other dependencies
+  - sudo apt-get install -y libgl-dev libgl1-mesa-dev \
+    freeglut3 freeglut3-dev
+script: mkdir build && cd build && cmake .. && make
