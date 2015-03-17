@@ -11,6 +11,7 @@ include_directories( ${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIRS} )
 
 include_directories(include)
 
+# Set up libraries which can be linked with executable
 add_library(VectorUtils3 src/utils/VectorUtils3.c)
 add_library(GL_utilities src/utils/GL_utilities.c)
 add_library(loadobj src/utils/loadobj.c)
