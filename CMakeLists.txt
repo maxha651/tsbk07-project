@@ -23,6 +23,7 @@ target_link_libraries(test
     ${OPENGL_LIBRARIES} ${GLUT_LIBRARY})
 
 # Copy shaders so executable will find it
+# I.e put all shaders in src/shaders folder
 add_custom_command(TARGET test POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_SOURCE_DIR}/src/shaders
