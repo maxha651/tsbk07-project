@@ -1,16 +1,10 @@
 #include <stdio.h>
 
-#ifdef __APPLE__
-// Mostly for show, not really supported
-#include <OpenGL/gl.h>
-#include <GLUT/glut.h>
-#else
 #ifdef _WIN32
   #include <windows.h>
 #endif
 #include <GL/gl.h>
 #include <GL/freeglut.h>
-#endif
 
 #include <GL_utilities.h>
 #include <VectorUtils3.h>
