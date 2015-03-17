@@ -10,6 +10,7 @@
 #include <VectorUtils3.h>
 #include <loadobj.h>
 
+
 GLfloat vertices[] =
 {
     -0.0f,-0.0f,0.0f,
