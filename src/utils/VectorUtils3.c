@@ -67,7 +67,7 @@
 // but if you grab some snippets from it without reference... no problem.
 
 
-#include "VectorUtils3.h"
+#include <utils/VectorUtils3.h>
 
 char transposed = 0;
 
@@ -549,7 +549,7 @@ mat4 ArbRotate(vec3 axis, GLfloat fi)
         R.m[12] = 0.0; R.m[13] = 0.0; R.m[14] = 0.0;  R.m[15] = 1.0;
     }
 
-    Rt = Transpose(R); // Transpose = Invert -> felet ej i Transpose, och det Šr en ortonormal matris
+    Rt = Transpose(R); // Transpose = Invert -> felet ej i Transpose, och det ï¿½r en ortonormal matris
 
     Raxel = Rx(fi); // Rotate around x axis
 
@@ -562,8 +562,8 @@ mat4 ArbRotate(vec3 axis, GLfloat fi)
 
 
 
-// Inte testad mycket. Hoppas jag inte vŠnt pŒ den.
-mat4 CrossMatrix(vec3 a) // Skapar matris fšr kryssprodukt
+// Inte testad mycket. Hoppas jag inte vï¿½nt pï¿½ den.
+mat4 CrossMatrix(vec3 a) // Skapar matris fï¿½r kryssprodukt
 {
     mat4 m;
 
@@ -573,8 +573,8 @@ mat4 CrossMatrix(vec3 a) // Skapar matris fšr kryssprodukt
         m.m[1] = a.z; m.m[5] =    0; m.m[9] =-a.x; m.m[13] = 0.0;
         m.m[2] =-a.y; m.m[6] = a.x; m.m[10]=    0; m.m[14] = 0.0;
         m.m[3] =  0.0; m.m[7] =  0.0; m.m[11]=  0.0; m.m[15] = 0.0;
-        // OBS! 0.0 i homogena koordinaten. DŠrmed kan matrisen
-        // inte anvŠndas generellt, men duger fšr matrisderivatan.
+        // OBS! 0.0 i homogena koordinaten. Dï¿½rmed kan matrisen
+        // inte anvï¿½ndas generellt, men duger fï¿½r matrisderivatan.
     }
     else
     {
@@ -582,8 +582,8 @@ mat4 CrossMatrix(vec3 a) // Skapar matris fšr kryssprodukt
         m.m[4] = a.z; m.m[5] =    0; m.m[6] =-a.x; m.m[7] = 0.0;
         m.m[8] =-a.y; m.m[9] = a.x; m.m[10]=    0; m.m[11] = 0.0;
         m.m[12] =  0.0; m.m[13] =  0.0; m.m[14]=  0.0; m.m[15] = 0.0;
-        // OBS! 0.0 i homogena koordinaten. DŠrmed kan matrisen
-        // inte anvŠndas generellt, men duger fšr matrisderivatan.
+        // OBS! 0.0 i homogena koordinaten. Dï¿½rmed kan matrisen
+        // inte anvï¿½ndas generellt, men duger fï¿½r matrisderivatan.
     }
 
     return m;

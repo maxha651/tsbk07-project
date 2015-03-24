@@ -18,8 +18,8 @@ typedef struct
   GLfloat* texCoordArray;
   GLfloat* colorArray; // Rarely used
   GLuint* indexArray;
-  int numVertices;
-  int numIndices;
+  GLsizeiptr numVertices;
+  GLsizeiptr numIndices;
   
   // Space for saving VBO and VAO IDs
   GLuint vao; // VAO

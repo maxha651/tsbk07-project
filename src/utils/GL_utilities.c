@@ -19,7 +19,7 @@
 
 #include <GL/freeglut.h>
 
-#include "GL_utilities.h"
+#include <utils/GL_utilities.h>
 
 // Shader loader
 

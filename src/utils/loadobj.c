@@ -9,11 +9,13 @@
 // 130422: Added ScaleModel
 // 140203: A minor fix of an unreadable (but working) line
 
-#include "loadobj.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+
+#include <GL/gl.h>
+#include <utils/loadobj.h>
 
 #define PI 3.141592
 
