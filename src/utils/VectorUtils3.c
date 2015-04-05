@@ -67,7 +67,7 @@
 // but if you grab some snippets from it without reference... no problem.
 
 
-#include <utils/VectorUtils3.h>
+#include <VectorUtils3.h>
 
 char transposed = 0;
 

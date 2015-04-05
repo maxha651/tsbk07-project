@@ -15,7 +15,7 @@
 #include <math.h>
 
 #include <GL/gl.h>
-#include <utils/loadobj.h>
+#include <loadobj.h>
 
 #define PI 3.141592
 
