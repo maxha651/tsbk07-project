@@ -4,10 +4,17 @@ add_definitions(-DGL_GLEXT_PROTOTYPES)
 
 project ("tsbk07-project")
 
-# Add OpenGL and GLUT
+# OpenGL
 find_package(OpenGL REQUIRED)
+include_directories(${OpenGL_INCLUDE_DIRS})
+link_directories(${OpenGL_LIBRARY_DIRS})
+add_definitions(${OpenGL_DEFINITIONS})
+
+# FreeGLUT
 find_package(GLUT REQUIRED)
-include_directories( ${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIRS} )
+include_directories(${GLUT_INCLUDE_DIRS})
+link_directories(${GLUT_LIBRARY_DIRS})
+add_definitions(${GLUT_DEFINITIONS})
 
 include_directories(include)
 
