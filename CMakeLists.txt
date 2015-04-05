@@ -5,6 +5,7 @@ project ("tsbk07-project")
 ## Definitions ##
 
 add_definitions(-DGL_GLEXT_PROTOTYPES)
+set(CMAKE_CXX_STANDARD 14)
 
 ## Dependencies ##
 
@@ -23,19 +24,25 @@ add_definitions(${GLUT_DEFINITIONS})
 ## External libraries ##
 
 # Header only
+# run configure to get config.hpp (can't get this to work...)
+# set(JEAYESON_CONFIG_HPP external/jeayeson/include/jeayeson/config.hpp)
+# set_source_files_properties(JEAYESON_CONFIG_HPP PROPERTIES_GENERATED true)
+# add_custom_command(OUTPUT JEAYESON_CONFIG_HPP PRE_BUILD COMMAND external/jeayeson/configure)
+# add jeayeson lib
 add_library(jeayeson INTERFACE)
 target_include_directories(jeayeson INTERFACE external/jeayeson/include)
 
 ## Our libraries ##
 
-add_library(utils src/utils/VectorUtils3.c src/utils/GL_utilities.c src/utils/loadobj.c)
+add_library(utils src/utils/VectorUtils3.c src/utils/GL_utilities.c src/utils/loadobj.c
+src/utils/JSONLoader.cpp include/utils/JSONLoader.h src/utils/JSONLoader.cpp)
 target_include_directories(utils PUBLIC include/utils)
+target_link_libraries(utils jeayeson)
 
 ## Executable ##
 
 add_executable(helloworld src/main.cpp)
 target_link_libraries(helloworld utils
-    jeayeson
     ${OPENGL_LIBRARIES} ${GLUT_LIBRARY})
 
 ## Random hacks ##
