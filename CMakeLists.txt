@@ -16,19 +16,17 @@ include_directories(${GLUT_INCLUDE_DIRS})
 link_directories(${GLUT_LIBRARY_DIRS})
 add_definitions(${GLUT_DEFINITIONS})
 
-include_directories(include)
-
 # Set up libraries which can be linked with executable
 # Another way to do this might be to just link all sources to executable
 # Not sure what is best here
-add_library(VectorUtils3 src/utils/VectorUtils3.c)
-add_library(GL_utilities src/utils/GL_utilities.c)
-add_library(loadobj src/utils/loadobj.c)
+add_library(utils src/utils/VectorUtils3.c src/utils/GL_utilities.c src/utils/loadobj.c)
+target_include_directories(utils PUBLIC include/utils)
+
+include_directories(include)
 
 add_executable(helloworld src/main.cpp)
 
-target_link_libraries(helloworld
-    VectorUtils3 GL_utilities loadobj 
+target_link_libraries(helloworld utils
     ${OPENGL_LIBRARIES} ${GLUT_LIBRARY})
 
 # Copy shaders so executable will find it

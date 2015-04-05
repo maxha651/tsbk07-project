@@ -6,7 +6,7 @@
 #include <GL/gl.h>
 #include <GL/freeglut.h>
 
-#include <utils/GL_utilities.h>
+#include <GL_utilities.h>
 
 GLfloat vertices[] =
 {
