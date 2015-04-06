@@ -8,7 +8,7 @@
 #include <string>
 
 /**
- * @brief Abstract class for loading JSON
+ * @brief Utility class for loading JSON
  */
 class JSONLoader {
 
@@ -19,7 +19,8 @@ public:
     template<typename T> T getNext();
 
 private:
-
+    json_map map;
+    json_map::iterator it;
 
 };
 

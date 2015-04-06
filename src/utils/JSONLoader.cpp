@@ -6,15 +6,24 @@
 
 #include "JSONLoader.h"
 
-JSONLoader::JSONLoader(std::string path) {
-
+JSONLoader::JSONLoader(std::string path)
+    : map( json_file{ "path" } )
+{
+    it = map.begin();
 }
 
 JSONLoader::~JSONLoader() {
 
 }
 
+/* TODO: throw exception on fail */
 template<typename T> T JSONLoader::getNext() {
-
-    return NULL;
+    if (it == map.end()) {
+        return nullptr;
+    }
+    it++;
+    if (typeid(*it) != typeid(T)) {
+        return nullptr;
+    }
+    return *it;
 }
