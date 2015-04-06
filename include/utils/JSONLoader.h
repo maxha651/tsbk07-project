@@ -6,6 +6,9 @@
 #define TSBK07_PROJECT_JSONLOADER_H
 
 #include <string>
+#include <vector>
+
+#include <jeayeson/jeayeson.hpp>
 
 /**
  * @brief Utility class for loading JSON
@@ -13,10 +16,12 @@
 class JSONLoader {
 
 public:
+    JSONLoader();
     JSONLoader(std::string path);
     virtual ~JSONLoader();
 
-    template<typename T> T getNext();
+    template<typename T> T GetNext();
+    template<typename T> std::vector<T> GetNextArray();
 
 private:
     json_map map;

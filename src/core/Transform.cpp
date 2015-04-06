@@ -5,8 +5,9 @@
 #include <Transform.h>
 
 using Eigen::Vector3f;
+using Eigen::Map;
 
-const Vector3f Transform::right   = { 1.0f, 0.0f, 0.0f };
+const Vector3f Transform::right   = { 1.0f, 0.0f, 0.0f }; 
 const Vector3f Transform::up      = { 0.0f, 1.0f, 0.0f };
 const Vector3f Transform::forward = { 0.0f, 0.0f, 1.0f };
 
@@ -17,6 +18,13 @@ Transform::Transform()
 
 Transform::Transform(Vector3f pos, Vector3f rot, Vector3f scale) 
     : position(pos), rotation(rot), scale(scale) {
+
+}
+
+Transform::Transform(std::string path) 
+    : jsonLoader(path), position(Map<Vector3f>(&jsonLoader.GetNextArray<float>()[0])),
+    rotation(Map<Vector3f>(&jsonLoader.GetNextArray<float>()[0])),
+    scale(Map<Vector3f>(&jsonLoader.GetNextArray<float>()[0])) {
 
 }
 

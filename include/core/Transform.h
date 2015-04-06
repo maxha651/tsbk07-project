@@ -6,6 +6,7 @@
 #define TSBK07_PROJECT_TRANSFORM_H
 
 #include <Eigen/Geometry>
+#include <JSONLoader.h>
 
 using Eigen::Vector3f;
 
@@ -14,6 +15,7 @@ class Transform {
 public:
     Transform();
     Transform(Vector3f pos, Vector3f rot, Vector3f scale);
+    Transform(std::string path);
     virtual ~Transform();
 
     Vector3f GetPosition();
@@ -33,6 +35,7 @@ public:
 
 private:
     Vector3f position, rotation, scale;
+    JSONLoader jsonLoader;
 
 };
 
