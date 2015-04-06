@@ -15,9 +15,10 @@ public:
     virtual ~GameObject();
 
     template<class T> T GetComponent();
-    void addComponent(Component);
+    void AddComponent(Component);
 
 private:
+    std::vector<Component> components;
 
 };
 

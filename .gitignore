@@ -1,3 +1,6 @@
+# Ignore vim temp-files
+*.swp
+
 # Max-approved cmake folders
 build
 build-debug

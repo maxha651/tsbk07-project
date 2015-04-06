@@ -11,7 +11,6 @@
 class Component {
 
 public:
-    virtual Component() = 0;
     virtual ~Component();
 private:
 

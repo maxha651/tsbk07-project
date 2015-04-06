@@ -5,7 +5,7 @@
 #include <Component.h>
 
 
-GameObject::~Component() {
+Component::~Component() {
 
 }
 

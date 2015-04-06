@@ -39,6 +39,10 @@ src/utils/JSONLoader.cpp include/utils/JSONLoader.h src/utils/JSONLoader.cpp)
 target_include_directories(utils PUBLIC include/utils)
 target_link_libraries(utils jeayeson)
 
+add_library(core src/core/GameObject.cpp src/core/Component.cpp src/core/Transform.cpp)
+target_include_directories(core PUBLIC include/core)
+target_link_libraries(core utils)
+
 ## Executable ##
 
 add_executable(helloworld src/main.cpp)
