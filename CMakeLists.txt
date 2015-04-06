@@ -32,12 +32,16 @@ add_definitions(${GLUT_DEFINITIONS})
 add_library(jeayeson INTERFACE)
 target_include_directories(jeayeson INTERFACE external/jeayeson/include)
 
+# Header only
+add_library(eigen INTERFACE)
+target_include_directories(eigen INTERFACE external/eigen/include)
+
 ## Our libraries ##
 
 add_library(utils src/utils/VectorUtils3.c src/utils/GL_utilities.c src/utils/loadobj.c
 src/utils/JSONLoader.cpp include/utils/JSONLoader.h src/utils/JSONLoader.cpp)
 target_include_directories(utils PUBLIC include/utils)
-target_link_libraries(utils jeayeson)
+target_link_libraries(utils jeayeson eigen)
 
 add_library(core src/core/GameObject.cpp src/core/Component.cpp src/core/Transform.cpp)
 target_include_directories(core PUBLIC include/core)
