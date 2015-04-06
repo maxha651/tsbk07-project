@@ -2,19 +2,19 @@
 // Created by max on 2015-04-05.
 //
 
-#ifndef TSBK07_PROJECT_ABSTRACTLOADER_H
-#define TSBK07_PROJECT_ABSTRACTLOADER_H
+#ifndef TSBK07_PROJECT_JSONLOADER_H
+#define TSBK07_PROJECT_JSONLOADER_H
 
 #include <string>
 
 /**
  * @brief Abstract class for loading JSON
  */
-class AbstractLoader {
+class JSONLoader {
 
 public:
-    AbstractLoader(std::string path);
-    virtual ~AbstractLoader();
+    JSONLoader(std::string path);
+    virtual ~JSONLoader();
 
     template<typename T> T getNext();
 
@@ -24,4 +24,4 @@ private:
 };
 
 
-#endif //TSBK07_PROJECT_ABSTRACTLOADER_H
+#endif //TSBK07_PROJECT_JSONLOADER_H

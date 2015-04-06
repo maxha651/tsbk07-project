@@ -6,15 +6,15 @@
 
 #include "JSONLoader.h"
 
-AbstractLoader::AbstractLoader(std::string path) {
+JSONLoader::JSONLoader(std::string path) {
 
 }
 
-AbstractLoader::~AbstractLoader() {
+JSONLoader::~JSONLoader() {
 
 }
 
-template<typename T> T AbstractLoader::getNext() {
+template<typename T> T JSONLoader::getNext() {
 
     return NULL;
 }
