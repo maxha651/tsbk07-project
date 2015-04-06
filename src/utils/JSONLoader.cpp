@@ -7,6 +7,11 @@
 #include "JSONLoader.h"
 
 /* 
+ * The idea behind this is to provide some very easy API to load data and save JSON.
+ * Ideally, loading should be entirely in initialization list (see Transform(std::string) ctr).
+ * It would be nice if saving was made in the same way in destructor.
+ *
+ *
  * TODO: throw exception on fail 
  * FIXME: Well, there's about zero chance for this to just work
  */
