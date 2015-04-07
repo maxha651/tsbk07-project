@@ -5,14 +5,17 @@ project ("tsbk07-project")
 ## Definitions ##
 
 add_definitions(-DGL_GLEXT_PROTOTYPES)
+ADD_DEFINITIONS(-DFREEGLUT_STATIC -DGLEW_STATIC)
 set(CMAKE_CXX_STANDARD 14)
 
 INCLUDE_DIRECTORIES (external/glew/include external/freeglut/include)
 
 ## External libraries ##
 
+#ADD_LIBRARY (freeglut STATIC external/freeglut/lib/freeglut.a)
+#ADD_LIBRARY (glew32 STATIC external/glew/lib/glew32.a)
+#LINK_DIRECTORIES(external/freeglut/lib external/glew/lib external/freeglut external/glew)
 INCLUDE_DIRECTORIES (external/freeglut/include external/glew/include)
-LINK_DIRECTORIES(external/freeglut/lib external/glew/lib)
 
 # Header only
 add_library(eigen INTERFACE)
@@ -27,7 +30,9 @@ target_link_libraries(core eigen)
 ## Executable ##
 
 add_executable(helloworld src/main.cpp)
-target_link_libraries(helloworld core freeglut glew32)
+target_link_libraries(helloworld core 
+	${CMAKE_SOURCE_DIR}/external/freeglut/lib/freeglut_static.lib 
+	${CMAKE_SOURCE_DIR}/external/glew/lib/glew32s.lib)
 
 ## Random hacks ##
 

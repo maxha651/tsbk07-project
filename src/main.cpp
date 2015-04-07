@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
     glutInitWindowSize(480,480);
     glutCreateWindow("Hello OpenGL");
     glutDisplayFunc(display);
-    init();
+    //init();
     glutMainLoop();
 
     return 0;
