@@ -3,11 +3,9 @@
 #ifdef _WIN32
   #include <windows.h>
 #endif
+
 #include <GL/glew.h>
-#include <GL/glut.h>
 #include <GL/freeglut.h>
-#include <GL/freeglut_ext.h>
-#include <GL/freeglut_std.h>
 
 GLfloat vertices[] =
 {

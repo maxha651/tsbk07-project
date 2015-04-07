@@ -44,6 +44,14 @@ target_link_libraries(core eigen)
 add_executable(helloworld src/main.cpp)
 target_link_libraries(helloworld core)
 
+IF (Windows)
+TARGET_INCLUDE_DIRECTORIES (helloworld external/glew/include)
+TARGET_LINK_LIBRARIES (helloworld external/glew/lib/glew32)
+
+TARGET_INCLUDE_DIRECTORIES (helloworld external/freeglut/include)
+TARGET_LINK_LIBRARIES (helloworld external/freeglut/lib/freeglut.dll)
+ENDIF ()
+
 ## Random hacks ##
 
 # Copy shaders so executable will find it
