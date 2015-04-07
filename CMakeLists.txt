@@ -7,27 +7,12 @@ project ("tsbk07-project")
 add_definitions(-DGL_GLEXT_PROTOTYPES)
 set(CMAKE_CXX_STANDARD 14)
 
-IF (!Windows)
-## Dependencies ##
-find_package(GLEW REQUIRED)
-include_directories(${GLEW_INCLUDE_DIRS})
-link_directories(${GLEW_LIBRARY_DIRS})
-add_definitions(${GLEW_DEFINITIONS})
-
-# OpenGL
-find_package(OpenGL REQUIRED)
-include_directories(${OpenGL_INCLUDE_DIRS})
-link_directories(${OpenGL_LIBRARY_DIRS})
-add_definitions(${OpenGL_DEFINITIONS})
-
-# FreeGLUT
-find_package(GLUT REQUIRED)
-include_directories(${GLUT_INCLUDE_DIRS})
-link_directories(${GLUT_LIBRARY_DIRS})
-add_definitions(${GLUT_DEFINITIONS})
-ENDIF ()
+INCLUDE_DIRECTORIES (external/glew/include external/freeglut/include)
 
 ## External libraries ##
+
+INCLUDE_DIRECTORIES (external/freeglut/include external/glew/include)
+LINK_DIRECTORIES(external/freeglut/lib external/glew/lib)
 
 # Header only
 add_library(eigen INTERFACE)
@@ -42,15 +27,7 @@ target_link_libraries(core eigen)
 ## Executable ##
 
 add_executable(helloworld src/main.cpp)
-target_link_libraries(helloworld core)
-
-IF (Windows)
-TARGET_INCLUDE_DIRECTORIES (helloworld external/glew/include)
-TARGET_LINK_LIBRARIES (helloworld external/glew/lib/glew32)
-
-TARGET_INCLUDE_DIRECTORIES (helloworld external/freeglut/include)
-TARGET_LINK_LIBRARIES (helloworld external/freeglut/lib/freeglut.dll)
-ENDIF ()
+target_link_libraries(helloworld core freeglut glew32)
 
 ## Random hacks ##
 
