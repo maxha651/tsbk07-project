@@ -7,7 +7,12 @@ project ("tsbk07-project")
 add_definitions(-DGL_GLEXT_PROTOTYPES)
 set(CMAKE_CXX_STANDARD 14)
 
+IF (!Windows)
 ## Dependencies ##
+find_package(GLEW REQUIRED)
+include_directories(${GLEW_INCLUDE_DIRS})
+link_directories(${GLEW_LIBRARY_DIRS})
+add_definitions(${GLEW_DEFINITIONS})
 
 # OpenGL
 find_package(OpenGL REQUIRED)
@@ -20,17 +25,9 @@ find_package(GLUT REQUIRED)
 include_directories(${GLUT_INCLUDE_DIRS})
 link_directories(${GLUT_LIBRARY_DIRS})
 add_definitions(${GLUT_DEFINITIONS})
+ENDIF ()
 
 ## External libraries ##
-
-# Header only
-# run configure to get config.hpp (can't get this to work...)
-# set(JEAYESON_CONFIG_HPP external/jeayeson/include/jeayeson/config.hpp)
-# set_source_files_properties(JEAYESON_CONFIG_HPP PROPERTIES_GENERATED true)
-# add_custom_command(OUTPUT JEAYESON_CONFIG_HPP PRE_BUILD COMMAND external/jeayeson/configure)
-# add jeayeson lib
-add_library(jeayeson INTERFACE)
-target_include_directories(jeayeson INTERFACE external/jeayeson/include)
 
 # Header only
 add_library(eigen INTERFACE)
@@ -38,20 +35,14 @@ target_include_directories(eigen INTERFACE external/eigen/include)
 
 ## Our libraries ##
 
-add_library(utils src/utils/VectorUtils3.c src/utils/GL_utilities.c src/utils/loadobj.c
-src/utils/JSONLoader.cpp include/utils/JSONLoader.h src/utils/JSONLoader.cpp)
-target_include_directories(utils PUBLIC include/utils)
-target_link_libraries(utils jeayeson eigen)
-
 add_library(core src/core/GameObject.cpp src/core/Component.cpp src/core/Transform.cpp)
 target_include_directories(core PUBLIC include/core)
-target_link_libraries(core utils)
+target_link_libraries(core eigen)
 
 ## Executable ##
 
 add_executable(helloworld src/main.cpp)
-target_link_libraries(helloworld utils
-    ${OPENGL_LIBRARIES} ${GLUT_LIBRARY})
+target_link_libraries(helloworld core)
 
 ## Random hacks ##
 

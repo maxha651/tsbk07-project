@@ -21,11 +21,8 @@ Transform::Transform(Vector3f pos, Vector3f rot, Vector3f scale)
 
 }
 
-Transform::Transform(std::string path) 
-    : jsonLoader(path), position(Map<Vector3f>(&jsonLoader.GetNextArray<float>()[0])),
-    rotation(Map<Vector3f>(&jsonLoader.GetNextArray<float>()[0])),
-    scale(Map<Vector3f>(&jsonLoader.GetNextArray<float>()[0])) {
-
+Transform::Transform(std::string path) {
+	// TODO
 }
 
 Transform::~Transform() {

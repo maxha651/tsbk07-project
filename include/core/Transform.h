@@ -6,7 +6,6 @@
 #define TSBK07_PROJECT_TRANSFORM_H
 
 #include <Eigen/Geometry>
-#include <JSONLoader.h>
 
 using Eigen::Vector3f;
 
@@ -35,7 +34,6 @@ public:
 
 private:
     Vector3f position, rotation, scale;
-    JSONLoader jsonLoader;
 
 };
 

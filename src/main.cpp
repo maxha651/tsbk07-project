@@ -3,10 +3,11 @@
 #ifdef _WIN32
   #include <windows.h>
 #endif
-#include <GL/gl.h>
+#include <GL/glew.h>
+#include <GL/glut.h>
 #include <GL/freeglut.h>
-
-#include <GL_utilities.h>
+#include <GL/freeglut_ext.h>
+#include <GL/freeglut_std.h>
 
 GLfloat vertices[] =
 {
@@ -27,7 +28,7 @@ void init()
     glClearColor(1.0,0.3,0.5,0);
     glDisable(GL_DEPTH_TEST);
     // Load and compile shader
-    program = loadShaders("shaders/lab1-1.vert", "shaders/lab1-1.frag");
+    //program = loadShaders("shaders/lab1-1.vert", "shaders/lab1-1.frag");
     // Allocate and activate Vertex Array Object
     glGenVertexArrays(1, &vertexArrayObjID);
     glBindVertexArray(vertexArrayObjID);
