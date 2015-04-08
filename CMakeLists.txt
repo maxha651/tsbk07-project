@@ -39,8 +39,16 @@ PROJECT ("tsbk07-project")
 
 ## Definitions and settings ##
 
-ADD_DEFINITIONS(-DGL_GLEXT_PROTOTYPES)
-SET(CMAKE_CXX_STANDARD 14)
+ADD_DEFINITIONS (-DGL_GLEXT_PROTOTYPES)
+SET (CMAKE_CXX_STANDARD 14)
+
+IF (WIN32)
+    # hide insecure CRT warnings, common practice
+    ADD_DEFINITIONS (-D_CRT_SECURE_NO_WARNINGS)
+    IF (MSVC)
+        SET (CMAKE_DEBUG_POSTFIX "d")
+    ENDIF (MSVC)
+ENDIF ()
 
 ## External libraries ##
 
