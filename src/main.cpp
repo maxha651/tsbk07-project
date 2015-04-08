@@ -46,8 +46,8 @@ void display(void)
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    glBindVertexArray(vertexArrayObjID);	// Select VAO
-    glDrawArrays(GL_TRIANGLES, 0, 3);	// draw object
+    //glBindVertexArray(vertexArrayObjID);	// Select VAO
+    //glDrawArrays(GL_TRIANGLES, 0, 3);	// draw object
 
     // Swap buffers
     glutSwapBuffers();

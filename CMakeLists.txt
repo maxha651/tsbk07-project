@@ -2,26 +2,54 @@ CMAKE_MINIMUM_REQUIRED (VERSION 3.0)
 
 PROJECT ("tsbk07-project")
 
-## Definitions ##
+## Definitions and settings ##
 
 ADD_DEFINITIONS(-DGL_GLEXT_PROTOTYPES)
-ADD_DEFINITIONS(-DFREEGLUT_STATIC -DGLEW_STATIC)
 SET(CMAKE_CXX_STANDARD 14)
-
-INCLUDE_DIRECTORIES (external/glew/include external/freeglut/include)
 
 ## External libraries ##
 
-#ADD_LIBRARY (freeglut STATIC external/freeglut/lib/freeglut.a)
-#ADD_LIBRARY (glew32 STATIC external/glew/lib/glew32.a)
-#LINK_DIRECTORIES(external/freeglut/lib external/glew/lib external/freeglut external/glew)
-INCLUDE_DIRECTORIES (external/freeglut/include external/glew/include)
+# Keeping Windows dependencies in repository. Too much hassle otherwise.
+# The variables being set here is set automagically by find_package.
+# If adding other compiled libs in repository, this is the way to do it.
+# There shouldn't be any difference between our hack and find_package.
+IF (WIN32)
+    SET (GLUT_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/external/freeglut/include)
+    SET (GLEW_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/external/glew/include)
+    SET (GLUT_LIBRARY_DIRS ${CMAKE_SOURCE_DIR}/external/freeglut)
+    SET (GLEW_LIBRARY_DIRS ${CMAKE_SOURCE_DIR}/external/glew)
+    SET (GLUT_LIBRARY ${CMAKE_SOURCE_DIR}/external/freeglut/lib/freeglut_static.lib)
+    SET (GLEW_LIBRARY ${CMAKE_SOURCE_DIR}/external/glew/lib/glew32s.lib)
+    SET (GLUT_DEFINITIONS -DFREEGLUT_STATIC)
+    SET (GLEW_DEFINITIONS -DGLEW_STATIC)
+ELSE ()
+    FIND_PACKAGE(GLEW REQUIRED)
+    FIND_PACKAGE(GLUT REQUIRED)
+ENDIF ()
 
-# Header only
+# OpenGL should found even on Windows (amaazing)
+FIND_PACKAGE(OpenGL REQUIRED)
+
+include_directories(${OpenGL_INCLUDE_DIRS})
+link_directories(${OpenGL_LIBRARY_DIRS})
+add_definitions(${OpenGL_DEFINITIONS})
+include_directories(${GLEW_INCLUDE_DIRS})
+link_directories(${GLEW_LIBRARY_DIRS})
+add_definitions(${GLEW_DEFINITIONS})
+include_directories(${GLUT_INCLUDE_DIRS})
+link_directories(${GLUT_LIBRARY_DIRS})
+add_definitions(${GLUT_DEFINITIONS})
+
+
+# Eigen: Header only
 ADD_LIBRARY(eigen INTERFACE)
 TARGET_INCLUDE_DIRECTORIES(eigen INTERFACE external/eigen/include)
 
 ## Our libraries ##
+
+# XXX:  Might just keep a list of source files here as well if we want.
+#       Then we just add all sources to a SOURCES variable and add use in add_executable.
+#       Separate libraries looks nicer though and might improve compile time.
 
 ADD_LIBRARY(core src/core/GameObject.cpp src/core/Component.cpp src/core/Transform.cpp)
 TARGET_INCLUDE_DIRECTORIES(core PUBLIC include/core)
@@ -31,8 +59,7 @@ TARGET_LINK_LIBRARIES(core eigen)
 
 ADD_EXECUTABLE(helloworld src/main.cpp)
 TARGET_LINK_LIBRARIES(helloworld core 
-	${CMAKE_SOURCE_DIR}/external/freeglut/lib/freeglut_static.lib 
-	${CMAKE_SOURCE_DIR}/external/glew/lib/glew32s.lib)
+    ${GLUT_LIBRARY} ${GLEW_LIBRARY} ${OPENGL_LIBRARIES})
 
 ## Random hacks ##
 
