@@ -98,7 +98,7 @@ LINK_LIBRARIES(eigen)
 SET (SOURCES ${SOURCES} src/core/GameObject.cpp src/core/Component.cpp src/core/Transform.cpp src/core/Camera.cpp)
 SET (HEADERS ${HEADERS} include/core/GameObject.h include/core/Component.h include/core/Transform.h include/core/Camera.h)
 INCLUDE_DIRECTORIES(PUBLIC include/core)
-
+ 
 SET (SOURCES ${SOURCES} src/main.cpp)
 
 ## Executable ##
