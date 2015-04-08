@@ -79,6 +79,7 @@ add_definitions(${GLUT_DEFINITIONS})
 # Eigen: Header only
 ADD_LIBRARY(eigen INTERFACE)
 TARGET_INCLUDE_DIRECTORIES(eigen INTERFACE external/eigen/include)
+LINK_LIBRARIES(eigen)
 
 ## Our libraries ##
 
@@ -86,14 +87,16 @@ TARGET_INCLUDE_DIRECTORIES(eigen INTERFACE external/eigen/include)
 #       Then we just add all sources to a SOURCES variable and add use in add_executable.
 #       Separate libraries looks nicer though and might improve compile time.
 
-ADD_LIBRARY(core src/core/GameObject.cpp src/core/Component.cpp src/core/Transform.cpp)
-TARGET_INCLUDE_DIRECTORIES(core PUBLIC include/core)
-TARGET_LINK_LIBRARIES(core eigen)
+SET (SOURCES ${SOURCES} src/core/GameObject.cpp src/core/Component.cpp src/core/Transform.cpp)
+SET (HEADERS ${HEADERS} include/core/GameObject.h include/core/Component.h include/core/Transform.h)
+INCLUDE_DIRECTORIES(PUBLIC include/core)
+
+SET (SOURCES ${SOURCES} src/main.cpp)
 
 ## Executable ##
 
-ADD_EXECUTABLE(helloworld src/main.cpp)
-TARGET_LINK_LIBRARIES(helloworld core 
+ADD_EXECUTABLE(helloworld ${SOURCES} ${HEADERS})
+TARGET_LINK_LIBRARIES(helloworld
     ${GLUT_LIBRARY} ${GLEW_LIBRARY} ${OPENGL_LIBRARIES})
 
 ## Random hacks ##
