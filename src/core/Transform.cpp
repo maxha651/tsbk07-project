@@ -1,19 +1,21 @@
 //
 // Created by max on 2015-04-06.
 //
+// Fixed by Fredrik on 2015-04-08.
+//
 
 #include <Transform.h>
 
 using Eigen::Vector3f;
 using Eigen::Map;
 
-const Vector3f Transform::right   = { 1.0f, 0.0f, 0.0f }; 
-const Vector3f Transform::up      = { 0.0f, 1.0f, 0.0f };
-const Vector3f Transform::forward = { 0.0f, 0.0f, 1.0f };
+const Vector3f Transform::right = Eigen::Vector3f::UnitX();
+const Vector3f Transform::up = Eigen::Vector3f::UnitY();
+const Vector3f Transform::forward = Eigen::Vector3f::UnitZ();
 
 Transform::Transform() 
     : position{ 0.0f, 0.0f, 0.0f }, rotation{ 0.0f, 0.0f, 0.0f }, scale{ 1.0f, 1.0f, 1.0f } {
-
+	
 }
 
 Transform::Transform(Vector3f pos, Vector3f rot, Vector3f scale) 
