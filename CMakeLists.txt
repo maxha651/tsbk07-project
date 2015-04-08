@@ -95,12 +95,10 @@ LINK_LIBRARIES(eigen)
 #       Then we just add all sources to a SOURCES variable and add use in add_executable.
 #       Separate libraries looks nicer though and might improve compile time.
 
-SET (SOURCES ${SOURCES} src/core/GameObject.cpp src/core/Component.cpp src/core/Transform.cpp src/core/Camera.cpp)
-SET (HEADERS ${HEADERS} include/core/GameObject.h include/core/Component.h include/core/Transform.h include/core/Camera.h)
+FILE (GLOB_RECURSE SOURCES "${CMAKE_SOURCE_DIR}/src/**.cpp")
+FILE (GLOB_RECURSE HEADERS "${CMAKE_SOURCE_DIR}/include/**.h")
 INCLUDE_DIRECTORIES(PUBLIC include/core)
  
-SET (SOURCES ${SOURCES} src/main.cpp)
-
 ## Executable ##
 
 ADD_EXECUTABLE(helloworld ${SOURCES} ${HEADERS})
