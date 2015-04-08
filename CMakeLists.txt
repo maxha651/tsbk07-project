@@ -1,5 +1,40 @@
 CMAKE_MINIMUM_REQUIRED (VERSION 3.0)
 
+## Some explanations
+# 
+# PROJECT() is only for metadata about project. We can have a lot of more
+# stuff like version number etc. but not needed for us.
+# 
+# ADD_DEFINITIONS() is for setting defines that are accessible from code.
+# -DGL_GLEXT_PROTOTYPES makes #ifdef GL_GLEXT_PROTOTYPES compile. If you're
+# confused about -D prefix, then see gcc man pages or something.
+# 
+# SET() is used for setting variables in CMake. These will be used in this 
+# file only and are NOT accessible from code.
+# 
+# FIND_PACKAGE() searches for some package and sets appropriate variables.
+# The usage of this should be fairly obvious from code below.
+# 
+# INCLUDE_DIRECTORIES() adds a directory to search path for header files.
+# if we add .../include/ to this then .../include/header.h will be found 
+# when using #include <header.h>.
+# 
+# LINK_DIRECTORIES() is (I think) used for finding .dll files when using
+# dynamic linking.
+# 
+# ADD_LIBRARY() and ADD_EXECUTABLE() adds another compile target. Arguments
+# is sources. Library will generate a library and executable will generate
+# an executable.
+# 
+# TARGET_LINK_DIRECTORIES() is used for the linker. After a target has compiled,
+# the linker will link in the specified libraries. These can be precompiled 
+# libraries or libraries that has been compiled by ADD_LIBRARY() in a previous 
+# step. Linux uses suffix .so for dynamic libraries and .a for static libraries.
+# Windows uses .lib for both so how the linker knows what's what there I really
+# have no idea.
+#
+
+
 PROJECT ("tsbk07-project")
 
 ## Definitions and settings ##
