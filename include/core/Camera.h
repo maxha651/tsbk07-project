@@ -1,9 +1,16 @@
+//
+// Created by Fredrik on 2015-04-07.
+//
 
 #include "Component.h"
-class Camera :
-	public Component
+
+/**
+* A camera class.
+*/
+class Camera : public Component
 {
-public:
-	Camera();
-	~Camera();
+	
+	public:
+		Camera();
+		~Camera();
 };
