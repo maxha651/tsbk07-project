@@ -39,6 +39,11 @@ void init()
     glEnableVertexAttribArray(glGetAttribLocation(program, "in_Position"));
 }
 
+void keyboard(unsigned char key, int x, int y)
+{
+
+}
+
 void display(void)
 {
     // clear the screen
@@ -69,6 +74,7 @@ int main(int argc, char *argv[])
     glutInitWindowSize(480,480);
     glutCreateWindow("Hello OpenGL");
     glutDisplayFunc(display);
+	glutKeyboardFunc(keyboard);
     //init();
     glutMainLoop();
 
