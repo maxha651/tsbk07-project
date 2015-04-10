@@ -6,6 +6,7 @@
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
+#include <Camera.h>
 
 GLfloat vertices[] =
 {
@@ -16,9 +17,11 @@ GLfloat vertices[] =
 
 unsigned int vertexArrayObjID;
 GLuint program;
+Camera camera;
 
 void init() 
 {
+
     unsigned int vertexBufferObjID;
     // Reference to shader program
     GLuint program;
@@ -37,6 +40,11 @@ void init()
     glBufferData(GL_ARRAY_BUFFER, 9*sizeof(GLfloat), vertices, GL_STATIC_DRAW);
     glVertexAttribPointer(glGetAttribLocation(program, "in_Position"), 3, GL_FLOAT, GL_FALSE, 0, 0); 
     glEnableVertexAttribArray(glGetAttribLocation(program, "in_Position"));
+}
+
+void keyboard(unsigned char key, int x, int y)
+{
+
 }
 
 void display(void)
@@ -69,6 +77,7 @@ int main(int argc, char *argv[])
     glutInitWindowSize(480,480);
     glutCreateWindow("Hello OpenGL");
     glutDisplayFunc(display);
+	glutKeyboardFunc(keyboard);
     //init();
     glutMainLoop();
 

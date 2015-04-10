@@ -84,11 +84,20 @@ include_directories(${GLUT_INCLUDE_DIRS})
 link_directories(${GLUT_LIBRARY_DIRS})
 add_definitions(${GLUT_DEFINITIONS})
 
+# Boost header only libs
+ADD_LIBRARY(boost INTERFACE)
+TARGET_INCLUDE_DIRECTORIES(boost INTERFACE external/boost/include)
+LINK_LIBRARIES(boost)
 
 # Eigen: Header only
 ADD_LIBRARY(eigen INTERFACE)
 TARGET_INCLUDE_DIRECTORIES(eigen INTERFACE external/eigen/include)
 LINK_LIBRARIES(eigen)
+
+# Jeayeson: Header only (boost variant and algorithm dependent)
+ADD_LIBRARY(jeayeson INTERFACE)
+TARGET_INCLUDE_DIRECTORIES(jeayeson INTERFACE external/jeayeson/include)
+LINK_LIBRARIES(jeayeson)
 
 ## Our libraries ##
 
