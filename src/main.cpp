@@ -6,6 +6,7 @@
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
+#include <Camera.h>
 
 GLfloat vertices[] =
 {
@@ -16,9 +17,11 @@ GLfloat vertices[] =
 
 unsigned int vertexArrayObjID;
 GLuint program;
+Camera camera;
 
 void init() 
 {
+
     unsigned int vertexBufferObjID;
     // Reference to shader program
     GLuint program;
