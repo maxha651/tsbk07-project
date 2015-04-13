@@ -5,6 +5,8 @@
 #ifndef TSBK07_PROJECT_COMPONENT_H
 #define TSBK07_PROJECT_COMPONENT_H
 
+#include <GameObject.h>
+
 /**
  * @brief Component superclass
  */
@@ -12,9 +14,13 @@ class Component {
 
 public:
     virtual ~Component();
-private:
+	GameObject GetGameObject();
+	void SetGameObject(GameObject go);
 
+private:
+	GameObject gameObject;
 };
+
 
 
 #endif //TSBK07_PROJECT_COMPONENT_H
