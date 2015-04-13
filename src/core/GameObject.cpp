@@ -25,6 +25,9 @@ template<class T> T GameObject::GetComponent() {
 }
 
 void GameObject::AddComponent(Component component) {
+	// TODO: Add the line of code SetGameObject(this). 
     components.push_back(component);
 }
+
+
 
