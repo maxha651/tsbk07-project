@@ -9,4 +9,7 @@ Component::~Component() {
 
 }
 
+void Component::SetGameObject(GameObject go){
+	this->gameObject = go;
+}
 
