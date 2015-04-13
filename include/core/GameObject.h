@@ -5,7 +5,9 @@
 #ifndef TSBK07_PROJECT_GAMEOBJECT_H
 #define TSBK07_PROJECT_GAMEOBJECT_H
 
-#include <GameObject.h>
+#include <vector>
+
+class Component;
 
 /**
  * @brief Class for any object in game, contains Components
