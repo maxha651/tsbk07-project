@@ -38,6 +38,11 @@ void GOTransform::SetPosition(Vector3f position) {
     this->position = position;
 }
 
+Vector3f GOTransform::GetRotation() {
+    // TODO: stub
+    return Vector3f();
+}
+
 void GOTransform::SetRotation(float x, float y, float z) {
     this->rotation = { x, y, z };
 }
