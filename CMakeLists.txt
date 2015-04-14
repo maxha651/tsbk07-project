@@ -121,13 +121,6 @@ TARGET_LINK_LIBRARIES(helloworld
 
 ## Random hacks ##
 
-# Copy shaders so executable will find it
-# I.e put all shaders in src/shaders folder
-ADD_CUSTOM_COMMAND(TARGET helloworld POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${CMAKE_SOURCE_DIR}/src/shaders
-    $<TARGET_FILE_DIR:helloworld>/shaders)
-
 # Pass defines to program
 SET_TARGET_PROPERTIES (helloworld PROPERTIES COMPILE_DEFINITIONS 
     "TSBK07_SHADERS_DIR=\"${CMAKE_SOURCE_DIR}/src/shaders\"")
