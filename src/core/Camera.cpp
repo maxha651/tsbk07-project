@@ -16,10 +16,15 @@ Camera::~Camera()
 }
 
 void Camera::Update(){
+	UpdateUpVector();
+}
+
+// Updates the up vector of the camera. This can then be used using glLookAt().
+void Camera::UpdateUpVector(){
 	Eigen::Matrix3f rotationMatrix;
 
 	GOTransform t = this->GetTransform();
-	Vector3f * rotation = & t.GetRotation();
+	Vector3f * rotation = &t.GetRotation();
 
 	float rotationX = rotation->x;
 	float rotationY = rotation->y;
