@@ -85,9 +85,7 @@ int main(int argc, char *argv[])
     glutCreateWindow("Hello OpenGL");
     glutDisplayFunc(display);
     glutKeyboardFunc(keyboard);
-#ifdef GLEW_EXPERIMENTAL
     glewExperimental = GL_TRUE;
-#endif
     glewInit();
     init();
     glutMainLoop();

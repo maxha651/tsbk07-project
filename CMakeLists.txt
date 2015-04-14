@@ -45,8 +45,6 @@ SET (CMAKE_CXX_STANDARD 14)
 # Exports compile commands to file
 SET (CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
-SET (-DGLEW_EXPERIMENTAL)
-
 IF (WIN32)
     # hide insecure CRT warnings, common practice
     ADD_DEFINITIONS (-D_CRT_SECURE_NO_WARNINGS)
