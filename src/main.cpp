@@ -26,7 +26,7 @@ void init()
 
     unsigned int vertexBufferObjID;
     // GL inits
-    glClearColor(1.0,0.3,0.5,0);
+    glClearColor(1.0f,0.3f,0.5f,0.0f);
     glDisable(GL_DEPTH_TEST);
     // Load and compile shader
     //program = loadShaders("shaders/lab1-1.vert", "shaders/lab1-1.frag");
@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
     glutDisplayFunc(display);
 	glutKeyboardFunc(keyboard);
 	glewInit();
-    //init();
+    init();
     glutMainLoop();
 
     return 0;

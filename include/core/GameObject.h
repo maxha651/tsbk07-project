@@ -6,6 +6,7 @@
 #define TSBK07_PROJECT_GAMEOBJECT_H
 
 #include <vector>
+#include <Transform.h>
 
 class Component;
 
@@ -20,7 +21,8 @@ public:
 
     template<class T> T GetComponent();
     void AddComponent(Component);
-
+	void Update();
+	Transform transform; 
 private:
     std::vector<Component> components;
 

@@ -9,7 +9,11 @@ Component::~Component() {
 
 }
 
-void Component::SetGameObject(GameObject go){
+Transform & Component::GetTransform(){
+	return this->gameObject.transform;
+}
+
+void Component::SetGameObject(GameObject & go){
 	this->gameObject = go;
 }
 

@@ -9,6 +9,7 @@
 #include <GameObject.h>
 
 GameObject::GameObject() {
+
 }
 
 GameObject::~GameObject() {
@@ -25,9 +26,8 @@ template<class T> T GameObject::GetComponent() {
 }
 
 void GameObject::AddComponent(Component component) {
-	// TODO: Add the line of code SetGameObject(this). 
+	component.SetGameObject(*this);
     components.push_back(component);
 }
-
 
 
