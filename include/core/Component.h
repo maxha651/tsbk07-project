@@ -14,13 +14,12 @@ class Component {
 
 public:
     virtual ~Component();
-	GameObject GetGameObject();
+	GameObject & GetGameObject();
 	void SetGameObject(GameObject & go);
-	void Update();
+	virtual void Update();
 	GOTransform& GetTransform();
 private:
 	GameObject gameObject;
-	
 };
 
 
