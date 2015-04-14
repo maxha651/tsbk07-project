@@ -13,5 +13,5 @@ class Camera : public Component
 	public:
 		Camera();
 		~Camera();
-		void Update() override;
+		virtual void Update() override;
 };
