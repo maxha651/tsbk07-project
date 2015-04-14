@@ -9,13 +9,13 @@
 
 using Eigen::Vector3f;
 
-class Transform {
+class GOTransform {
 
 public:
-    Transform();
-    Transform(Vector3f pos, Vector3f rot, Vector3f scale);
-    Transform(std::string path);
-    virtual ~Transform();
+    GOTransform();
+    GOTransform(Vector3f pos, Vector3f rot, Vector3f scale);
+    GOTransform(std::string path);
+    virtual ~GOTransform();
 
     Vector3f GetPosition();
     Vector3f GetRotation();

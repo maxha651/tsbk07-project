@@ -17,7 +17,7 @@ public:
 	GameObject GetGameObject();
 	void SetGameObject(GameObject & go);
 	void Update();
-	Transform & GetTransform();
+	GOTransform& GetTransform();
 private:
 	GameObject gameObject;
 	

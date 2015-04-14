@@ -9,7 +9,7 @@ Component::~Component() {
 
 }
 
-Transform & Component::GetTransform(){
+GOTransform & Component::GetTransform(){
 	return this->gameObject.transform;
 }
 
