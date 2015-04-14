@@ -16,7 +16,7 @@ public:
     virtual ~Component();
 	GameObject GetGameObject();
 	void SetGameObject(GameObject & go);
-	void Update();
+	virtual void Update();
 	Transform & GetTransform();
 private:
 	GameObject gameObject;

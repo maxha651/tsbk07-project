@@ -17,3 +17,6 @@ void Component::SetGameObject(GameObject & go){
 	this->gameObject = go;
 }
 
+void Component::Update(){
+
+}
