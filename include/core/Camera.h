@@ -9,10 +9,12 @@
 */
 class Camera : public Component
 {
-	
 	public:
 		Camera();
 		~Camera();
 		Vector3f up; 
 		virtual void Update() override;
+
+	private:
+		void UpdateUpVector();
 };
