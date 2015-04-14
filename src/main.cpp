@@ -31,8 +31,7 @@ void init()
     // Load and compile shader
     //program = loadShaders("shaders/lab1-1.vert", "shaders/lab1-1.frag");
     ShaderLoader shaderLoader;
-    program = shaderLoader.CreateProgram("shaders/VertexShader.glsl",
-            "shaders/FragmentShader.glsl");
+    program = shaderLoader.CreateProgram("VertexShader.glsl", "FragmentShader.glsl");
     glUseProgram(program);
     // Allocate and activate Vertex Array Object
     glGenVertexArrays(1, &vertexArrayObjID);
