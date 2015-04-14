@@ -13,10 +13,15 @@ Transform & Component::GetTransform(){
 	return this->gameObject.transform;
 }
 
+void Component::Update(){
+
+}
+
+// Setters and getters
 void Component::SetGameObject(GameObject & go){
 	this->gameObject = go;
 }
 
-void Component::Update(){
-
+GameObject & Component::GetGameObject(){
+	return this->gameObject;
 }

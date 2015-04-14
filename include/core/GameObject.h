@@ -16,7 +16,7 @@ class Component;
 class GameObject {
 
 public:
-    GameObject();
+	GameObject();
     virtual ~GameObject();
 
     template<class T> T GetComponent();
