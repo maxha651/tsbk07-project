@@ -13,7 +13,7 @@ class Transform {
 
 public:
     Transform();
-    Transform(Vector3f pos, Vector3f rot, Vector3f scale);
+    Transform(Vector3f pos, Vector3f rot, Vector3f	scale);
     Transform(std::string path);
     virtual ~Transform();
 

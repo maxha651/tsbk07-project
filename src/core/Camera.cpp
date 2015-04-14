@@ -3,10 +3,12 @@
 //
 
 #include <Camera.h>
-
+#include <Transform.h>
+#include <Eigen\Geometry>
 
 Camera::Camera()
-{
+{	
+	this->up = Transform::up;
 }
 
 
