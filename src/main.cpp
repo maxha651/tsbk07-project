@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 #ifdef _WIN32
-  #include <windows.h>
+#include <windows.h>
 #endif
 
 #include <GL/glew.h>
@@ -10,16 +10,16 @@
 
 #include <ShaderLoader.h>
 
-GLfloat vertices[] =
+static GLfloat vertices[] =
 {
     -0.0f,-0.0f,0.0f,
     -0.0f,1.0f,0.0f,
     1.0f,-0.0f,0.0f
 };
 
-unsigned int vertexArrayObjID;
-GLuint program;
-Camera camera;
+static GLuint vertexArrayObjID;
+static GLuint program;
+static Camera camera;
 
 void init() 
 {
@@ -30,10 +30,10 @@ void init()
     glDisable(GL_DEPTH_TEST);
     // Load and compile shader
     //program = loadShaders("shaders/lab1-1.vert", "shaders/lab1-1.frag");
-	ShaderLoader shaderLoader;
-	program = shaderLoader.CreateProgram("shaders/VertexShader.glsl",
-										"shaders/FragmentShader.glsl");
-	glUseProgram(program);
+    ShaderLoader shaderLoader;
+    program = shaderLoader.CreateProgram("shaders/VertexShader.glsl",
+            "shaders/FragmentShader.glsl");
+    glUseProgram(program);
     // Allocate and activate Vertex Array Object
     glGenVertexArrays(1, &vertexArrayObjID);
     glBindVertexArray(vertexArrayObjID);
@@ -55,13 +55,13 @@ void display(void)
 {
     // clear the screen
     //glClear(GL_COLOR_BUFFER_BIT);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(1.0, 0.0, 0.0, 1.0);//clear red
-   // glMatrixMode(GL_MODELVIEW);
-   // glLoadIdentity();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearColor(1.0, 0.0, 0.0, 1.0);//clear red
+    // glMatrixMode(GL_MODELVIEW);
+    // glLoadIdentity();
 
     //glBindVertexArray(vertexArrayObjID);	// Select VAO
-	
+
     glDrawArrays(GL_TRIANGLES, 0, 3);	// draw object
 
     // Swap buffers
@@ -84,8 +84,11 @@ int main(int argc, char *argv[])
     glutInitWindowSize(480,480);
     glutCreateWindow("Hello OpenGL");
     glutDisplayFunc(display);
-	glutKeyboardFunc(keyboard);
-	glewInit();
+
+    glutKeyboardFunc(keyboard);
+    glewExperimental = GL_TRUE;
+    glewInit();
+
     init();
     glutMainLoop();
 

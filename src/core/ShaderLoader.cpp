@@ -61,7 +61,7 @@ GLuint ShaderLoader::CreateShader(GLenum shaderType, std::string
 	return shader;
 }
 
-GLuint ShaderLoader::CreateProgram(char* vertexShaderFilename,
+GLuint ShaderLoader::CreateProgram(const char* vertexShaderFilename,
 	const char* fragmentShaderFilename)
 {
 

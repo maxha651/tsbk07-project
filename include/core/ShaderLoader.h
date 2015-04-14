@@ -22,7 +22,7 @@ class ShaderLoader
 
 		ShaderLoader();
 		~ShaderLoader();
-		GLuint CreateProgram(char* VertexShaderFilename,
+		GLuint CreateProgram(const char* VertexShaderFilename,
 							const char* FragmentShaderFilename);
 };
 
