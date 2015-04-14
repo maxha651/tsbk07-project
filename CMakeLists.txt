@@ -45,8 +45,6 @@ SET (CMAKE_CXX_STANDARD 14)
 # Exports compile commands to file
 SET (CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
-# ADD_DEFINITIONS (-DTSBK07_SHADERS_DIR $<CMAKE_SOURCE_DIR:helloworld>/src/shaders)
-
 IF (WIN32)
     # hide insecure CRT warnings, common practice
     ADD_DEFINITIONS (-D_CRT_SECURE_NO_WARNINGS)
@@ -130,4 +128,7 @@ ADD_CUSTOM_COMMAND(TARGET helloworld POST_BUILD
     ${CMAKE_SOURCE_DIR}/src/shaders
     $<TARGET_FILE_DIR:helloworld>/shaders)
 
+# Pass defines to program
+SET_TARGET_PROPERTIES (helloworld PROPERTIES COMPILE_DEFINITIONS 
+    "TSBK07_SHADERS_DIR=\"${CMAKE_SOURCE_DIR}/src/shaders\"")
 

@@ -23,15 +23,17 @@ static Camera camera;
 
 void init() 
 {
-
     unsigned int vertexBufferObjID;
+    char fragmentShader[128], vertexShader[128];
+
     // GL inits
     glClearColor(1.0f,0.3f,0.5f,0.0f);
     glDisable(GL_DEPTH_TEST);
     // Load and compile shader
-    //program = loadShaders("shaders/lab1-1.vert", "shaders/lab1-1.frag");
+    sprintf(vertexShader, "%s/VertexShader.glsl", TSBK07_SHADERS_DIR);
+    sprintf(fragmentShader, "%s/FragmentShader.glsl", TSBK07_SHADERS_DIR);
     ShaderLoader shaderLoader;
-    program = shaderLoader.CreateProgram("Debug/shaders/VertexShader.glsl", "Debug/shaders/FragmentShader.glsl");
+    program = shaderLoader.CreateProgram(vertexShader, fragmentShader);
     glUseProgram(program);
     // Allocate and activate Vertex Array Object
     glGenVertexArrays(1, &vertexArrayObjID);
