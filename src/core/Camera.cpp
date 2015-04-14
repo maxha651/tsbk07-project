@@ -24,9 +24,11 @@ void Camera::UpdateUpVector(){
 	Eigen::Matrix3f rotationMatrix;
 
 	GOTransform t = this->GetTransform();
-	Vector3f * rotation = & t.GetRotation();
+	Vector3f rotation = t.GetRotation();
 
-	rotationMatrix = Eigen::AngleAxisf(rotation->x, Vector3f::UnitX()) * Eigen::AngleAxisf(rotation->y, Vector3f::UnitY()) * Eigen::AngleAxisf(rotation->z, Vector3f::UnitZ());
+	rotationMatrix = Eigen::AngleAxisf(rotation.x(), Vector3f::UnitX()) * 
+            Eigen::AngleAxisf(rotation.y(), Vector3f::UnitY()) * 
+            Eigen::AngleAxisf(rotation.z(), Vector3f::UnitZ());
 
 	this->up = rotationMatrix * GOTransform::up;
 }
