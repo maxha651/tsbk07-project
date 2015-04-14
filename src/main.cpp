@@ -8,6 +8,8 @@
 #include <GL/freeglut.h>
 #include <Camera.h>
 
+#include <ShaderLoader.h>
+
 GLfloat vertices[] =
 {
     -0.0f,-0.0f,0.0f,
@@ -23,13 +25,15 @@ void init()
 {
 
     unsigned int vertexBufferObjID;
-    // Reference to shader program
-    GLuint program;
     // GL inits
     glClearColor(1.0,0.3,0.5,0);
     glDisable(GL_DEPTH_TEST);
     // Load and compile shader
     //program = loadShaders("shaders/lab1-1.vert", "shaders/lab1-1.frag");
+	ShaderLoader shaderLoader;
+	program = shaderLoader.CreateProgram("shaders/VertexShader.glsl",
+										"shaders/FragmentShader.glsl");
+	glUseProgram(program);
     // Allocate and activate Vertex Array Object
     glGenVertexArrays(1, &vertexArrayObjID);
     glBindVertexArray(vertexArrayObjID);
@@ -50,12 +54,15 @@ void keyboard(unsigned char key, int x, int y)
 void display(void)
 {
     // clear the screen
-    glClear(GL_COLOR_BUFFER_BIT);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+    //glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClearColor(1.0, 0.0, 0.0, 1.0);//clear red
+   // glMatrixMode(GL_MODELVIEW);
+   // glLoadIdentity();
 
     //glBindVertexArray(vertexArrayObjID);	// Select VAO
-    //glDrawArrays(GL_TRIANGLES, 0, 3);	// draw object
+	
+    glDrawArrays(GL_TRIANGLES, 0, 3);	// draw object
 
     // Swap buffers
     glutSwapBuffers();
@@ -78,6 +85,7 @@ int main(int argc, char *argv[])
     glutCreateWindow("Hello OpenGL");
     glutDisplayFunc(display);
 	glutKeyboardFunc(keyboard);
+	glewInit();
     //init();
     glutMainLoop();
 
