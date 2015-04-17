@@ -27,6 +27,8 @@ public:
 	~ModelAndShader();
 
 private:
+        struct face;
+        struct coordinate;
 	int LoadObject(const char* filename);
 	GLfloat* vertices;
 };
