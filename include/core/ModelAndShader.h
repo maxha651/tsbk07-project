@@ -25,6 +25,7 @@ class ModelAndShader : public Component
 public:
 	ModelAndShader(const char *model, const char *shader);
 	~ModelAndShader();
+	int id;
 
 private:
         struct face;
