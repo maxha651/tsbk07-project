@@ -9,7 +9,7 @@
 ModelAndShader::ModelAndShader(const char *model, const char *shader)
 {
 	// Load the model.
-	//LoadObject(model);
+	id = LoadObject(model);
 
 
 	// Load the shader.
@@ -55,7 +55,7 @@ int LoadObject(const char* filename)
 	std::ifstream in(filename);
 	if (!in.is_open())
 	{
-		std::cout << "Nor oepened" << std::endl;
+		std::cout << "Model file could not be opened" << std::endl;
 		return -1;
 	}
 	char buf[256];
@@ -100,7 +100,7 @@ int LoadObject(const char* filename)
 
 
 	int num; // The id for the list
-	num = glGenLists(1); // Generate a uniqe
+	num = glGenLists(1); // Generate a uniqe id
 	glNewList(num, GL_COMPILE); // and create it
 	for (size_t i = 0; i<faces.size(); i++)
 	{
