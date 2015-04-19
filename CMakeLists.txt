@@ -77,15 +77,15 @@ ENDIF ()
 # OpenGL should found even on Windows (amaazing)
 FIND_PACKAGE(OpenGL REQUIRED)
 
-include_directories(${OpenGL_INCLUDE_DIRS})
-link_directories(${OpenGL_LIBRARY_DIRS})
-add_definitions(${OpenGL_DEFINITIONS})
-include_directories(${GLEW_INCLUDE_DIRS})
-link_directories(${GLEW_LIBRARY_DIRS})
-add_definitions(${GLEW_DEFINITIONS})
-include_directories(${GLUT_INCLUDE_DIRS})
-link_directories(${GLUT_LIBRARY_DIRS})
-add_definitions(${GLUT_DEFINITIONS})
+INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIRS})
+LINK_DIRECTORIES(${OPENGL_LIBRARY_DIRS})
+ADD_DEFINITIONS(${OPENGL_DEFINITIONS})
+INCLUDE_DIRECTORIES(${GLEW_INCLUDE_DIRS})
+LINK_DIRECTORIES(${GLEW_LIBRARY_DIRS})
+ADD_DEFINITIONS(${GLEW_DEFINITIONS})
+INCLUDE_DIRECTORIES(${GLUT_INCLUDE_DIRS})
+LINK_DIRECTORIES(${GLUT_LIBRARY_DIRS})
+ADD_DEFINITIONS(${GLUT_DEFINITIONS})
 
 # Boost header only libs
 ADD_LIBRARY(boost INTERFACE)
@@ -97,10 +97,9 @@ ADD_LIBRARY(eigen INTERFACE)
 TARGET_INCLUDE_DIRECTORIES(eigen INTERFACE external/eigen/include)
 LINK_LIBRARIES(eigen)
 
-# Jeayeson: Header only (boost variant and algorithm dependent)
-ADD_LIBRARY(jeayeson INTERFACE)
-TARGET_INCLUDE_DIRECTORIES(jeayeson INTERFACE external/jeayeson/include)
-LINK_LIBRARIES(jeayeson)
+# jsoncpp
+ADD_SUBDIRECTORY (external/jsoncpp)
+LINK_LIBRARIES (jsoncpp_lib_static)
 
 ## Our libraries ##
 

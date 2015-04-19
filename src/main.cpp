@@ -30,8 +30,8 @@ void init()
     glClearColor(1.0f,0.3f,0.5f,0.0f);
     glDisable(GL_DEPTH_TEST);
     // Load and compile shader
-    sprintf(vertexShader, "%s/VertexShader.glsl", TSBK07_SHADERS_DIR);
-    sprintf(fragmentShader, "%s/FragmentShader.glsl", TSBK07_SHADERS_DIR);
+    sprintf(vertexShader, "%s/VertexShader.glsl", TSBK07_SHADERS_PATH);
+    sprintf(fragmentShader, "%s/FragmentShader.glsl", TSBK07_SHADERS_PATH);
     ShaderLoader shaderLoader;
     program = shaderLoader.CreateProgram(vertexShader, fragmentShader);
     glUseProgram(program);
