@@ -1,20 +1,24 @@
+#pragma once
+
 //
 // Created by Fredrik on 2015-04-07.
 //
 
-#include <Component.h>
+#include <Eigen/Geometry>
+
+#include <BaseComponent.h>
 
 /**
-* A camera class.
-*/
-class Camera : public Component
+ * A camera class.
+ */
+class Camera : public BaseComponent
 {
-	public:
-		Camera();
-		~Camera();
-		Vector3f up; 
-		virtual void Update() override;
+    public:
+        Camera();
+        ~Camera();
+        Eigen::Vector3f up; 
+        virtual void Update() override;
 
-	private:
-		void UpdateUpVector();
+    private:
+        void UpdateUpVector();
 };

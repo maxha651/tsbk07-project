@@ -73,7 +73,7 @@ class JSONLoader {
                 void* dataPtr;
                 IVectorPtr* vecPtr;
         };
-        
+
         bool saveOnDestruct;
         std::string filePath;
         std::vector<DataField> dataFieldVec;

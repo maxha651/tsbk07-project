@@ -1,16 +1,16 @@
+#pragma once 
+
 //
 // Created by max on 2015-04-05.
 //
 
-#ifndef TSBK07_PROJECT_GAMEOBJECT_H
-#define TSBK07_PROJECT_GAMEOBJECT_H
-
 #include <vector>
+#include <typeinfo>
 
 #include <JSONLoader.h>
-#include <GOTransform.h>
 
-class Component;
+#include <GOTransform.h>
+#include <Component.h>
 
 /**
  * @brief Class for any object in game, contains Components
@@ -23,7 +23,7 @@ class GameObject {
         virtual ~GameObject();
 
         template<class T> T GetComponent();
-        void AddComponent(Component);
+        void AddComponent(Component&);
         void Update();
         const std::string& GetName() const;
 
@@ -32,8 +32,5 @@ class GameObject {
         JSONLoader jsonLoader;
         std::string name;
         std::vector<Component> components;
-
 };
 
-
-#endif //TSBK07_PROJECT_GAMEOBJECT_H

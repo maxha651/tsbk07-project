@@ -39,8 +39,16 @@ PROJECT ("tsbk07-project")
 
 ## Definitions and settings ##
 
-ADD_DEFINITIONS (-DGL_GLEXT_PROTOTYPES)
 SET (CMAKE_CXX_STANDARD 14)
+ENABLE_LANGUAGE (CXX)
+
+ADD_DEFINITIONS (-DGL_GLEXT_PROTOTYPES)
+
+IF (UNIX)
+    # Used by Max' completion engine and syntax checker
+    # .h headers are treated as C otherwise
+    SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+ENDIF ()
 
 # Exports compile commands to file
 SET (CMAKE_EXPORT_COMPILE_COMMANDS 1)

@@ -1,7 +1,8 @@
+#pragma once
+
 //
 // Created by David on 2015-04-14.
 //
-
 
 #include <Component.h>
 #include <GL/glew.h>
@@ -14,8 +15,6 @@
 #include <fstream>
 #include <cstdio>
 #include <iostream>
-
-#pragma once
 
 /**
 * Model and shader component.

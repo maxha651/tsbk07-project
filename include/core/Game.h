@@ -9,8 +9,6 @@
 
 #include <GameObject.h>
 
-class GameObject;
-
 /**
  * \brief Main class that handles big stuff
  *
@@ -28,11 +26,11 @@ class Game {
         ~Game();
 
         GameObject& GetGameObject(const std::string& name);
-        void AddComponent(const std::string& name);
+        void AddGameObject(const std::string& name);
 
         void Update();
 
-        void setSaveOnExit(bool value);
+        void SetSaveOnExit(bool value);
     private:
         bool saveOnExit;
         std::vector<GameObject> gameObjects;

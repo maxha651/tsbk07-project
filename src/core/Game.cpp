@@ -16,16 +16,16 @@ Game::~Game() {
 
 GameObject& Game::GetGameObject(const std::string& name) {
     for (auto& go : gameObjects) {
-        if (name.compare(go.Name())) {
+        if (name.compare(go.GetName())) {
             return go;
         }
     }
-    throw new NoSuchObjectException();
+    throw new std::exception();
 }
 
 void Game::AddGameObject(const std::string& name) {
     // TODO calc path and send that instead
-    gameObjects.push_back(GameObject::GameObject(name));
+    gameObjects.push_back(GameObject(name));
 }
 
 void Game::Update() {
@@ -34,7 +34,7 @@ void Game::Update() {
     }
 }
 
-void Game::SetSaveExit(bool value) {
+void Game::SetSaveOnExit(bool value) {
     saveOnExit = value;
 }
 

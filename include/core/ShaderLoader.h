@@ -1,9 +1,9 @@
+#pragma once
+
 //
 // Created by David on 2015-04-13.
 //
 //From http://in2gpu.com/2014/10/29/shaders-basics/
-
-#pragma once
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>

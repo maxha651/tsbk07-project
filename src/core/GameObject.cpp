@@ -2,10 +2,6 @@
 // Created by max on 2015-04-05.
 //
 
-#include <vector>
-#include <typeinfo>
-
-#include <Component.h>
 #include <GameObject.h>
 
 GameObject::GameObject() {
@@ -28,8 +24,8 @@ template<class T> T GameObject::GetComponent() {
     return nullptr;
 }
 
-void GameObject::AddComponent(Component component) {
-	component.SetGameObject(*this);
+void GameObject::AddComponent(Component& component) {
+	component.SetGameObject(this);
     components.push_back(component);
 }
 
