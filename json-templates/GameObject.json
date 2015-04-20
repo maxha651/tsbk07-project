@@ -1,0 +1,5 @@
+{
+    "GameObject" : "GameObject-template",
+    "transform" : "GOTransform.json"
+    "components" : [],
+}

@@ -1,20 +1,24 @@
+#pragma once
+
 //
 // Created by max on 2015-04-05.
 //
 
-#ifndef TSBK07_PROJECT_COMPONENT_H
-#define TSBK07_PROJECT_COMPONENT_H
+class GOTransform;
+class GameObject;
 
 /**
  * @brief Component superclass
  */
 class Component {
 
-public:
-    virtual ~Component();
-private:
-
+    public:
+        virtual ~Component();
+        GameObject* GetGameObject();
+        void SetGameObject(GameObject* go);
+        virtual void Update();
+    protected:
+        GameObject* gameObject;
 };
 
 
-#endif //TSBK07_PROJECT_COMPONENT_H

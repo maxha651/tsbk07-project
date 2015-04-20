@@ -1,35 +1,40 @@
 #include <stdio.h>
 
 #ifdef _WIN32
-  #include <windows.h>
+#include <windows.h>
 #endif
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 #include <Camera.h>
 
-GLfloat vertices[] =
+#include <ShaderLoader.h>
+
+static GLfloat vertices[] =
 {
     -0.0f,-0.0f,0.0f,
     -0.0f,1.0f,0.0f,
     1.0f,-0.0f,0.0f
 };
 
-unsigned int vertexArrayObjID;
-GLuint program;
-Camera camera;
+static GLuint vertexArrayObjID;
+static GLuint program;
+static Camera camera;
 
 void init() 
 {
-
     unsigned int vertexBufferObjID;
-    // Reference to shader program
-    GLuint program;
+    char fragmentShader[128], vertexShader[128];
+
     // GL inits
-    glClearColor(1.0,0.3,0.5,0);
+    glClearColor(1.0f,0.3f,0.5f,0.0f);
     glDisable(GL_DEPTH_TEST);
     // Load and compile shader
-    //program = loadShaders("shaders/lab1-1.vert", "shaders/lab1-1.frag");
+    sprintf(vertexShader, "%s/VertexShader.glsl", TSBK07_SHADERS_PATH);
+    sprintf(fragmentShader, "%s/FragmentShader.glsl", TSBK07_SHADERS_PATH);
+    ShaderLoader shaderLoader;
+    program = shaderLoader.CreateProgram(vertexShader, fragmentShader);
+    glUseProgram(program);
     // Allocate and activate Vertex Array Object
     glGenVertexArrays(1, &vertexArrayObjID);
     glBindVertexArray(vertexArrayObjID);
@@ -50,12 +55,15 @@ void keyboard(unsigned char key, int x, int y)
 void display(void)
 {
     // clear the screen
-    glClear(GL_COLOR_BUFFER_BIT);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+    //glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearColor(1.0, 0.0, 0.0, 1.0);//clear red
+    // glMatrixMode(GL_MODELVIEW);
+    // glLoadIdentity();
 
     //glBindVertexArray(vertexArrayObjID);	// Select VAO
-    //glDrawArrays(GL_TRIANGLES, 0, 3);	// draw object
+
+    glDrawArrays(GL_TRIANGLES, 0, 3);	// draw object
 
     // Swap buffers
     glutSwapBuffers();
@@ -77,8 +85,12 @@ int main(int argc, char *argv[])
     glutInitWindowSize(480,480);
     glutCreateWindow("Hello OpenGL");
     glutDisplayFunc(display);
-	glutKeyboardFunc(keyboard);
-    //init();
+
+    glutKeyboardFunc(keyboard);
+    glewExperimental = GL_TRUE;
+    glewInit();
+
+    init();
     glutMainLoop();
 
     return 0;

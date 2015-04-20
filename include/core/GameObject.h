@@ -1,26 +1,38 @@
+#pragma once 
+
 //
 // Created by max on 2015-04-05.
 //
 
-#ifndef TSBK07_PROJECT_GAMEOBJECT_H
-#define TSBK07_PROJECT_GAMEOBJECT_H
+#include <vector>
+#include <typeinfo>
+
+#include <JSONLoader.h>
+
+#include <GOTransform.h>
+#include <Component.h>
 
 /**
  * @brief Class for any object in game, contains Components
  */
 class GameObject {
 
-public:
-    GameObject();
-    virtual ~GameObject();
+    public:
+        GameObject();
+        GameObject(const std::string& path);
+        virtual ~GameObject();
 
-    template<class T> T GetComponent();
-    void AddComponent(Component);
+        template<class T> T GetComponent();
+        void AddComponent(Component&);
 
-private:
-    std::vector<Component> components;
+        void Update();
+        const std::string& GetName() const;
+        void SetSaveOnExit(bool value);
 
+        GOTransform transform; 
+    private:
+        JSONLoader jsonLoader;
+        std::string name;
+        std::vector<Component> components;
 };
 
-
-#endif //TSBK07_PROJECT_GAMEOBJECT_H

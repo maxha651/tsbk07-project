@@ -39,8 +39,19 @@ PROJECT ("tsbk07-project")
 
 ## Definitions and settings ##
 
-ADD_DEFINITIONS (-DGL_GLEXT_PROTOTYPES)
 SET (CMAKE_CXX_STANDARD 14)
+ENABLE_LANGUAGE (CXX)
+
+ADD_DEFINITIONS (-DGL_GLEXT_PROTOTYPES)
+
+IF (UNIX)
+    # Used by Max' completion engine and syntax checker
+    # .h headers are treated as C otherwise
+    SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+ENDIF ()
+
+# Exports compile commands to file
+SET (CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
 IF (WIN32)
     # hide insecure CRT warnings, common practice
@@ -71,18 +82,18 @@ ELSE ()
     FIND_PACKAGE(GLUT REQUIRED)
 ENDIF ()
 
-# OpenGL should found even on Windows (amaazing)
+# OpenGL should be found even on Windows (amaazing)
 FIND_PACKAGE(OpenGL REQUIRED)
 
-include_directories(${OpenGL_INCLUDE_DIRS})
-link_directories(${OpenGL_LIBRARY_DIRS})
-add_definitions(${OpenGL_DEFINITIONS})
-include_directories(${GLEW_INCLUDE_DIRS})
-link_directories(${GLEW_LIBRARY_DIRS})
-add_definitions(${GLEW_DEFINITIONS})
-include_directories(${GLUT_INCLUDE_DIRS})
-link_directories(${GLUT_LIBRARY_DIRS})
-add_definitions(${GLUT_DEFINITIONS})
+INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIRS})
+LINK_DIRECTORIES(${OPENGL_LIBRARY_DIRS})
+ADD_DEFINITIONS(${OPENGL_DEFINITIONS})
+INCLUDE_DIRECTORIES(${GLEW_INCLUDE_DIRS})
+LINK_DIRECTORIES(${GLEW_LIBRARY_DIRS})
+ADD_DEFINITIONS(${GLEW_DEFINITIONS})
+INCLUDE_DIRECTORIES(${GLUT_INCLUDE_DIRS})
+LINK_DIRECTORIES(${GLUT_LIBRARY_DIRS})
+ADD_DEFINITIONS(${GLUT_DEFINITIONS})
 
 # Boost header only libs
 ADD_LIBRARY(boost INTERFACE)
@@ -94,10 +105,9 @@ ADD_LIBRARY(eigen INTERFACE)
 TARGET_INCLUDE_DIRECTORIES(eigen INTERFACE external/eigen/include)
 LINK_LIBRARIES(eigen)
 
-# Jeayeson: Header only (boost variant and algorithm dependent)
-ADD_LIBRARY(jeayeson INTERFACE)
-TARGET_INCLUDE_DIRECTORIES(jeayeson INTERFACE external/jeayeson/include)
-LINK_LIBRARIES(jeayeson)
+# jsoncpp
+ADD_SUBDIRECTORY (external/jsoncpp)
+LINK_LIBRARIES (jsoncpp_lib_static)
 
 ## Our libraries ##
 
@@ -107,21 +117,36 @@ LINK_LIBRARIES(jeayeson)
 
 FILE (GLOB_RECURSE SOURCES "${CMAKE_SOURCE_DIR}/src/**.cpp")
 FILE (GLOB_RECURSE HEADERS "${CMAKE_SOURCE_DIR}/include/**.h")
+FILE (GLOB_RECURSE SHADERS "${CMAKE_SOURCE_DIR}/src/shaders/**")
+FILE (GLOB_RECURSE MODELS "${CMAKE_SOURCE_DIR}/src/models/**")
+
+# Make it look nicer in VS
+SOURCE_GROUP (shaders FILES ${SHADERS})
+SOURCE_GROUP (models FILES ${MODELS})
+
 INCLUDE_DIRECTORIES(PUBLIC include/core)
  
 ## Executable ##
 
-ADD_EXECUTABLE(helloworld ${SOURCES} ${HEADERS})
+ADD_EXECUTABLE(helloworld ${SOURCES} ${HEADERS} ${SHADERS} ${MODELS})
 TARGET_LINK_LIBRARIES(helloworld
     ${GLUT_LIBRARY} ${GLEW_LIBRARY} ${OPENGL_LIBRARIES})
 
 ## Random hacks ##
 
-# Copy shaders so executable will find it
-# I.e put all shaders in src/shaders folder
-ADD_CUSTOM_COMMAND(TARGET helloworld POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${CMAKE_SOURCE_DIR}/src/shaders
-    $<TARGET_FILE_DIR:helloworld>/shaders)
+# Pass defines to program
+#SET_TARGET_PROPERTIES (helloworld PROPERTIES COMPILE_DEFINITIONS 
+#    "TSBK07_PATH=\"${CMAKE_SOURCE_DIR}\"")
+#SET_TARGET_PROPERTIES (helloworld PROPERTIES COMPILE_DEFINITIONS 
+#    "TSBK07_SRC_PATH=\"${CMAKE_SOURCE_DIR}/src\"")
+#SET_TARGET_PROPERTIES (helloworld PROPERTIES COMPILE_DEFINITIONS 
+#    "TSBK07_INCLUDE_PATH=\"${CMAKE_SOURCE_DIR}/include\"")
+#SET_TARGET_PROPERTIES (helloworld PROPERTIES COMPILE_DEFINITIONS 
+#    "TSBK07_SHADERS_PATH=\"${CMAKE_SOURCE_DIR}/src/shaders\"")
 
+ADD_DEFINITIONS (-DTSBK07_PATH=\"${CMAKE_SOURCE_DIR}\")
+ADD_DEFINITIONS (-DTSBK07_SRC_PATH=\"${CMAKE_SOURCE_DIR}/src\")
+ADD_DEFINITIONS (-DTSBK07_INCLUDE_PATH=\"${CMAKE_SOURCE_DIR}/include\")
+ADD_DEFINITIONS (-DTSBK07_SHADERS_PATH=\"${CMAKE_SOURCE_DIR}/src/shaders\")
+ADD_DEFINITIONS (-DTSBK07_MODELS_PATH=\"${CMAKE_SOURCE_DIR}/src/models\")
 
