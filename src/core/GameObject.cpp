@@ -9,11 +9,14 @@
 #include <GameObject.h>
 
 GameObject::GameObject() {
+}
+
+GameObject::GameObject(const std::string& path) :
+    jsonLoader(path) {
 
 }
 
 GameObject::~GameObject() {
-
 }
 
 template<class T> T GameObject::GetComponent() {
@@ -34,4 +37,7 @@ void GameObject::Update(){
 
 }
 
+const std::string& GameObject::GetName() const {
+    return name;
+}
 

@@ -3,46 +3,10 @@
 static const bool SAVE_ON_DESTRUCT_DEFAULT = true;
 static const size_t DYN_DATA_MAX_LEN = 1;
 
-class JSONLoader::DataField {
-    public:
-        DataField(Json::Value jsonValue, void* dataPtr) :
-            jsonValue(jsonValue), dataPtr(dataPtr), vecPtr(nullptr) {}
-        DataField(Json::Value jsonValue, void* dataPtr, IVectorPtr* vecPtr) :
-            jsonValue(jsonValue), dataPtr(dataPtr), vecPtr(vecPtr) {}
-        ~DataField() { 
-            if (vecPtr != nullptr) {
-                // TODO: Fix warning
-                delete vecPtr;
-            }
-        }
-        
-    Json::Value jsonValue;
-    void* dataPtr;
-    IVectorPtr* vecPtr;
-};
+// No initialization => nothing to save
+JSONLoader::JSONLoader() : saveOnDestruct(false) {
 
-class JSONLoader::IVectorPtr {
-    public:
-        virtual ~IVectorPtr() = 0;
-        virtual void* getPtr() = 0;
-        virtual void* getPtr(size_t idx) = 0;
-};
-
-template <typename T> 
-class JSONLoader::VectorPtr : IVectorPtr {
-    public:
-        VectorPtr(std::vector<T>* vecPtr) : vecPtr(vecPtr) {}
-        virtual void* getPtr() override {
-            return static_cast<void*>(vecPtr);
-        }
-        virtual void* getPtr(size_t idx) override {
-            return static_cast<void*>(vecPtr[idx]);
-        }
-        ~VectorPtr() override {}
-
-    private:
-        std::vector<T>* vecPtr;
-};
+}
 
 JSONLoader::JSONLoader(const std::string& path) 
     : saveOnDestruct(SAVE_ON_DESTRUCT_DEFAULT), filePath(path) {

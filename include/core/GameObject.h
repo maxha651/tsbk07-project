@@ -6,6 +6,8 @@
 #define TSBK07_PROJECT_GAMEOBJECT_H
 
 #include <vector>
+
+#include <JSONLoader.h>
 #include <GOTransform.h>
 
 class Component;
@@ -15,16 +17,21 @@ class Component;
  */
 class GameObject {
 
-public:
-	GameObject();
-    virtual ~GameObject();
+    public:
+        GameObject();
+        GameObject(const std::string& path);
+        virtual ~GameObject();
 
-    template<class T> T GetComponent();
-    void AddComponent(Component);
-	void Update();
-	GOTransform transform; 
-private:
-    std::vector<Component> components;
+        template<class T> T GetComponent();
+        void AddComponent(Component);
+        void Update();
+        const std::string& GetName() const;
+
+        GOTransform transform; 
+    private:
+        JSONLoader jsonLoader;
+        std::string name;
+        std::vector<Component> components;
 
 };
 
