@@ -37,3 +37,7 @@ const std::string& GameObject::GetName() const {
     return name;
 }
 
+void GameObject::SetSaveOnExit(bool value) {
+    jsonLoader.setSaveOnDestruct(value);
+}
+

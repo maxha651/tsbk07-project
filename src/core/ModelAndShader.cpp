@@ -41,7 +41,7 @@ void ModelAndShader::init(const char *model, const char *shader) {
     vertShader.append(shader);
     fragShader.append(shader);
     // TODO: Either use this convention or something else 
-    // e.g. keep separate entries in JSON
+    // e.g. keep separate entries in JSON.
     vertShader.append(".vert");
     fragShader.append(".frag");
 
@@ -53,7 +53,7 @@ ModelAndShader::~ModelAndShader()
     // JSONLoader will automatically update JSON file on destruct
 }
 
-
+// DAVID: Try to use Eigen where appropriate. Eigen::Vector3f is what you want here.
 struct ModelAndShader::coordinate{
     float x, y, z;
     coordinate(float a, float b, float c) : x(a), y(b), z(c) {};

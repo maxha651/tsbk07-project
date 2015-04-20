@@ -24,8 +24,10 @@ class GameObject {
 
         template<class T> T GetComponent();
         void AddComponent(Component&);
+
         void Update();
         const std::string& GetName() const;
+        void SetSaveOnExit(bool value);
 
         GOTransform transform; 
     private:

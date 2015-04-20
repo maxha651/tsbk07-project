@@ -137,6 +137,7 @@ Json::Value JSONLoader::toJson(const DataField& dataField) {
 
 // Explicitly define valid template instances
 // Others will yield undefined reference
+
 template void JSONLoader::addDataField<double>(double* dataPtr);
 template void JSONLoader::addDataField<std::string>(std::string* dataPtr);
 template void JSONLoader::addDataField<bool>(bool* dataPtr);

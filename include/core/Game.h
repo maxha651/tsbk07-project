@@ -4,8 +4,10 @@
 // Created by max on 2015-04-05.
 //
 
+#include <iostream>
 #include <string>
 #include <vector>
+#include <dirent.h>
 
 #include <GameObject.h>
 
@@ -29,10 +31,8 @@ class Game {
         void AddGameObject(const std::string& name);
 
         void Update();
-
         void SetSaveOnExit(bool value);
     private:
-        bool saveOnExit;
         std::vector<GameObject> gameObjects;
 
 };

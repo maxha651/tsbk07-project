@@ -5,13 +5,25 @@
 #include <Game.h>
 
 Game::Game(const std::string& path) {
+    DIR *dir;
+    struct dirent *ent;
 
+    if ((dir = opendir(path.c_str())) != NULL) {
+        /* print all the files and directories within directory */
+        while ((ent = readdir(dir)) != NULL) {
+            if (ent->d_type == DT_DIR) {
+                AddGameObject(ent->d_name);
+            }
+            std::cout << "Game: Added GameObject: " << ent->d_name << std::endl;
+        }
+        closedir(dir);
+    } else {
+        /* could not open directory */
+        std::cerr << "Game: Couldn't open directory" << std::endl;
+    }
 }
 
 Game::~Game() {
-    if (saveOnExit) {
-        // TODO Write JSON   
-    }
 }
 
 GameObject& Game::GetGameObject(const std::string& name) {
@@ -35,7 +47,9 @@ void Game::Update() {
 }
 
 void Game::SetSaveOnExit(bool value) {
-    saveOnExit = value;
+    for (GameObject go : gameObjects) {
+        go.SetSaveOnExit(value);
+    }
 }
 
 
