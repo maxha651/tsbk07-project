@@ -36,22 +36,22 @@ class JSONLoader {
     private:
         class IVectorPtr {
             public:
-                virtual ~IVectorPtr() = 0;
+                virtual ~IVectorPtr() {}
                 virtual void* getPtr() = 0;
                 virtual void* getPtr(size_t idx) = 0;
         };
 
         template <typename T> 
-            class VectorPtr : IVectorPtr {
+            class VectorPtr : public IVectorPtr {
                 public:
                     VectorPtr(std::vector<T>* vecPtr) : vecPtr(vecPtr) {}
                     virtual void* getPtr() override {
                         return static_cast<void*>(vecPtr);
                     }
                     virtual void* getPtr(size_t idx) override {
-                        return static_cast<void*>(vecPtr[idx]);
+                        return static_cast<void*>(&(vecPtr->at(idx)));
                     }
-                    ~VectorPtr() override {}
+                    virtual ~VectorPtr() override {}
 
                 private:
                     std::vector<T>* vecPtr;

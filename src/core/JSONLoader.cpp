@@ -26,12 +26,12 @@ template <typename T> void JSONLoader::addDataField(T* dataPtr) {
 }
 
 template <typename T> void JSONLoader::addArrayField(std::vector<T>* vector) {
-    IVectorPtr* vecPtr = new VectorPtr<T>(vector);
+    IVectorPtr* vecPtr = dynamic_cast<IVectorPtr*>(new VectorPtr<T>(vector));
     DataField dataField{ Json::arrayValue, static_cast<void*>(vector), vecPtr};
 
     dataField.jsonValue.resize(vector->size());
     for(int idx = 0; idx < vector->size(); ++idx) {
-        dataField.jsonValue[idx] = Json::Value(vector[idx]);
+        dataField.jsonValue[idx] = Json::Value(vector->at(idx));
     }
 
     dataFieldVec.push_back(dataField);
@@ -134,5 +134,15 @@ Json::Value JSONLoader::toJson(const DataField& dataField) {
 
     return jsonValue;
 }
+
+// Explicitly define valid template instances
+// Others will yield undefined reference
+template void JSONLoader::addDataField<double>(double* dataPtr);
+template void JSONLoader::addDataField<std::string>(std::string* dataPtr);
+template void JSONLoader::addDataField<bool>(bool* dataPtr);
+template void JSONLoader::addArrayField<double>(std::vector<double>* vector);
+template void JSONLoader::addArrayField<std::string>(std::vector<std::string>* vector);
+// TODO: vector bool specialization fucks up my cool/hacky VectorPtr class
+//template void JSONLoader::addArrayField<bool>(std::vector<bool>* vector);
 
 

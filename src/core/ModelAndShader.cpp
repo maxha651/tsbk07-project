@@ -3,22 +3,54 @@
 //
 // LoadObject function from https://www.youtube.com/watch?v=849hXuOv0i8
 
-#include "ModelAndShader.h"
+#include <ModelAndShader.h>
 
+static const std::string MODEL_REL_PATH = TSBK07_MODELS_PATH;
+static const std::string SHADER_REL_PATH = TSBK07_SHADERS_PATH;
+
+ModelAndShader::ModelAndShader(const char *jsonPath) :
+    jsonLoader(std::string(jsonPath)) {
+    jsonLoader.addDataField<std::string>(&model);
+    jsonLoader.addDataField<std::string>(&shader);
+    jsonLoader.read();
+
+    init(model.c_str(), shader.c_str());
+}
 
 ModelAndShader::ModelAndShader(const char *model, const char *shader)
 {
+    init(model, shader);
+}
 
-	// Load the model.
-	id = LoadObject(model);
+void ModelAndShader::init(const char *model, const char *shader) {
+    std::string _model(MODEL_REL_PATH);
+    std::string vertShader(SHADER_REL_PATH);
+    std::string fragShader(SHADER_REL_PATH);
 
+    // Get full object file path
+    _model.append("/");
+    _model.append(model);
+    _model.append(".obj");
+
+    // Load the model.
+    id = LoadObject(_model.c_str());
+
+    // Get full shader paths
+    vertShader.append("/");
+    fragShader.append("/");
+    vertShader.append(shader);
+    fragShader.append(shader);
+    // TODO: Either use this convention or something else 
+    // e.g. keep separate entries in JSON
+    vertShader.append(".vert");
+    fragShader.append(".frag");
 
     // Load the shader.
 }
 
-
 ModelAndShader::~ModelAndShader()
 {
+    // JSONLoader will automatically update JSON file on destruct
 }
 
 
