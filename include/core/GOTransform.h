@@ -1,9 +1,8 @@
+#pragma once
+
 //
 // Created by max on 2015-04-06.
 //
-
-#ifndef TSBK07_PROJECT_TRANSFORM_H
-#define TSBK07_PROJECT_TRANSFORM_H
 
 #include <Eigen/Geometry>
 
@@ -37,5 +36,3 @@ private:
 
 };
 
-
-#endif //TSBK07_PROJECT_TRANSFORM_H
