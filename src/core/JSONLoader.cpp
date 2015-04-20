@@ -8,6 +8,11 @@ JSONLoader::JSONLoader() : saveOnDestruct(false) {
 
 }
 
+// No path to save to when using this one
+JSONLoader::JSONLoader(const Json::Value& root) :saveOnDestruct(false) {
+    init(root);
+}
+
 JSONLoader::JSONLoader(const std::string& path) 
     : saveOnDestruct(SAVE_ON_DESTRUCT_DEFAULT), filePath(path) {
         read();
@@ -41,14 +46,7 @@ void JSONLoader::setSaveOnDestruct(bool value) {
     saveOnDestruct = value;
 }
 
-void JSONLoader::read() {
-    dataFieldVec.clear();
-
-    std::ifstream inStream( filePath, std::ifstream::binary );
-    Json::Value root(Json::objectValue);
-
-    inStream >> root;
-
+void JSONLoader::init(const Json::Value& root) {
     // If we haven't added enough data fields then that data will not (can not) be
     // updated on write.
     DataField defaultValue{ nullptr, nullptr };
@@ -58,6 +56,17 @@ void JSONLoader::read() {
     for (int idx = 0; idx < root.size(); ++idx) {
         dataFieldVec[idx].jsonValue = std::move(root[idx]);
     }
+}
+
+void JSONLoader::read() {
+    dataFieldVec.clear();
+
+    std::ifstream inStream( filePath, std::ifstream::binary );
+    Json::Value root(Json::objectValue);
+
+    inStream >> root;
+
+    init(root);
 }
 
 void JSONLoader::write() {

@@ -8,8 +8,8 @@ Game::Game(const std::string& path) {
     DIR *dir;
     struct dirent *ent;
 
+    // All directories in path should be a GameObject instance
     if ((dir = opendir(path.c_str())) != NULL) {
-        /* print all the files and directories within directory */
         while ((ent = readdir(dir)) != NULL) {
             if (ent->d_type == DT_DIR) {
                 AddGameObject(ent->d_name);

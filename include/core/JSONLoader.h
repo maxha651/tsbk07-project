@@ -21,6 +21,7 @@
 class JSONLoader {
     public:
         JSONLoader();
+        JSONLoader(const Json::Value& root);
         JSONLoader(const std::string& path);
         ~JSONLoader();
 
@@ -78,5 +79,6 @@ class JSONLoader {
         std::string filePath;
         std::vector<DataField> dataFieldVec;
 
+        void init(const Json::Value& root);
         Json::Value toJson(const DataField& dataField);
 };
