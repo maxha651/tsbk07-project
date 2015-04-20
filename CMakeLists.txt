@@ -57,7 +57,7 @@ IF (WIN32)
     # hide insecure CRT warnings, common practice
     ADD_DEFINITIONS (-D_CRT_SECURE_NO_WARNINGS)
     IF (MSVC)
-        SET( CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS} "/NODEFAULTLIBS:LIBCMT" )
+        #SET (CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS} "/NODEFAULTLIBS:LIBCMT" )
         SET (CMAKE_DEBUG_POSTFIX "d")
     ENDIF (MSVC)
 ENDIF ()
@@ -108,6 +108,13 @@ LINK_LIBRARIES(eigen)
 # jsoncpp
 ADD_SUBDIRECTORY (external/jsoncpp)
 LINK_LIBRARIES (jsoncpp_lib_static)
+
+IF (MSVC)
+	# The best way would probably be to use Boost, but this one 
+	# is easier. As it turns out, VS is pretty much the only compiler
+	# to NOT have it...
+	INCLUDE_DIRECTORIES (external/dirent-win)
+ENDIF ()
 
 ## Our libraries ##
 
