@@ -25,14 +25,14 @@ class JSONLoader {
         JSONLoader(const std::string& path);
         ~JSONLoader();
 
-        template <typename T> void addDataField(T* dataPtr);
-        template <typename T> void addArrayField(std::vector<T>* dataPtr);
-        void setSaveOnDestruct(bool value);
-        void read();
-        void write();
+        template <typename T> void AddDataField(T* dataPtr);
+        template <typename T> void AddArrayField(std::vector<T>* dataPtr);
+        void SetSaveOnDestruct(bool value);
+        void Read();
+        void Write();
 
     protected:
-        Json::Value toJson();
+        Json::Value ToJson();
 
     private:
         class IVectorPtr {
@@ -79,6 +79,6 @@ class JSONLoader {
         std::string filePath;
         std::vector<DataField> dataFieldVec;
 
-        void init(const Json::Value& root);
-        Json::Value toJson(const DataField& dataField);
+        void Init(const Json::Value& root);
+        Json::Value ToJson(const DataField& dataField);
 };

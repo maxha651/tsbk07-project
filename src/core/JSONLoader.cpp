@@ -1,7 +1,6 @@
 #include <JSONLoader.h>
 
 static const bool SAVE_ON_DESTRUCT_DEFAULT = true;
-static const size_t DYN_DATA_MAX_LEN = 1;
 
 // No initialization => nothing to save
 JSONLoader::JSONLoader() : saveOnDestruct(false) {
@@ -10,27 +9,27 @@ JSONLoader::JSONLoader() : saveOnDestruct(false) {
 
 // No path to save to when using this one
 JSONLoader::JSONLoader(const Json::Value& root) :saveOnDestruct(false) {
-    init(root);
+    Init(root);
 }
 
 JSONLoader::JSONLoader(const std::string& path) 
     : saveOnDestruct(SAVE_ON_DESTRUCT_DEFAULT), filePath(path) {
-        read();
+        Read();
     }
 
 
 JSONLoader::~JSONLoader() {
     if (saveOnDestruct) {
-        write();
+        Write();
     }
 }
 
-template <typename T> void JSONLoader::addDataField(T* dataPtr) {
+template <typename T> void JSONLoader::AddDataField(T* dataPtr) {
     DataField dataField(Json::Value(*dataPtr), static_cast<void*>(dataPtr));
     dataFieldVec.push_back(dataField);
 }
 
-template <typename T> void JSONLoader::addArrayField(std::vector<T>* vector) {
+template <typename T> void JSONLoader::AddArrayField(std::vector<T>* vector) {
     IVectorPtr* vecPtr = dynamic_cast<IVectorPtr*>(new VectorPtr<T>(vector));
     DataField dataField{ Json::arrayValue, static_cast<void*>(vector), vecPtr};
 
@@ -42,11 +41,11 @@ template <typename T> void JSONLoader::addArrayField(std::vector<T>* vector) {
     dataFieldVec.push_back(dataField);
 }
 
-void JSONLoader::setSaveOnDestruct(bool value) {
+void JSONLoader::SetSaveOnDestruct(bool value) {
     saveOnDestruct = value;
 }
 
-void JSONLoader::init(const Json::Value& root) {
+void JSONLoader::Init(const Json::Value& root) {
     // If we haven't added enough data fields then that data will not (can not) be
     // updated on write.
     DataField defaultValue{ nullptr, nullptr };
@@ -58,7 +57,7 @@ void JSONLoader::init(const Json::Value& root) {
     }
 }
 
-void JSONLoader::read() {
+void JSONLoader::Read() {
     dataFieldVec.clear();
 
     std::ifstream inStream( filePath, std::ifstream::binary );
@@ -66,11 +65,11 @@ void JSONLoader::read() {
 
     inStream >> root;
 
-    init(root);
+    Init(root);
 }
 
-void JSONLoader::write() {
-    Json::Value root = toJson();
+void JSONLoader::Write() {
+    Json::Value root = ToJson();
 
     std::ofstream outStream(filePath);
     // Overwrite old file contents
@@ -78,17 +77,17 @@ void JSONLoader::write() {
     outStream << root;
 }
 
-Json::Value JSONLoader::toJson() {
+Json::Value JSONLoader::ToJson() {
     Json::Value root(Json::objectValue);
 
     for (DataField dataField : dataFieldVec) {
-        root.append(toJson(dataField));
+        root.append(ToJson(dataField));
     }
 
     return root;
 }
 
-Json::Value JSONLoader::toJson(const DataField& dataField) {
+Json::Value JSONLoader::ToJson(const DataField& dataField) {
     // Default to old in case something goes wrong
     Json::Value jsonValue(dataField.jsonValue);
 
@@ -123,18 +122,21 @@ Json::Value JSONLoader::toJson(const DataField& dataField) {
                     // don't have to deduce the type quite yet.
                     IVectorPtr* vecPtr = static_cast<IVectorPtr*>(dataField.dataPtr);
                     for (int idx = 0; idx < jsonValue.size(); ++idx) {
-                        jsonValue[idx] = toJson(DataField{ jsonValue[idx], vecPtr->getPtr(idx) });
+                        jsonValue[idx] = ToJson(DataField{ jsonValue[idx], vecPtr->getPtr(idx) });
                     }
                     break;
                 }
             case Json::objectValue:
                 {
-                    JSONLoader* value = static_cast<JSONLoader*>(dataField.dataPtr);
-                    jsonValue = value->toJson();
+                    std::cout << "JSONLoader: Something saved as object value, probably wrong" << std::endl;
+                    jsonValue = dataField.jsonValue;
                     break;
                 }
             default:
+                {
+                    std::cerr << "JSONLoader: Unrecognized type: " << dataField.jsonValue.type() << std::endl;
                 break;
+                }
         }
     }
 
@@ -146,13 +148,13 @@ Json::Value JSONLoader::toJson(const DataField& dataField) {
 
 // Explicitly define valid template instances
 // Others will yield undefined reference
-
-template void JSONLoader::addDataField<double>(double* dataPtr);
-template void JSONLoader::addDataField<std::string>(std::string* dataPtr);
-template void JSONLoader::addDataField<bool>(bool* dataPtr);
-template void JSONLoader::addArrayField<double>(std::vector<double>* vector);
-template void JSONLoader::addArrayField<std::string>(std::vector<std::string>* vector);
+template void JSONLoader::AddDataField<double>(double* dataPtr);
+template void JSONLoader::AddDataField<std::string>(std::string* dataPtr);
+template void JSONLoader::AddDataField<bool>(bool* dataPtr);
+template void JSONLoader::AddArrayField<double>(std::vector<double>* vector);
+template void JSONLoader::AddArrayField<std::string>(std::vector<std::string>* vector);
 // TODO: vector bool specialization fucks up my cool/hacky VectorPtr class
+// Fix this if needed, might be to see bools as int, implicit conversion all the way
 //template void JSONLoader::addArrayField<bool>(std::vector<bool>* vector);
 
 

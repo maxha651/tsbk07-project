@@ -4,6 +4,8 @@
 
 #include <Game.h>
 
+static const std::string GAMEOBJECTS_PATH(TSBK07_GAMEOBJECTS_PATH);
+
 Game::Game(const std::string& path) {
     DIR *dir;
     struct dirent *ent;
@@ -36,8 +38,10 @@ GameObject& Game::GetGameObject(const std::string& name) {
 }
 
 void Game::AddGameObject(const std::string& name) {
-    // TODO calc path and send that instead
-    gameObjects.push_back(GameObject(name));
+    std::string path(GAMEOBJECTS_PATH);
+    path.append(name);
+
+    gameObjects.push_back(GameObject(path));
 }
 
 void Game::Update() {

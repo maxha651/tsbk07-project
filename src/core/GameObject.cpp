@@ -9,7 +9,7 @@ GameObject::GameObject() {
 
 GameObject::GameObject(const std::string& path) :
     jsonLoader(path) {
-
+    
 }
 
 GameObject::~GameObject() {
@@ -38,6 +38,6 @@ const std::string& GameObject::GetName() const {
 }
 
 void GameObject::SetSaveOnExit(bool value) {
-    jsonLoader.setSaveOnDestruct(value);
+    jsonLoader.SetSaveOnDestruct(value);
 }
 
