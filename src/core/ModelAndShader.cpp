@@ -55,12 +55,6 @@ ModelAndShader::~ModelAndShader()
     // JSONLoader will automatically update JSON file on destruct
 }
 
-// DAVID: Try to use Eigen where appropriate. Eigen::Vector3f is what you want here.
-struct ModelAndShader::coordinate{
-    float x, y, z;
-    coordinate(float a, float b, float c) : x(a), y(b), z(c) {};
-};
-
 
 struct ModelAndShader::face {
     int facenum;
@@ -84,10 +78,10 @@ struct ModelAndShader::face {
 int ModelAndShader::LoadObject(const char* filename)
 {
 
-    std::vector<std::string*> coord;
-    std::vector<coordinate*> vertex;
+    std::vector<std::string*> coord; // Each line read from file
+    std::vector<Vector3f*> vertex;
     std::vector<face*> faces;
-    std::vector<coordinate*> normals;
+	std::vector<Vector3f*> normals;
     std::ifstream in(filename);
     if (!in.is_open())
     {
@@ -111,13 +105,13 @@ int ModelAndShader::LoadObject(const char* filename)
         {
             float tmpx, tmpy, tmpz;
             sscanf(coord[i]->c_str(), "v %f %f %f", &tmpx, &tmpy, &tmpz); // Read in the 3 float coordinate to tmpx,tmpy,tmpz
-            vertex.push_back(new coordinate(tmpx, tmpy, tmpz));       // and then add it to the end of our vertex list
+			vertex.push_back(new Vector3f(tmpx, tmpy, tmpz));       // and then add it to the end of our vertex list
         }
         else if (coord[i]->c_str()[0] == 'v' && coord[i]->c_str()[1] == 'n') // Normal
         {
             float tmpx, tmpy, tmpz; 
             sscanf(coord[i]->c_str(), "vn %f %f %f", &tmpx, &tmpy, &tmpz);
-            normals.push_back(new coordinate(tmpx, tmpy, tmpz));
+			normals.push_back(new Vector3f(tmpx, tmpy, tmpz));
         }
         else if (coord[i]->c_str()[0] == 'f') // Face
         {
@@ -143,22 +137,22 @@ int ModelAndShader::LoadObject(const char* filename)
         if (faces[i]->quad) // If it's a quad draw a quad
         {
             glBegin(GL_QUADS);
-            // Basically all I do here, is use the facenum (so the number of the face) as an index for the normal, so the 1st normal owe to the first face
-            // I subtract 1 because the index start from 0 in C++
-            glNormal3f(normals[faces[i]->facenum - 1]->x, normals[faces[i]->facenum - 1]->y, normals[faces[i]->facenum - 1]->z);
+            // Use the facenum as an index for the normal
+            // Subtract 1 because the index start from 0 in C++
+            glNormal3f(normals[faces[i]->facenum - 1]->x(), normals[faces[i]->facenum - 1]->y(), normals[faces[i]->facenum - 1]->z());
             // Draw the faces
-            glVertex3f(vertex[faces[i]->faces[0] - 1]->x, vertex[faces[i]->faces[0] - 1]->y, vertex[faces[i]->faces[0] - 1]->z);
-            glVertex3f(vertex[faces[i]->faces[1] - 1]->x, vertex[faces[i]->faces[1] - 1]->y, vertex[faces[i]->faces[1] - 1]->z);
-            glVertex3f(vertex[faces[i]->faces[2] - 1]->x, vertex[faces[i]->faces[2] - 1]->y, vertex[faces[i]->faces[2] - 1]->z);
-            glVertex3f(vertex[faces[i]->faces[3] - 1]->x, vertex[faces[i]->faces[3] - 1]->y, vertex[faces[i]->faces[3] - 1]->z);
+			glVertex3f(vertex[faces[i]->faces[0] - 1]->x(), vertex[faces[i]->faces[0] - 1]->y(), vertex[faces[i]->faces[0] - 1]->z());
+			glVertex3f(vertex[faces[i]->faces[1] - 1]->x(), vertex[faces[i]->faces[1] - 1]->y(), vertex[faces[i]->faces[1] - 1]->z());
+			glVertex3f(vertex[faces[i]->faces[2] - 1]->x(), vertex[faces[i]->faces[2] - 1]->y(), vertex[faces[i]->faces[2] - 1]->z());
+			glVertex3f(vertex[faces[i]->faces[3] - 1]->x(), vertex[faces[i]->faces[3] - 1]->y(), vertex[faces[i]->faces[3] - 1]->z());
             glEnd();
         }
         else{
             glBegin(GL_TRIANGLES);
-            glNormal3f(normals[faces[i]->facenum - 1]->x, normals[faces[i]->facenum - 1]->y, normals[faces[i]->facenum - 1]->z);
-            glVertex3f(vertex[faces[i]->faces[0] - 1]->x, vertex[faces[i]->faces[0] - 1]->y, vertex[faces[i]->faces[0] - 1]->z);
-            glVertex3f(vertex[faces[i]->faces[1] - 1]->x, vertex[faces[i]->faces[1] - 1]->y, vertex[faces[i]->faces[1] - 1]->z);
-            glVertex3f(vertex[faces[i]->faces[2] - 1]->x, vertex[faces[i]->faces[2] - 1]->y, vertex[faces[i]->faces[2] - 1]->z);
+			glNormal3f(normals[faces[i]->facenum - 1]->x(), normals[faces[i]->facenum - 1]->y(), normals[faces[i]->facenum - 1]->z());
+			glVertex3f(vertex[faces[i]->faces[0] - 1]->x(), vertex[faces[i]->faces[0] - 1]->y(), vertex[faces[i]->faces[0] - 1]->z());
+			glVertex3f(vertex[faces[i]->faces[1] - 1]->x(), vertex[faces[i]->faces[1] - 1]->y(), vertex[faces[i]->faces[1] - 1]->z());
+			glVertex3f(vertex[faces[i]->faces[2] - 1]->x(), vertex[faces[i]->faces[2] - 1]->y(), vertex[faces[i]->faces[2] - 1]->z());
             glEnd();
         }
     }
