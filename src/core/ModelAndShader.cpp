@@ -9,11 +9,11 @@
 static const std::string MODEL_REL_PATH = TSBK07_MODELS_PATH;
 static const std::string SHADER_REL_PATH = TSBK07_SHADERS_PATH;
 
-ModelAndShader::ModelAndShader(const char *jsonPath) :
-    jsonLoader(std::string(jsonPath)) {
+ModelAndShader::ModelAndShader(const std::string& jsonPath) :
+    jsonLoader(jsonPath) {
 
-    jsonLoader.AddDataField<std::string>(&model);
-    jsonLoader.AddDataField<std::string>(&shader);
+    jsonLoader.AddDataField<std::string>("model", &model);
+    jsonLoader.AddDataField<std::string>("shader", &shader);
     jsonLoader.Read();
 
     init(model.c_str(), shader.c_str());

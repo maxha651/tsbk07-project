@@ -4,6 +4,17 @@
 
 #include <BaseComponent.h>
 
+#include <cassert>
+
+BaseComponent::BaseComponent(const std::string &jsonPath) {
+    std::cerr << "Component doesn't implement JSON constructor :(" << std::endl;
+    assert(false);
+}
+
+BaseComponent::BaseComponent() {
+
+}
+
 BaseComponent::~BaseComponent() {
 
 }

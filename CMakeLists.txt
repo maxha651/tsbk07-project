@@ -50,7 +50,7 @@ ADD_DEFINITIONS (-DTSBK07_SRC_PATH=\"${CMAKE_SOURCE_DIR}/src\")
 ADD_DEFINITIONS (-DTSBK07_INCLUDE_PATH=\"${CMAKE_SOURCE_DIR}/include\")
 ADD_DEFINITIONS (-DTSBK07_SHADERS_PATH=\"${CMAKE_SOURCE_DIR}/src/shaders\")
 ADD_DEFINITIONS (-DTSBK07_MODELS_PATH=\"${CMAKE_SOURCE_DIR}/src/models\")
-ADD_DEFINITIONS (-DTSBK07_GAMEOBJECTS_PATH=\"${CMAKE_SOURCE_DIR}/src/gameobjects\")
+ADD_DEFINITIONS (-DTSBK07_GAMEOBJECTS_PATH=\"${CMAKE_SOURCE_DIR}/gameobjects\")
 
 IF (UNIX)
     # Used by Max' completion engine and syntax checker
@@ -127,10 +127,6 @@ IF (MSVC)
 ENDIF ()
 
 ## Our libraries ##
-
-# XXX:  Might just keep a list of source files here as well if we want.
-#       Then we just add all sources to a SOURCES variable and add use in add_executable.
-#       Separate libraries looks nicer though and might improve compile time.
 
 FILE (GLOB_RECURSE SOURCES "${CMAKE_SOURCE_DIR}/src/**.cpp")
 FILE (GLOB_RECURSE HEADERS "${CMAKE_SOURCE_DIR}/include/**.h")

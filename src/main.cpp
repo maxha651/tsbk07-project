@@ -9,6 +9,14 @@
 #include <Camera.h>
 
 #include <ShaderLoader.h>
+#include <Game.h>
+
+/*
+ * Just put stuff here until we can refactor it into
+ * classes. Or not.
+ */
+
+static const int UPDATE_TIME_MS = 20;
 
 static GLfloat vertices[] =
 {
@@ -20,6 +28,7 @@ static GLfloat vertices[] =
 static GLuint vertexArrayObjID;
 static GLuint program;
 static Camera camera;
+static Game *game = nullptr;
 
 void init() 
 {
@@ -47,9 +56,20 @@ void init()
     glEnableVertexAttribArray(glGetAttribLocation(program, "in_Position"));
 }
 
+void initGameObjects()
+{
+    game = new Game(TSBK07_GAMEOBJECTS_PATH);
+}
+
 void keyboard(unsigned char key, int x, int y)
 {
 
+}
+
+void update(int val)
+{
+    game->Update();
+    glutTimerFunc(UPDATE_TIME_MS, update, 0);
 }
 
 void display(void)
@@ -75,6 +95,13 @@ void resize(GLsizei w, GLsizei h)
     glutPostRedisplay();
 }
 
+void cleanup()
+{
+    if (game != nullptr) {
+        delete game;
+    }
+}
+
 int main(int argc, char *argv[])
 {
     // Using OpenGL version 3.2
@@ -84,14 +111,19 @@ int main(int argc, char *argv[])
     glutInitWindowPosition(50, 25);
     glutInitWindowSize(480,480);
     glutCreateWindow("Hello OpenGL");
+
     glutDisplayFunc(display);
+    glutTimerFunc(UPDATE_TIME_MS, update, 0);
 
     glutKeyboardFunc(keyboard);
     glewExperimental = GL_TRUE;
     glewInit();
 
     init();
+    initGameObjects();
     glutMainLoop();
+
+    cleanup();
 
     return 0;
 }

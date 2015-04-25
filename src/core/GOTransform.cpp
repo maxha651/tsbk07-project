@@ -23,9 +23,24 @@ GOTransform::GOTransform(Vector3f pos, Vector3f rot, Vector3f scale)
 
 }
 
-GOTransform::GOTransform(std::string path) {
-	// TODO
-}
+GOTransform::GOTransform(std::string jsonPath)
+    : jsonLoader(jsonPath) {
+    // XXX: This is kind of ugly but I'm confusing myself
+    jsonLoader.AddArrayField("position", &jsonData[0]);
+    jsonLoader.AddArrayField("rotation", &jsonData[1]);
+    jsonLoader.AddArrayField("scale", &jsonData[2]);
+    jsonLoader.Read();
+
+    position    = {(float const &) jsonData[0][0],
+                   (float const &) jsonData[0][1],
+                   (float const &) jsonData[0][2]};
+    position    = {(float const &) jsonData[1][0],
+                   (float const &) jsonData[1][1],
+                   (float const &) jsonData[1][2]};
+    scale       = {(float const &) jsonData[2][0],
+                   (float const &) jsonData[2][1],
+                   (float const &) jsonData[2][2]};
+};
 
 GOTransform::~GOTransform() {
 

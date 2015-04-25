@@ -17,22 +17,24 @@
  */
 class GameObject {
 
-    public:
-        GameObject();
-        GameObject(const std::string& path);
-        virtual ~GameObject();
+public:
+    GameObject();
+    GameObject(const std::string& path);
+    virtual ~GameObject();
 
-        template<class T> T GetComponent();
-        void AddComponent(Component&);
+    template<class T> T GetComponent();
+    void AddComponent(Component&);
 
-        void Update();
-        const std::string& GetName() const;
-        void SetSaveOnExit(bool value);
+    void Update();
+    const std::string& GetName() const;
+    void SetSaveOnExit(bool value);
 
-        GOTransform transform; 
-    private:
-        JSONLoader jsonLoader;
-        std::string name;
-        std::vector<Component> components;
+    GOTransform transform;
+private:
+    JSONLoader jsonLoader;
+    std::string name;
+
+    std::vector<std::string> componentNames;
+    std::vector<Component> components;
 };
 

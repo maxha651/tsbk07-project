@@ -7,6 +7,7 @@
 #include <Eigen/Geometry>
 
 #include <Component.h>
+#include "JSONLoader.h"
 
 using Eigen::Vector3f;
 
@@ -15,7 +16,7 @@ class GOTransform : public Component {
 public:
     GOTransform();
     GOTransform(Vector3f pos, Vector3f rot, Vector3f scale);
-    GOTransform(std::string path);
+    GOTransform(std::string jsonPath);
     virtual ~GOTransform();
 
     Vector3f GetPosition();
@@ -34,6 +35,8 @@ public:
     static const Vector3f forward;
 
 private:
+    JSONLoader jsonLoader;
+    std::vector<double> jsonData[3];
     Vector3f position, rotation, scale;
 
 };

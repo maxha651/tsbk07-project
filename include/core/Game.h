@@ -23,17 +23,18 @@
  *
  */
 class Game {
-    public:
-        Game(const std::string& path);
-        ~Game();
+public:
+    Game(const std::string& path);
+    ~Game();
 
-        GameObject& GetGameObject(const std::string& name);
-        void AddGameObject(const std::string& name);
+    GameObject& GetGameObject(const std::string& name);
+    void AddGameObject(const std::string& name);
 
-        void Update();
-        void SetSaveOnExit(bool value);
-    private:
-        std::vector<GameObject> gameObjects;
+    void Update();
+    void SetSaveOnExit(bool value);
+private:
+    std::string path;
+    std::vector<GameObject> gameObjects;
 
 };
 

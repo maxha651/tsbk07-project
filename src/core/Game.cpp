@@ -4,24 +4,25 @@
 
 #include <Game.h>
 
-static const std::string GAMEOBJECTS_PATH(TSBK07_GAMEOBJECTS_PATH);
-
-Game::Game(const std::string& path) {
+Game::Game(const std::string& path) : path(path) {
     DIR *dir;
     struct dirent *ent;
 
     // All directories in path should be a GameObject instance
     if ((dir = opendir(path.c_str())) != NULL) {
         while ((ent = readdir(dir)) != NULL) {
-            if (ent->d_type == DT_DIR) {
+            if (ent->d_type == DT_DIR && strncmp(ent->d_name, ".", 1) != 0) {
                 AddGameObject(ent->d_name);
+                std::cout << "Game: Added GameObject: " << ent->d_name << std::endl;
             }
-            std::cout << "Game: Added GameObject: " << ent->d_name << std::endl;
+            else {
+                std::cout << "Game: Didn't add: " << ent->d_name << std::endl;
+            }
         }
         closedir(dir);
     } else {
         /* could not open directory */
-        std::cerr << "Game: Couldn't open directory" << std::endl;
+        std::cerr << "Game: Couldn't open directory " << path << std::endl;
     }
 }
 
@@ -38,10 +39,8 @@ GameObject& Game::GetGameObject(const std::string& name) {
 }
 
 void Game::AddGameObject(const std::string& name) {
-    std::string path(GAMEOBJECTS_PATH);
-    path.append(name);
-
-    gameObjects.push_back(GameObject(path));
+    std::string goPath(path + "/" + name);
+    gameObjects.push_back(std::move(GameObject(goPath)));
 }
 
 void Game::Update() {

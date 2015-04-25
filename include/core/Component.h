@@ -12,13 +12,13 @@ class GameObject;
  */
 class Component {
 
-    public:
-        virtual ~Component();
-        GameObject* GetGameObject();
-        void SetGameObject(GameObject* go);
-        virtual void Update();
-    protected:
-        GameObject* gameObject;
+public:
+    virtual ~Component();
+    GameObject* GetGameObject();
+    void SetGameObject(GameObject* go);
+    virtual void Update();
+protected:
+    GameObject* gameObject;
 };
 
 

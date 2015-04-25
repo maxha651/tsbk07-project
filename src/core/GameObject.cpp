@@ -3,13 +3,23 @@
 //
 
 #include <GameObject.h>
+#include <ComponentFactory.h>
 
 GameObject::GameObject() {
 }
 
 GameObject::GameObject(const std::string& path) :
-    jsonLoader(path) {
-    
+    jsonLoader(path + "/GameObject.json") {
+
+    jsonLoader.AddArrayField<std::string>("components", &componentNames);
+    jsonLoader.Read();
+
+    for (auto component : componentNames) {
+        std::string componentPath(path);
+        componentPath.append(component + ".json");
+        components.push_back(std::move(ComponentFactory::GetComponent<std::string>(component, componentPath)));
+        std::cout << "GameObject " << name << " added Component: " << component << std::endl;
+    }
 }
 
 GameObject::~GameObject() {

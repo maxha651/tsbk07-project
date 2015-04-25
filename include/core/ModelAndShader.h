@@ -30,7 +30,7 @@ using Eigen::Vector3f;
 class ModelAndShader : public Component
 {
 public:
-	ModelAndShader(const char *jsonPath);
+	ModelAndShader(const std::string& jsonPath);
 	ModelAndShader(const char *model, const char *shader);
 	~ModelAndShader();
 	int id;

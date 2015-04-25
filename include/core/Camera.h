@@ -24,4 +24,5 @@ public:
 
 private:
     void UpdateUpVector();
+    JSONLoader jsonLoader;
 };

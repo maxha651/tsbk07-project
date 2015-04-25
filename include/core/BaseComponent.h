@@ -13,11 +13,13 @@
  */
 class BaseComponent : public Component {
 
-    public:
-        virtual ~BaseComponent();
-        virtual void Update() override;
-        GOTransform& GetTransform();
-    private:
+public:
+    BaseComponent();
+    BaseComponent(const std::string& jsonPath);
+    virtual ~BaseComponent();
+    virtual void Update() override;
+    GOTransform& GetTransform();
+private:
 };
 
 

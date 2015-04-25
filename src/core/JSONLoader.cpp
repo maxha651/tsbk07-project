@@ -2,7 +2,7 @@
 
 #include <ComponentFactory.h>
 
-static const bool SAVE_ON_DESTRUCT_DEFAULT = true;
+static const bool SAVE_ON_DESTRUCT_DEFAULT = false;
 
 // No initialization => nothing to save
 JSONLoader::JSONLoader() : saveOnDestruct(false) {
@@ -16,7 +16,6 @@ JSONLoader::JSONLoader(const Json::Value& root) :saveOnDestruct(false) {
 
 JSONLoader::JSONLoader(const std::string& path) 
     : saveOnDestruct(SAVE_ON_DESTRUCT_DEFAULT), filePath(path) {
-        Read();
     }
 
 
@@ -26,12 +25,12 @@ JSONLoader::~JSONLoader() {
     }
 }
 
-template <typename T> void JSONLoader::AddDataField(T* dataPtr) {
+template <typename T> void JSONLoader::AddDataField(const std::string& name, T* dataPtr) {
     DataField dataField(Json::Value(*dataPtr), static_cast<void*>(dataPtr));
     dataFieldVec.push_back(dataField);
 }
 
-template <typename T> void JSONLoader::AddArrayField(std::vector<T>* vector) {
+template <typename T> void JSONLoader::AddArrayField(const std::string& name, std::vector<T>* vector) {
     IVectorPtr* vecPtr = dynamic_cast<IVectorPtr*>(new VectorPtr<T>(vector));
     DataField dataField{ Json::arrayValue, static_cast<void*>(vector), vecPtr};
 
@@ -50,18 +49,18 @@ void JSONLoader::SetSaveOnDestruct(bool value) {
 void JSONLoader::Init(const Json::Value& root) {
     // If we haven't added enough data fields then that data will not (can not) be
     // updated on write.
-    DataField defaultValue{ nullptr, nullptr };
+    DataField defaultValue{ Json::Value(), nullptr };
     dataFieldVec.resize(std::max<size_t>(root.size(), dataFieldVec.size()), defaultValue);
 
     // Update fields from JSON file
     for (int idx = 0; idx < root.size(); ++idx) {
-        dataFieldVec[idx].jsonValue = std::move(root[idx]);
+        dataFieldVec[idx].jsonValue = std::move(root[dataFieldVec[idx].name]);
     }
+
+    // TODO: Set values from json...
 }
 
 void JSONLoader::Read() {
-    dataFieldVec.clear();
-
     std::ifstream inStream( filePath, std::ifstream::binary );
     Json::Value root(Json::objectValue);
 
@@ -82,7 +81,7 @@ void JSONLoader::Write() {
 Json::Value JSONLoader::ToJson() {
     Json::Value root(Json::objectValue);
 
-    for (DataField dataField : dataFieldVec) {
+    for (auto dataField : dataFieldVec) {
         root.append(ToJson(dataField));
     }
 
@@ -150,11 +149,11 @@ Json::Value JSONLoader::ToJson(const DataField& dataField) {
 
 // Explicitly define valid template instances
 // Others will yield undefined reference
-template void JSONLoader::AddDataField<double>(double* dataPtr);
-template void JSONLoader::AddDataField<std::string>(std::string* dataPtr);
-template void JSONLoader::AddDataField<bool>(bool* dataPtr);
-template void JSONLoader::AddArrayField<double>(std::vector<double>* vector);
-template void JSONLoader::AddArrayField<std::string>(std::vector<std::string>* vector);
+template void JSONLoader::AddDataField<double>(const std::string& name, double* dataPtr);
+template void JSONLoader::AddDataField<std::string>(const std::string& name, std::string* dataPtr);
+template void JSONLoader::AddDataField<bool>(const std::string& name, bool* dataPtr);
+template void JSONLoader::AddArrayField<double>(const std::string& name, std::vector<double>* vector);
+template void JSONLoader::AddArrayField<std::string>(const std::string& name, std::vector<std::string>* vector);
 // TODO: vector bool specialization fucks up my cool/hacky VectorPtr class
 // Fix this if needed, might be to see bools as int, implicit conversion all the way
 //template void JSONLoader::addArrayField<bool>(std::vector<bool>* vector);

@@ -1,5 +1,7 @@
 {
-    "GameObject" : "GameObject-template",
-    "transform" : "GOTransform.json"
-    "components" : [],
+    "components" : [
+        "Camera",
+        "GOTransform",
+        "ModelAndShader"
+    ]
 }

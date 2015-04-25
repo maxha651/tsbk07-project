@@ -10,6 +10,10 @@ Camera::Camera()
 	this->up = GOTransform::up;
 }
 
+Camera::Camera(const std::string& jsonPath) :
+	jsonLoader(jsonPath) {
+	// Initialize JSON data
+}
 
 Camera::~Camera()
 {
@@ -31,8 +35,4 @@ void Camera::UpdateUpVector(){
             Eigen::AngleAxisf(rotation.z(), Vector3f::UnitZ());
 
 	this->up = rotationMatrix * GOTransform::up;
-}
-
-Camera::Camera(const std::string &jsonPath) {
-
 }

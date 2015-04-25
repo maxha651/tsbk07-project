@@ -18,8 +18,8 @@ public:
     ~ComponentFactory() {}
 
     template<typename... Args>
-    Component GetComponent(const std::string& name, Args... args) {
-        std::unique_ptr<Component> ptr = ComponentMap(name, args...);
+    static Component GetComponent(const std::string& name, Args... args) {
+        std::unique_ptr<Component> ptr(ComponentMap(name, args...));
         return *ptr;
     }
 
@@ -33,7 +33,7 @@ private:
     std::vector<std::unique_ptr<Component>> createdComponents;
 
     template<typename... Args>
-    Component* ComponentMap(const std::string& name, Args... args) {
+    static Component* ComponentMap(const std::string& name, Args... args) {
         if (name.compare("Camera") == 0) {
             return _NewComponent<Camera>(name, args...);
         }
@@ -51,7 +51,7 @@ private:
     }
 
     template<class C, typename... Args>
-    C* _NewComponent(const std::string& name, Args... args) {
+    static C* _NewComponent(const std::string& name, Args... args) {
         return new C(args...);
     }
 };
