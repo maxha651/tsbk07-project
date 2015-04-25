@@ -16,6 +16,9 @@
 // Third party
 #include <GL/glew.h>
 #include <GL/freeglut.h>
+#include <Eigen/Geometry>
+
+using Eigen::Vector3f;
 
 // Ours
 #include <Component.h>
