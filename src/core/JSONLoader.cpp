@@ -1,5 +1,7 @@
 #include <JSONLoader.h>
 
+#include <ComponentFactory.h>
+
 static const bool SAVE_ON_DESTRUCT_DEFAULT = true;
 
 // No initialization => nothing to save

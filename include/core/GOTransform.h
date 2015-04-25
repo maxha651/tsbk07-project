@@ -6,9 +6,11 @@
 
 #include <Eigen/Geometry>
 
+#include <Component.h>
+
 using Eigen::Vector3f;
 
-class GOTransform {
+class GOTransform : public Component {
 
 public:
     GOTransform();

@@ -33,3 +33,6 @@ void Camera::UpdateUpVector(){
 	this->up = rotationMatrix * GOTransform::up;
 }
 
+Camera::Camera(const std::string &jsonPath) {
+
+}
