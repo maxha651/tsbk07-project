@@ -19,6 +19,7 @@
 #include <Eigen/Geometry>
 
 using Eigen::Vector3f;
+using Eigen::Vector2f;
 
 // Ours
 #include <Component.h>
@@ -34,6 +35,8 @@ public:
 	ModelAndShader(const char *model, const char *shader);
 	~ModelAndShader();
 	int id;
+	std::vector<GLfloat*> out_vertices;
+	std::vector<GLfloat*> out_normals;
 
 private:
         JSONLoader jsonLoader;
@@ -44,7 +47,7 @@ private:
         struct coordinate;
 
         void init(const char *model, const char *shader);
-	int LoadObject(const char* filename);
+	void LoadObject(const char* filename);
 	GLfloat* vertices;
 };
 
