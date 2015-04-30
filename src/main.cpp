@@ -10,6 +10,8 @@
 
 #include <ShaderLoader.h>
 #include <Game.h>
+#include <ModelAndShader.h>
+
 
 /*
  * Just put stuff here until we can refactor it into
@@ -18,6 +20,7 @@
 
 static const int UPDATE_TIME_MS = 20;
 
+// Test triangle
 static GLfloat vertices[] =
 {
     -0.0f,-0.0f,0.0f,
@@ -25,35 +28,64 @@ static GLfloat vertices[] =
     1.0f,-0.0f,0.0f
 };
 
-static GLuint vertexArrayObjID;
+
+GLuint vertexArrayObjIDTriangle;
+GLuint vertexArrayObjIDCube;
 static GLuint program;
 static Camera camera;
 static Game *game = nullptr;
 
+
+static ModelAndShader cube = ModelAndShader("movedcube", "none");
+
 void init() 
 {
-    unsigned int vertexBufferObjID;
-    char fragmentShader[128], vertexShader[128];
-
+    
     // GL inits
     glClearColor(1.0f,0.3f,0.5f,0.0f);
-    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_DEPTH_TEST);
+
     // Load and compile shader
-    sprintf(vertexShader, "%s/VertexShader.glsl", TSBK07_SHADERS_PATH);
+	char fragmentShader[128], vertexShader[128];
+	sprintf(vertexShader, "%s/VertexShader.glsl", TSBK07_SHADERS_PATH);
     sprintf(fragmentShader, "%s/FragmentShader.glsl", TSBK07_SHADERS_PATH);
     ShaderLoader shaderLoader;
     program = shaderLoader.CreateProgram(vertexShader, fragmentShader);
     glUseProgram(program);
-    // Allocate and activate Vertex Array Object
-    glGenVertexArrays(1, &vertexArrayObjID);
-    glBindVertexArray(vertexArrayObjID);
-    // Allocate Vertex Buffer Objects
-    glGenBuffers(1, &vertexBufferObjID);
-    // VBO for vertex data
-    glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObjID);
+
+    // Triangle
+	glGenVertexArrays(1, &vertexArrayObjIDTriangle);
+	glBindVertexArray(vertexArrayObjIDTriangle);
+
+	unsigned int vertexBufferObjIDTriangle;
+	glGenBuffers(1, &vertexBufferObjIDTriangle);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObjIDTriangle);
     glBufferData(GL_ARRAY_BUFFER, 9*sizeof(GLfloat), vertices, GL_STATIC_DRAW);
-    glVertexAttribPointer(glGetAttribLocation(program, "in_Position"), 3, GL_FLOAT, GL_FALSE, 0, 0); 
-    glEnableVertexAttribArray(glGetAttribLocation(program, "in_Position"));
+
+	glVertexAttribPointer(glGetAttribLocation(program, "in_Position"), 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(glGetAttribLocation(program, "in_Position"));
+
+
+	// Cube
+	glGenVertexArrays(1, &vertexArrayObjIDCube);
+	glBindVertexArray(vertexArrayObjIDCube);
+
+	unsigned int vertexBufferObjIDCube;
+	glGenBuffers(1, &vertexBufferObjIDCube);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObjIDCube);
+	glBufferData(GL_ARRAY_BUFFER, cube.vertices.size() * sizeof(GLfloat), &cube.vertices[0], GL_STATIC_DRAW);
+
+	glVertexAttribPointer(glGetAttribLocation(program, "in_Position"), 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(glGetAttribLocation(program, "in_Position"));
+
+	unsigned int normalsBufferObjIDCube;
+	glGenBuffers(1, &normalsBufferObjIDCube);
+	glBindBuffer(GL_ARRAY_BUFFER, normalsBufferObjIDCube);
+	glBufferData(GL_ARRAY_BUFFER, cube.normals.size() * sizeof(GLfloat), &cube.normals[0], GL_STATIC_DRAW);
+
+	glVertexAttribPointer(glGetAttribLocation(program, "in_Normal"), 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(glGetAttribLocation(program, "in_Normal"));
+
 }
 
 void initGameObjects()
@@ -74,16 +106,18 @@ void update(int val)
 
 void display(void)
 {
+
     // clear the screen
-    //glClear(GL_COLOR_BUFFER_BIT);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(1.0, 0.0, 0.0, 1.0);//clear red
     // glMatrixMode(GL_MODELVIEW);
     // glLoadIdentity();
 
-    //glBindVertexArray(vertexArrayObjID);	// Select VAO
+	glBindVertexArray(vertexArrayObjIDTriangle);	// Select VAO for triangle
+	glDrawArrays(GL_TRIANGLES, 0, 3);
 
-    glDrawArrays(GL_TRIANGLES, 0, 3);	// draw object
+	glBindVertexArray(vertexArrayObjIDCube);	// Select VAO for cube
+	glDrawArrays(GL_TRIANGLES, 0, cube.vertices.size()/3);
 
     // Swap buffers
     glutSwapBuffers();

@@ -34,20 +34,16 @@ public:
 	ModelAndShader(const std::string& jsonPath);
 	ModelAndShader(const char *model, const char *shader);
 	~ModelAndShader();
-	int id;
-	std::vector<GLfloat*> out_vertices;
-	std::vector<GLfloat*> out_normals;
+	std::vector<GLfloat> vertices;
+	std::vector<GLfloat> normals;
 
 private:
-        JSONLoader jsonLoader;
-        // DAVID: As it is now, these will be monitored by JSONLoader
-        // Changes will be written back to JSON file on destruct
-        std::string model, shader;
-        struct face;
-        struct coordinate;
+    JSONLoader jsonLoader;
+    // DAVID: As it is now, these will be monitored by JSONLoader
+    // Changes will be written back to JSON file on destruct
+    std::string model, shader;
 
-        void init(const char *model, const char *shader);
+    void init(const char *model, const char *shader);
 	void LoadObject(const char* filename);
-	GLfloat* vertices;
 };
 
