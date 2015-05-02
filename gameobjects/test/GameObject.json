@@ -1,7 +1,7 @@
 {
-    "components" : [
-        "Camera",
-        "GOTransform",
-        "ModelAndShader"
-    ]
+  "components": [
+    "Camera",
+    "GOTransform",
+    "ModelAndShader"
+  ]
 }

@@ -23,7 +23,7 @@ GOTransform::GOTransform(Vector3f pos, Vector3f rot, Vector3f scale)
 
 }
 
-GOTransform::GOTransform(std::string jsonPath)
+GOTransform::GOTransform(const std::string& jsonPath)
     : jsonLoader(jsonPath) {
     // XXX: This is kind of ugly but I'm confusing myself
     jsonLoader.AddArrayField("position", &jsonData[0]);

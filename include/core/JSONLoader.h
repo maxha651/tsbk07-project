@@ -40,30 +40,34 @@ private:
         virtual ~IVectorPtr() {}
         virtual void* getPtr() = 0;
         virtual void* getPtr(size_t idx) = 0;
+        virtual size_t Size() = 0;
+        virtual void Resize(size_t size) = 0;
     };
 
     template <typename T>
     class VectorPtr : public IVectorPtr {
     public:
         VectorPtr(std::vector<T>* vecPtr) : vecPtr(vecPtr) {}
-        virtual void* getPtr() override {
-            return static_cast<void*>(vecPtr);
-        }
-        virtual void* getPtr(size_t idx) override {
-            return static_cast<void*>(&(vecPtr->at(idx)));
-        }
         virtual ~VectorPtr() {}
 
+        void* getPtr() override {
+            return static_cast<void*>(vecPtr);
+        }
+        void* getPtr(size_t idx) override {
+            return static_cast<void*>(&(vecPtr->at(idx)));
+        }
+        size_t Size() { return vecPtr->size(); }
+        void Resize(size_t size) { vecPtr->resize(size); }
     private:
         std::vector<T>* vecPtr;
     };
 
     class DataField {
     public:
-        DataField(Json::Value jsonValue, void* dataPtr) :
-                jsonValue(jsonValue), dataPtr(dataPtr), vecPtr(nullptr) {}
-        DataField(Json::Value jsonValue, void* dataPtr, IVectorPtr* vecPtr) :
-                jsonValue(jsonValue), dataPtr(dataPtr), vecPtr(vecPtr) {}
+        DataField(const std::string& name, Json::Value jsonValue, void* dataPtr) :
+                name(name), jsonValue(jsonValue), dataPtr(dataPtr), vecPtr(nullptr) {}
+        DataField(const std::string& name, Json::Value jsonValue, void* dataPtr, IVectorPtr* vecPtr) :
+                name(name), jsonValue(jsonValue), dataPtr(dataPtr), vecPtr(vecPtr) {}
         ~DataField() {
             if (vecPtr != nullptr) {
                 // TODO Fix probable memory leak
@@ -82,5 +86,6 @@ private:
     std::vector<DataField> dataFieldVec;
 
     void Init(const Json::Value& root);
+    void FromJson(void* dataPtr, Json::ValueType type, const Json::Value& jsonValue);
     Json::Value ToJson(const DataField& dataField);
 };

@@ -26,13 +26,13 @@ JSONLoader::~JSONLoader() {
 }
 
 template <typename T> void JSONLoader::AddDataField(const std::string& name, T* dataPtr) {
-    DataField dataField(Json::Value(*dataPtr), static_cast<void*>(dataPtr));
+    DataField dataField(name, Json::Value(*dataPtr), static_cast<void*>(dataPtr));
     dataFieldVec.push_back(dataField);
 }
 
 template <typename T> void JSONLoader::AddArrayField(const std::string& name, std::vector<T>* vector) {
     IVectorPtr* vecPtr = dynamic_cast<IVectorPtr*>(new VectorPtr<T>(vector));
-    DataField dataField{ Json::arrayValue, static_cast<void*>(vector), vecPtr};
+    DataField dataField(name, Json::arrayValue, static_cast<void*>(vecPtr));
 
     dataField.jsonValue.resize(vector->size());
     for(int idx = 0; idx < vector->size(); ++idx) {
@@ -49,15 +49,24 @@ void JSONLoader::SetSaveOnDestruct(bool value) {
 void JSONLoader::Init(const Json::Value& root) {
     // If we haven't added enough data fields then that data will not (can not) be
     // updated on write.
-    DataField defaultValue{ Json::Value(), nullptr };
+    DataField defaultValue{"", Json::Value(), nullptr};
     dataFieldVec.resize(std::max<size_t>(root.size(), dataFieldVec.size()), defaultValue);
 
     // Update fields from JSON file
     for (int idx = 0; idx < root.size(); ++idx) {
-        dataFieldVec[idx].jsonValue = std::move(root[dataFieldVec[idx].name]);
-    }
+        const Json::Value &jsonValue = root[dataFieldVec[idx].name];
+        DataField &dataField = dataFieldVec[idx];
 
-    // TODO: Set values from json...
+        if (dataField.jsonValue.type() != jsonValue.type()) {
+            std::cerr << "JSONLoader: Types doesn't match, trying to assign type: " <<
+            jsonValue.type() << " to type: " << dataField.jsonValue.type() << std::endl;
+            return;
+        }
+        // Update JSON
+        dataField.jsonValue = jsonValue;
+        // Update values
+        FromJson(dataField.dataPtr, jsonValue.type(), jsonValue);
+    }
 }
 
 void JSONLoader::Read() {
@@ -81,11 +90,58 @@ void JSONLoader::Write() {
 Json::Value JSONLoader::ToJson() {
     Json::Value root(Json::objectValue);
 
-    for (auto dataField : dataFieldVec) {
+    for (auto& dataField : dataFieldVec) {
         root.append(ToJson(dataField));
     }
 
     return root;
+}
+
+void JSONLoader::FromJson(void* dataPtr, const Json::ValueType type, const Json::Value& jsonValue) {
+
+    switch (type) {
+        case Json::nullValue:
+        {
+            std::cerr << "JSONLoader: Can't parse null value" << std::endl;
+            break;
+        }
+        case Json::realValue:
+        {
+            *static_cast<double*>(dataPtr) = jsonValue.asDouble();
+            break;
+        }
+        case Json::stringValue:
+        {
+            *static_cast<std::string*>(dataPtr) = jsonValue.asString();
+            break;
+        }
+        case Json::booleanValue:
+        {
+            *static_cast<bool*>(dataPtr) = jsonValue.asBool();
+            break;
+        }
+        case Json::arrayValue:
+        {
+            // XXX: Somewhat of a hack. Encapsulates std::vector in class so we
+            // don't have to deduce the type quite yet.
+            IVectorPtr* vecPtr = static_cast<IVectorPtr*>(dataPtr);
+            vecPtr->Resize(jsonValue.size());
+            for (int idx = 0; idx < jsonValue.size(); ++idx) {
+                FromJson(vecPtr->getPtr(idx), jsonValue[idx].type(), jsonValue[idx]);
+            }
+            break;
+        }
+        case Json::objectValue:
+        {
+            std::cout << "JSONLoader: Something saved as object value, probably wrong" << std::endl;
+            break;
+        }
+        default:
+        {
+            std::cerr << "JSONLoader: Unrecognized type: " << jsonValue.type() << std::endl;
+            break;
+        }
+    }
 }
 
 Json::Value JSONLoader::ToJson(const DataField& dataField) {
@@ -122,8 +178,10 @@ Json::Value JSONLoader::ToJson(const DataField& dataField) {
                     // XXX: Somewhat of a hack. Encapsulates std::vector in class so we
                     // don't have to deduce the type quite yet.
                     IVectorPtr* vecPtr = static_cast<IVectorPtr*>(dataField.dataPtr);
+                    assert(vecPtr->Size() == jsonValue.size());
                     for (int idx = 0; idx < jsonValue.size(); ++idx) {
-                        jsonValue[idx] = ToJson(DataField{ jsonValue[idx], vecPtr->getPtr(idx) });
+                        // Name here shouldn't matter
+                        jsonValue[idx] = ToJson(DataField("", jsonValue[idx], vecPtr->getPtr(idx)));
                     }
                     break;
                 }

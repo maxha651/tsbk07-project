@@ -16,7 +16,7 @@ class GOTransform : public Component {
 public:
     GOTransform();
     GOTransform(Vector3f pos, Vector3f rot, Vector3f scale);
-    GOTransform(std::string jsonPath);
+    GOTransform(const std::string& jsonPath);
     virtual ~GOTransform();
 
     Vector3f GetPosition();

@@ -1,4 +1,4 @@
 {
-    "model" : "test/TestModel"
+    "model" : "test/TestModel",
     "shader" : "test/TestShader"
 }
