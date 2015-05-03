@@ -25,8 +25,12 @@ public:
     JSONLoader(const std::string& path);
     ~JSONLoader();
 
-    template <typename T> void AddDataField(const std::string& name, T* dataPtr);
-    template <typename T> void AddArrayField(const std::string& name, std::vector<T>* dataPtr);
+    template <typename T>
+    void AddDataField(const std::string& name, T* dataPtr);
+    template <typename T>
+    void AddArrayField(const std::string& name, std::vector<T>* dataPtr);
+    template <typename T>
+    void AddArrayField(const std::string& name, const T** dataPtr, size_t len);
     void SetSaveOnDestruct(bool value);
     void Read();
     void Write();

@@ -68,9 +68,11 @@ Matrix4f Camera::LookAt(const Vector3f &position, const Vector3f &target,
             dirVec.transpose(), 0,
             0, 0, 0, 0;
 
+#if 0
     std::cout << "Camera: Using untested lookAt function, beware" << std::endl;
     std::cout << "position: " << position << ", target: " << target << " up: " << up << std::endl;
     std::cout << "yields transform matrix: " << ret << std::endl;
+#endif
 
     return ret;
 }

@@ -23,7 +23,6 @@ BaseComponent::~BaseComponent() {
 }
 
 void BaseComponent::Update(){
-    std::cout << "Base to the B" << std::endl;
 }
 
 void BaseComponent::Render() {

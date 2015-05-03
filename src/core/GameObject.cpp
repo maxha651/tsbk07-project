@@ -31,12 +31,9 @@ void GameObject::AddComponent(Component* component) {
 }
 
 void GameObject::Update() {
-    std::cout << "GameObject: Updating..." << std::endl;
     for (auto* component : components) {
-        std::cout << "Component" << std::endl;
         component->Update();
     }
-    std::cout << "GameObject: ...done" << std::endl;
 }
 
 const std::string& GameObject::GetName() const {

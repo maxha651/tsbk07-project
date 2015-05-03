@@ -30,7 +30,8 @@ template <typename T> void JSONLoader::AddDataField(const std::string& name, T* 
     dataFieldVec.push_back(dataField);
 }
 
-template <typename T> void JSONLoader::AddArrayField(const std::string& name, std::vector<T>* vector) {
+template <typename T>
+void JSONLoader::AddArrayField(const std::string& name, std::vector<T>* vector) {
     IVectorPtr* vecPtr = dynamic_cast<IVectorPtr*>(new VectorPtr<T>(vector));
     DataField dataField(name, Json::arrayValue, static_cast<void*>(vecPtr));
 
@@ -40,6 +41,11 @@ template <typename T> void JSONLoader::AddArrayField(const std::string& name, st
     }
 
     dataFieldVec.push_back(dataField);
+}
+template <typename T>
+void JSONLoader::AddArrayField(const std::string &name, const T** dataPtr, size_t len) {
+    // stub
+    assert(false);
 }
 
 void JSONLoader::SetSaveOnDestruct(bool value) {
@@ -215,5 +221,4 @@ template void JSONLoader::AddArrayField<std::string>(const std::string& name, st
 // TODO: vector bool specialization fucks up my cool/hacky VectorPtr class
 // Fix this if needed, might be to see bools as int, implicit conversion all the way
 //template void JSONLoader::addArrayField<bool>(std::vector<bool>* vector);
-
 

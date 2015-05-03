@@ -45,11 +45,9 @@ void Game::AddGameObject(const std::string& name) {
 }
 
 void Game::Update() {
-    std::cout << "Game: Updating... " << std::endl;
     for (auto& go : gameObjects) {
         go.Update();
     }
-    std::cout << "Game: ...done" << std::endl;
 }
 
 void Game::SetSaveOnExit(bool value) {
