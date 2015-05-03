@@ -15,22 +15,26 @@ class ComponentFactory {
 public:
     ComponentFactory() {}
 
-    ~ComponentFactory() {}
+    ~ComponentFactory() {
+        for (auto* compPtr : createdComponents) {
+            delete compPtr;
+        }
+    }
 
     template<typename... Args>
-    static Component GetComponent(const std::string& name, Args... args) {
-        std::unique_ptr<Component> ptr(ComponentMap(name, args...));
-        return *ptr;
+    static Component* GetComponent(const std::string& name, Args... args) {
+        return ComponentMap(name, args...);
     }
 
     template<typename... Args>
     Component* NewComponent(const std::string& name, Args... args) {
-        createdComponents.push_back(
-                std::unique_ptr<Component>(ComponentMap(name, args...)));
+        Component* newComp = ComponentMap(name, args...);
+        createdComponents.push_back(newComp);
+        return newComp;
     }
 
 private:
-    std::vector<std::unique_ptr<Component>> createdComponents;
+    std::vector<Component*> createdComponents;
 
     template<typename... Args>
     static Component* ComponentMap(const std::string& name, Args... args) {

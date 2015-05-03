@@ -6,11 +6,13 @@
 
 #include <vector>
 #include <typeinfo>
+#include <memory>
 
 #include <JSONLoader.h>
 
 #include <GOTransform.h>
 #include <Component.h>
+#include <ComponentFactory.h>
 
 /**
  * @brief Class for any object in game, contains Components
@@ -22,22 +24,30 @@ public:
     GameObject(const std::string& path);
     virtual ~GameObject();
 
-    template<class T> T GetComponent();
-    void AddComponent(Component&);
+    template<class T> T GetComponent() const {
+        for (auto c : components) {
+            if (typeid(c) == typeid(T)) {
+                return c;
+            }
+        }
+        return nullptr;
+    }
+    void AddComponent(Component*);
 
-    void Update();
     const std::string& GetName() const;
     void SetSaveOnExit(bool value);
 
     GOTransform transform;
 
+    void Update();
     void Render();
 
 private:
+    ComponentFactory componentFactory;
     JSONLoader jsonLoader;
     std::string name;
 
     std::vector<std::string> componentNames;
-    std::vector<Component> components;
+    std::vector<Component*> components;
 };
 

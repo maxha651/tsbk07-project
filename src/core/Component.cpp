@@ -9,8 +9,6 @@ Component::~Component() {
 
 }
 
-void Component::Update() {}
-
 // Setters and getters
 void Component::SetGameObject(GameObject* go){
 	this->gameObject = go;
@@ -20,4 +18,3 @@ GameObject* Component::GetGameObject(){
 	return this->gameObject;
 }
 
-void Component::Render() {}

@@ -39,8 +39,10 @@ PROJECT ("tsbk07-project")
 
 ## Definitions and settings ##
 
-SET (CMAKE_CXX_STANDARD 14)
 ENABLE_LANGUAGE (CXX)
+SET (CMAKE_CXX_STANDARD 14)
+# Disable optimization in debug mode
+SET (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0")
 
 ADD_DEFINITIONS (-DGL_GLEXT_PROTOTYPES)
 

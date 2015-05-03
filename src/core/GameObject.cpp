@@ -3,7 +3,6 @@
 //
 
 #include <GameObject.h>
-#include <ComponentFactory.h>
 
 GameObject::GameObject() {
 }
@@ -17,30 +16,27 @@ GameObject::GameObject(const std::string& path) :
     for (auto component : componentNames) {
         std::string componentPath(path);
         componentPath.append("/" + component + ".json");
-        components.push_back(std::move(ComponentFactory::GetComponent<const std::string&>(component, componentPath)));
+        components.push_back(componentFactory.NewComponent<const std::string&>(component, componentPath));
         std::cout << "GameObject: " << name << " added Component: " << component << std::endl;
     }
 }
 
 GameObject::~GameObject() {
+    std::cout << "GameObject: Deleting gameObject: " << name << ", copy error?" << std::endl;
 }
 
-template<class T> T GameObject::GetComponent() {
-    for (auto c : components) {
-        if (typeid(c) == typeid(T)) {
-            return c;
-        }
-    }
-    return nullptr;
-}
-
-void GameObject::AddComponent(Component& component) {
-	component.SetGameObject(this);
+void GameObject::AddComponent(Component* component) {
+	component->SetGameObject(this);
     components.push_back(component);
 }
 
 void GameObject::Update() {
-
+    std::cout << "GameObject: Updating..." << std::endl;
+    for (auto* component : components) {
+        std::cout << "Component" << std::endl;
+        component->Update();
+    }
+    std::cout << "GameObject: ...done" << std::endl;
 }
 
 const std::string& GameObject::GetName() const {
@@ -52,7 +48,7 @@ void GameObject::SetSaveOnExit(bool value) {
 }
 
 void GameObject::Render() {
-    for (auto& component : components) {
-        component.Render();
+    for (auto* component : components) {
+        component->Render();
     }
 }

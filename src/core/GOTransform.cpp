@@ -18,6 +18,11 @@ GOTransform::GOTransform()
 	
 }
 
+GOTransform::GOTransform(const GOTransform &transform)
+    : position(transform.position), rotation(transform.rotation), scale(transform.scale) {
+
+}
+
 GOTransform::GOTransform(Vector3f pos, Vector3f rot, Vector3f scale) 
     : position(pos), rotation(rot), scale(scale) {
 
@@ -53,9 +58,16 @@ void GOTransform::SetPosition(Vector3f position) {
     this->position = position;
 }
 
+Vector3f GOTransform::GetPosition() {
+    return position;
+}
+
 Vector3f GOTransform::GetRotation() {
-    // TODO: stub
-    return Vector3f();
+    return rotation;
+}
+
+Vector3f GOTransform::GetScale() {
+    return scale;
 }
 
 void GOTransform::SetRotation(float x, float y, float z) {
@@ -71,5 +83,4 @@ void GOTransform::SetScale(float x, float y, float z) {
 void GOTransform::SetScale(Vector3f scale) {
     this->scale = scale;
 }
-
 

@@ -6,6 +6,9 @@
 
 #include <cassert>
 
+#include <GameObject.h>
+
+
 BaseComponent::BaseComponent(const std::string &jsonPath) {
     std::cerr << "Component doesn't implement JSON constructor :(" << std::endl;
     assert(false);
@@ -20,10 +23,13 @@ BaseComponent::~BaseComponent() {
 }
 
 void BaseComponent::Update(){
+    std::cout << "Base to the B" << std::endl;
+}
+
+void BaseComponent::Render() {
 
 }
 
 GOTransform& BaseComponent::GetTransform() {
     return this->gameObject->transform;
 }
-

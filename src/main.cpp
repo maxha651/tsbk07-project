@@ -106,6 +106,7 @@ void update(int val)
 
 void render()
 {
+    game->Render();
 }
 
 void display(void)

@@ -12,6 +12,7 @@ Game::Game(const std::string& path) : path(path) {
     if ((dir = opendir(path.c_str())) != NULL) {
         while ((ent = readdir(dir)) != NULL) {
             if (ent->d_type == DT_DIR && strncmp(ent->d_name, ".", 1) != 0) {
+                // "." and ".." are this and parent folder
                 AddGameObject(ent->d_name);
                 std::cout << "Game: Added GameObject: " << ent->d_name << std::endl;
             }
@@ -40,13 +41,15 @@ GameObject& Game::GetGameObject(const std::string& name) {
 
 void Game::AddGameObject(const std::string& name) {
     std::string goPath(path + "/" + name);
-    gameObjects.push_back(std::move(GameObject(goPath)));
+    gameObjects.emplace_back(goPath);
 }
 
 void Game::Update() {
-    for (GameObject go : gameObjects) {
+    std::cout << "Game: Updating... " << std::endl;
+    for (auto& go : gameObjects) {
         go.Update();
     }
+    std::cout << "Game: ...done" << std::endl;
 }
 
 void Game::SetSaveOnExit(bool value) {

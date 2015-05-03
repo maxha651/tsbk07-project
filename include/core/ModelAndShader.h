@@ -22,13 +22,13 @@ using Eigen::Vector3f;
 using Eigen::Vector2f;
 
 // Ours
-#include <Component.h>
 #include <JSONLoader.h>
+#include <BaseComponent.h>
 
 /**
 * Model and shader component.
 */
-class ModelAndShader : public Component
+class ModelAndShader : public BaseComponent
 {
 public:
 	ModelAndShader(const std::string& jsonPath);
@@ -36,6 +36,9 @@ public:
 	~ModelAndShader();
 	std::vector<GLfloat> vertices;
 	std::vector<GLfloat> normals;
+
+	virtual void Update() override;
+	virtual void Render() override;
 
 private:
     JSONLoader jsonLoader;

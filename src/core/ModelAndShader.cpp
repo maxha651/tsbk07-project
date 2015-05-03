@@ -130,3 +130,12 @@ void ModelAndShader::LoadObject(const char* filename)
         } 
     }
 }
+
+void ModelAndShader::Update() {
+    BaseComponent::Update();
+}
+
+void ModelAndShader::Render() {
+    BaseComponent::Render();
+    // Draw stuff or something
+}

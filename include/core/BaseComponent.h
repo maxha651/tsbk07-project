@@ -4,9 +4,8 @@
 // Created by max on 2015-04-20.
 //
 
-#include <GOTransform.h>
 #include <Component.h>
-#include <GameObject.h>
+#include <GOTransform.h>
 
 /**
  * @brief Component almost superclass
@@ -18,6 +17,7 @@ public:
     BaseComponent(const std::string& jsonPath);
     virtual ~BaseComponent();
     virtual void Update() override;
+    virtual void Render() override;
     GOTransform& GetTransform();
 private:
 };

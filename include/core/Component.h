@@ -15,9 +15,9 @@ class Component {
 public:
     virtual ~Component();
     GameObject* GetGameObject();
-    void SetGameObject(GameObject* go);
-    virtual void Update();
-    virtual void Render();
+    virtual void SetGameObject(GameObject* go);
+    virtual void Update() = 0;
+    virtual void Render() = 0;
 protected:
     GameObject* gameObject;
 };
