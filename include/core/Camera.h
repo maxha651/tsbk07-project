@@ -25,4 +25,8 @@ public:
 private:
     void UpdateUpVector();
     JSONLoader jsonLoader;
+
+    // We don't want any weird copy errors
+    Camera(const Camera&) = delete;
+    void operator=(const Camera&) = delete;
 };

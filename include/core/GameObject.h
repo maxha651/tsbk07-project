@@ -30,6 +30,9 @@ public:
     void SetSaveOnExit(bool value);
 
     GOTransform transform;
+
+    void Render();
+
 private:
     JSONLoader jsonLoader;
     std::string name;

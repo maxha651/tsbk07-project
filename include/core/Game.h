@@ -31,6 +31,7 @@ public:
     void AddGameObject(const std::string& name);
 
     void Update();
+    void Render();
     void SetSaveOnExit(bool value);
 private:
     std::string path;

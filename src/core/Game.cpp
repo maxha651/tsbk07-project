@@ -56,3 +56,8 @@ void Game::SetSaveOnExit(bool value) {
 }
 
 
+void Game::Render() {
+    for (GameObject go : gameObjects) {
+        go.Render();
+    }
+}

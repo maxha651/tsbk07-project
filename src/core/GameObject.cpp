@@ -39,7 +39,7 @@ void GameObject::AddComponent(Component& component) {
     components.push_back(component);
 }
 
-void GameObject::Update(){
+void GameObject::Update() {
 
 }
 
@@ -51,3 +51,8 @@ void GameObject::SetSaveOnExit(bool value) {
     jsonLoader.SetSaveOnDestruct(value);
 }
 
+void GameObject::Render() {
+    for (auto& component : components) {
+        component.Render();
+    }
+}

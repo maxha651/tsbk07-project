@@ -126,14 +126,14 @@ IF (MSVC)
 	INCLUDE_DIRECTORIES (external/dirent-win)
 ENDIF ()
 
-## Our libraries ##
-
 FILE (GLOB_RECURSE SOURCES "${CMAKE_SOURCE_DIR}/src/**.cpp")
 FILE (GLOB_RECURSE HEADERS "${CMAKE_SOURCE_DIR}/include/**.h")
+FILE (GLOB_RECURSE HEADERS_CPP "${CMAKE_SOURCE_DIR}/include/**.hpp")
 FILE (GLOB_RECURSE SHADERS "${CMAKE_SOURCE_DIR}/src/shaders/**")
 FILE (GLOB_RECURSE MODELS "${CMAKE_SOURCE_DIR}/src/models/**")
 
 # Make it look nicer in VS
+# Will add put all shaders in "shaders" folder etc.
 SOURCE_GROUP (shaders FILES ${SHADERS})
 SOURCE_GROUP (models FILES ${MODELS})
 
@@ -142,7 +142,7 @@ INCLUDE_DIRECTORIES(PUBLIC include)
  
 ## Executable ##
 
-ADD_EXECUTABLE(helloworld ${SOURCES} ${HEADERS} ${SHADERS})
+ADD_EXECUTABLE(helloworld ${SOURCES} ${HEADERS} ${HEADERS_CPP} ${SHADERS})
 TARGET_LINK_LIBRARIES(helloworld
     ${GLUT_LIBRARY} ${GLEW_LIBRARY} ${OPENGL_LIBRARIES})
 

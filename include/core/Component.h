@@ -17,6 +17,7 @@ public:
     GameObject* GetGameObject();
     void SetGameObject(GameObject* go);
     virtual void Update();
+    virtual void Render();
 protected:
     GameObject* gameObject;
 };

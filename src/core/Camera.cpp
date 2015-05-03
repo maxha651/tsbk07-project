@@ -3,10 +3,17 @@
 //
 
 #include <Camera.h>
+
 #include <GOTransform.h>
+#include <Context.h>
+
 
 Camera::Camera()
-{	
+{
+    if (Context::Instance().camera != nullptr) {
+        std::cout << "Camera: Overriding existing camera" << std::endl;
+    }
+    Context::Instance().camera = this;
 	this->up = GOTransform::up;
 }
 

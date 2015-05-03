@@ -29,8 +29,8 @@ static GLfloat vertices[] =
 };
 
 
-GLuint vertexArrayObjIDTriangle;
-GLuint vertexArrayObjIDCube;
+static GLuint vertexArrayObjIDTriangle;
+static GLuint vertexArrayObjIDCube;
 static GLuint program;
 static Camera camera;
 static Game *game = nullptr;
@@ -102,6 +102,10 @@ void update(int val)
 {
     game->Update();
     glutTimerFunc(UPDATE_TIME_MS, update, 0);
+}
+
+void render()
+{
 }
 
 void display(void)
