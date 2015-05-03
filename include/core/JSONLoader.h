@@ -8,6 +8,7 @@
 
 #include <json/json.h>
 #include <json/value.h>
+#include <assert.h>
 
 /**
  * \brief JSON loader utility class.
@@ -30,7 +31,7 @@ public:
     template <typename T>
     void AddArrayField(const std::string& name, std::vector<T>* dataPtr);
     template <typename T>
-    void AddArrayField(const std::string& name, const T** dataPtr, size_t len);
+    void AddArrayField(const std::string& name, const T* dataPtr, size_t len);
     void SetSaveOnDestruct(bool value);
     void Read();
     void Write();
@@ -60,10 +61,31 @@ private:
         void* getPtr(size_t idx) override {
             return static_cast<void*>(&(vecPtr->at(idx)));
         }
-        size_t Size() { return vecPtr->size(); }
-        void Resize(size_t size) { vecPtr->resize(size); }
+        size_t Size() override { return vecPtr->size(); }
+        void Resize(size_t size) override { vecPtr->resize(size); }
     private:
         std::vector<T>* vecPtr;
+    };
+
+    template <typename T>
+    class ArrayPtr : public IVectorPtr {
+    public:
+        ArrayPtr(T array[], size_t len) : array(array), len(len) {}
+        virtual ~ArrayPtr() {}
+
+        void* getPtr() override {
+            return static_cast<void*>(array);
+        }
+        void* getPtr(size_t idx) override {
+            assert(idx < len);
+            return static_cast<void*>(&array[idx]);
+        }
+        size_t Size() override { return len; }
+        void Resize(size_t size) override { }
+
+    private:
+        T array[];
+        size_t len;
     };
 
     class DataField {

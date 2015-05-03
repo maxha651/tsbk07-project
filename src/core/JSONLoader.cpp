@@ -43,7 +43,16 @@ void JSONLoader::AddArrayField(const std::string& name, std::vector<T>* vector) 
     dataFieldVec.push_back(dataField);
 }
 template <typename T>
-void JSONLoader::AddArrayField(const std::string &name, const T** dataPtr, size_t len) {
+void JSONLoader::AddArrayField(const std::string &name, const T* dataPtr, size_t len) {
+    IVectorPtr* vecPtr = dynamic_cast<IVectorPtr*>(new ArrayPtr<T>(dataPtr, len));
+    DataField dataField(name, Json::arrayValue, static_cast<void*>(vecPtr));
+
+    dataField.jsonValue.resize(len);
+    for(int idx = 0; idx < len; ++idx) {
+        dataField.jsonValue[idx] = Json::Value(dataPtr[idx]);
+    }
+
+    dataFieldVec.push_back(dataField);
     // stub
     assert(false);
 }
@@ -132,6 +141,7 @@ void JSONLoader::FromJson(void* dataPtr, const Json::ValueType type, const Json:
             // don't have to deduce the type quite yet.
             IVectorPtr* vecPtr = static_cast<IVectorPtr*>(dataPtr);
             vecPtr->Resize(jsonValue.size());
+            assert(vecPtr->Size() == jsonValue.size());
             for (int idx = 0; idx < jsonValue.size(); ++idx) {
                 FromJson(vecPtr->getPtr(idx), jsonValue[idx].type(), jsonValue[idx]);
             }
