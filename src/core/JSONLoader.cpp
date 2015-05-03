@@ -43,7 +43,7 @@ void JSONLoader::AddArrayField(const std::string& name, std::vector<T>* vector) 
     dataFieldVec.push_back(dataField);
 }
 template <typename T>
-void JSONLoader::AddArrayField(const std::string &name, const T* dataPtr, size_t len) {
+void JSONLoader::AddArrayField(const std::string &name, T dataPtr[], size_t len) {
     IVectorPtr* vecPtr = dynamic_cast<IVectorPtr*>(new ArrayPtr<T>(dataPtr, len));
     DataField dataField(name, Json::arrayValue, static_cast<void*>(vecPtr));
 
@@ -53,8 +53,6 @@ void JSONLoader::AddArrayField(const std::string &name, const T* dataPtr, size_t
     }
 
     dataFieldVec.push_back(dataField);
-    // stub
-    assert(false);
 }
 
 void JSONLoader::SetSaveOnDestruct(bool value) {
@@ -122,7 +120,7 @@ void JSONLoader::FromJson(void* dataPtr, const Json::ValueType type, const Json:
         }
         case Json::realValue:
         {
-            *static_cast<double*>(dataPtr) = jsonValue.asDouble();
+            *static_cast<float*>(dataPtr) = jsonValue.asFloat();
             break;
         }
         case Json::stringValue:
@@ -173,7 +171,7 @@ Json::Value JSONLoader::ToJson(const DataField& dataField) {
                 }
             case Json::realValue:
                 {
-                    double value = *static_cast<double*>(dataField.dataPtr);
+                    float value = *static_cast<float*>(dataField.dataPtr);
                     jsonValue = Json::Value(value);
                     break;
                 }
@@ -223,11 +221,13 @@ Json::Value JSONLoader::ToJson(const DataField& dataField) {
 
 // Explicitly define valid template instances
 // Others will yield undefined reference
-template void JSONLoader::AddDataField<double>(const std::string& name, double* dataPtr);
+template void JSONLoader::AddDataField<float>(const std::string& name, float* dataPtr);
 template void JSONLoader::AddDataField<std::string>(const std::string& name, std::string* dataPtr);
 template void JSONLoader::AddDataField<bool>(const std::string& name, bool* dataPtr);
-template void JSONLoader::AddArrayField<double>(const std::string& name, std::vector<double>* vector);
+template void JSONLoader::AddArrayField<float>(const std::string& name, std::vector<float>* vector);
 template void JSONLoader::AddArrayField<std::string>(const std::string& name, std::vector<std::string>* vector);
+template void JSONLoader::AddArrayField<float>(const std::string& name, float array[], size_t len);
+template void JSONLoader::AddArrayField<std::string>(const std::string& name, std::string[], size_t len);
 // TODO: vector bool specialization fucks up my cool/hacky VectorPtr class
 // Fix this if needed, might be to see bools as int, implicit conversion all the way
 //template void JSONLoader::addArrayField<bool>(std::vector<bool>* vector);

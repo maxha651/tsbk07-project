@@ -40,7 +40,7 @@ public:
 
 private:
     JSONLoader jsonLoader;
-    std::vector<double> jsonData[3];
+    std::vector<float> jsonData[3];
     Vector3f position, rotation, scale;
 
 };

@@ -21,7 +21,8 @@ Camera::Camera()
 
 Camera::Camera(const std::string& jsonPath) :
 	jsonLoader(jsonPath) {
-	// Initialize JSON data
+    jsonLoader.AddArrayField<float>("lookDir", lookDir.data(), 3);
+    jsonLoader.Read();
 }
 
 Camera::~Camera()
@@ -69,7 +70,6 @@ Matrix4f Camera::LookAt(const Vector3f &position, const Vector3f &target,
             0, 0, 0, 0;
 
 #if 0
-    std::cout << "Camera: Using untested lookAt function, beware" << std::endl;
     std::cout << "position: " << position << ", target: " << target << " up: " << up << std::endl;
     std::cout << "yields transform matrix: " << ret << std::endl;
 #endif
