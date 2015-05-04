@@ -2,7 +2,7 @@
 
 #include <ComponentFactory.h>
 
-static const bool SAVE_ON_DESTRUCT_DEFAULT = true;
+static const bool SAVE_ON_DESTRUCT_DEFAULT = false;
 
 // No initialization => nothing to save
 JSONLoader::JSONLoader() : saveOnDestruct(false) {

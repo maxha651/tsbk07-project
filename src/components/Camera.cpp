@@ -6,6 +6,7 @@
 
 #include <Context.h>
 #include <Input.h>
+#include <GameObject.h>
 
 using Eigen::Vector3f;
 using Eigen::Vector2f;
@@ -45,8 +46,8 @@ Camera::~Camera()
 }
 
 void Camera::Update() {
-	UpdateUpVector();
     UpdateInput();
+    UpdateUpVector();
     UpdateWorldToView();
 }
 
@@ -54,16 +55,22 @@ void Camera::UpdateInput() {
     if (!Input::IsInFocus()) {
         return;
     }
-    Vector2f mouseMove = Input::GetMouseMove();
 
     Vector3f rightVec = lookDir.cross(up);
     Vector3f orthoUp = rightVec.cross(lookDir);
-
     rightVec.normalize();
     orthoUp.normalize();
 
+    // Change look direction
+    Vector2f mouseMove = Input::GetMouseMove();
     lookDir += rightVec * mouseMove.x();
     lookDir += orthoUp * mouseMove.y();
+    // Change position
+    Vector2f inputAxis = Input::GetInputAxis();
+    Vector3f position = gameObject->transform.GetPosition();
+    position += rightVec * inputAxis.x();
+    position += lookDir.normalized() * inputAxis.y();
+    gameObject->transform.SetPosition(position);
 }
 
 // Updates the up vector of the camera. This can then be used using glLookAt().
