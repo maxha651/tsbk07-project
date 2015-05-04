@@ -6,12 +6,11 @@
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
-#include <Camera.h>
 
+#include <Camera.h>
 #include <ShaderLoader.h>
 #include <Game.h>
-#include <ModelAndShader.h>
-
+#include <Input.h>
 
 /*
  * Just put stuff here until we can refactor it into
@@ -39,7 +38,6 @@ static ModelAndShader cube = ModelAndShader("movedcube", "none");
 
 void init() 
 {
-    
     // GL inits
     glClearColor(1.0f,0.3f,0.5f,0.0f);
     glEnable(GL_DEPTH_TEST);
@@ -92,11 +90,6 @@ void initGameObjects()
     game = std::unique_ptr<Game>(new Game(TSBK07_GAMEOBJECTS_PATH));
 }
 
-void keyboard(unsigned char key, int x, int y)
-{
-
-}
-
 void update(int val)
 {
     game->Update();
@@ -146,7 +139,8 @@ int main(int argc, char *argv[])
     glutDisplayFunc(display);
     glutTimerFunc(UPDATE_TIME_MS, update, 0);
 
-    glutKeyboardFunc(keyboard);
+    Input::Init();
+
     glewExperimental = GL_TRUE;
     glewInit();
 
