@@ -51,14 +51,14 @@ void Game::Update() {
 }
 
 void Game::SetSaveOnExit(bool value) {
-    for (GameObject go : gameObjects) {
+    for (auto& go : gameObjects) {
         go.SetSaveOnExit(value);
     }
 }
 
 
 void Game::Render() {
-    for (GameObject go : gameObjects) {
+    for (auto& go : gameObjects) {
         go.Render();
     }
 }

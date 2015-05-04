@@ -31,6 +31,7 @@ public:
 
 private:
     void Init();
+    void UpdateInput();
     void UpdateUpVector();
     void UpdateWorldToView();
 

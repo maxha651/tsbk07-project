@@ -93,12 +93,8 @@ void initGameObjects()
 void update(int val)
 {
     game->Update();
-    glutTimerFunc(UPDATE_TIME_MS, update, 0);
-}
-
-void render()
-{
     game->Render();
+    glutTimerFunc(UPDATE_TIME_MS, update, 0);
 }
 
 void display(void)

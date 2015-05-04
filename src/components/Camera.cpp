@@ -5,14 +5,18 @@
 #include <Camera.h>
 
 #include <Context.h>
+#include <Input.h>
 
 using Eigen::Vector3f;
+using Eigen::Vector2f;
+using Eigen::Matrix3f;
 using Eigen::Matrix4f;
 using Eigen::Translation3f;
 
 // frustum parameters
-static const float left = -1.0f, right = 1.0f, bottom = -1.0f,
-        top = 1.0f, near = 1.0f, far = 100.0f;
+static const float LEFT = -1.0f, RIGHT = 1.0f, BOTTOM = -1.0f,
+        TOP = 1.0f, NEAR = 1.0f, FAR = 100.0f;
+static const float MOUSE_MOVE_SCALER = 1.0f;
 
 Camera::Camera()
 {
@@ -33,7 +37,7 @@ void Camera::Init()
     }
     Context::Instance().camera = this;
 	this->up = GOTransform::up;
-    this->projectionMatrix = Frustum(left, right, bottom, top, near, far);
+    this->projectionMatrix = Frustum(LEFT, RIGHT, BOTTOM, TOP, NEAR, FAR);
 }
 
 Camera::~Camera()
@@ -42,12 +46,29 @@ Camera::~Camera()
 
 void Camera::Update() {
 	UpdateUpVector();
+    UpdateInput();
     UpdateWorldToView();
+}
+
+void Camera::UpdateInput() {
+    if (!Input::IsInFocus()) {
+        return;
+    }
+    Vector2f mouseMove = Input::GetMouseMove();
+
+    Vector3f rightVec = lookDir.cross(up);
+    Vector3f orthoUp = rightVec.cross(lookDir);
+
+    rightVec.normalize();
+    orthoUp.normalize();
+
+    lookDir += rightVec * mouseMove.x();
+    lookDir += orthoUp * mouseMove.y();
 }
 
 // Updates the up vector of the camera. This can then be used using glLookAt().
 void Camera::UpdateUpVector(){
-	Eigen::Matrix3f rotationMatrix;
+	Matrix3f rotationMatrix;
 
 	GOTransform t = this->GetTransform();
 	Vector3f rotation = t.GetRotation();
@@ -83,10 +104,8 @@ Matrix4f Camera::LookAt(const Vector3f &position, const Vector3f &target,
             dirVec.transpose(), 0,
             0, 0, 0, 0;
 
-#if 0
-    std::cout << "position: " << position << ", target: " << target << " up: " << up << std::endl;
-    std::cout << "yields transform matrix: " << ret << std::endl;
-#endif
+    //std::cout << "position: " << position << ", target: " << target << " up: " << up << std::endl;
+    //std::cout << "yields transform matrix: " << ret << std::endl;
 
     return ret;
 }
@@ -94,7 +113,7 @@ Matrix4f Camera::LookAt(const Vector3f &position, const Vector3f &target,
 /**
  * \brief Creates a projection matrix
  *
- * Shamefully stolen from VectorUtils3 and converted to use Eigen.
+ * Taken from VectorUtils3 and converted to use Eigen.
  */
 Eigen::Matrix4f Camera::Perspective(float fovyInDegrees, float aspectRatio,
                                     float znear, float zfar)
@@ -118,7 +137,7 @@ Eigen::Matrix4f Camera::Perspective(float fovyInDegrees, float aspectRatio,
 /**
  * \brief Creates a projection matrix
  *
- * Shamefully stolen from VectorUtils3 and converted to use Eigen.
+ * Taken from VectorUtils3 and converted to use Eigen.
  * Added some stuff for clarity.
  */
 Eigen::Matrix4f Camera::Frustum(float left, float right, float bottom, float top,
