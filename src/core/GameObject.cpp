@@ -8,7 +8,7 @@ GameObject::GameObject() {
 }
 
 GameObject::GameObject(const std::string& path) :
-    jsonLoader(path + "/GameObject.json") {
+    jsonLoader(path + "/GameObject.json"), transform(path + "/GOTransform.json") {
 
     jsonLoader.AddArrayField<std::string>("components", &componentNames);
     jsonLoader.Read();

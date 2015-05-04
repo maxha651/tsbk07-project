@@ -41,6 +41,7 @@ private:
     Eigen::Matrix4f Frustum(float left, float right, float bottom, float top,
                             float znear, float zfar);
 
+    // Keep all dependent variables before this
     JSONLoader jsonLoader;
 
     // We don't want any weird copy errors, should only ever be one Camera

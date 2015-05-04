@@ -1,6 +1,7 @@
 {
-  "components": [
-    "Camera",
-    "ModelAndShader"
-  ]
+	"components" : 
+	[
+		"Camera",
+		"ModelAndShader"
+	]
 }

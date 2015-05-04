@@ -2,7 +2,7 @@
 
 #include <ComponentFactory.h>
 
-static const bool SAVE_ON_DESTRUCT_DEFAULT = false;
+static const bool SAVE_ON_DESTRUCT_DEFAULT = true;
 
 // No initialization => nothing to save
 JSONLoader::JSONLoader() : saveOnDestruct(false) {
@@ -10,13 +10,13 @@ JSONLoader::JSONLoader() : saveOnDestruct(false) {
 }
 
 // No path to save to when using this one
-JSONLoader::JSONLoader(const Json::Value& root) :saveOnDestruct(false) {
+JSONLoader::JSONLoader(const Json::Value& root) : saveOnDestruct(false) {
     Init(root);
 }
 
-JSONLoader::JSONLoader(const std::string& path) 
-    : saveOnDestruct(SAVE_ON_DESTRUCT_DEFAULT), filePath(path) {
-    }
+JSONLoader::JSONLoader(const std::string& path)
+        : saveOnDestruct(SAVE_ON_DESTRUCT_DEFAULT), filePath(path) {
+}
 
 
 JSONLoader::~JSONLoader() {
@@ -78,7 +78,7 @@ void JSONLoader::Init(const Json::Value& root) {
         // Update JSON
         dataField.jsonValue = jsonValue;
         // Update values
-        FromJson(dataField.dataPtr, jsonValue.type(), jsonValue);
+        FromJson(dataField.dataPtr, dataField.jsonValue.type(), jsonValue);
     }
 }
 
@@ -104,7 +104,7 @@ Json::Value JSONLoader::ToJson() {
     Json::Value root(Json::objectValue);
 
     for (auto& dataField : dataFieldVec) {
-        root.append(ToJson(dataField));
+        root[dataField.name] = ToJson(dataField);
     }
 
     return root;
@@ -119,6 +119,8 @@ void JSONLoader::FromJson(void* dataPtr, const Json::ValueType type, const Json:
             break;
         }
         case Json::realValue:
+        case Json::intValue:
+        case Json::uintValue:
         {
             *static_cast<float*>(dataPtr) = jsonValue.asFloat();
             break;
@@ -170,21 +172,26 @@ Json::Value JSONLoader::ToJson(const DataField& dataField) {
                     break;
                 }
             case Json::realValue:
+            case Json::intValue:
+            case Json::uintValue:
                 {
                     float value = *static_cast<float*>(dataField.dataPtr);
-                    jsonValue = Json::Value(value);
+                    Json::Value jVal(value);
+                    jsonValue.swapPayload(jVal);
                     break;
                 }
             case Json::stringValue:
                 {
                     std::string value = *static_cast<std::string*>(dataField.dataPtr);
-                    jsonValue = Json::Value(value);
+                    Json::Value jVal(value);
+                    jsonValue.swapPayload(jVal);
                     break;
                 }
             case Json::booleanValue:
                 {
                     bool value = *static_cast<bool*>(dataField.dataPtr);
-                    jsonValue = Json::Value(value);
+                    Json::Value jVal(value);
+                    jsonValue.swapPayload(jVal);
                     break;
                 }
             case Json::arrayValue:
@@ -195,7 +202,8 @@ Json::Value JSONLoader::ToJson(const DataField& dataField) {
                     assert(vecPtr->Size() == jsonValue.size());
                     for (int idx = 0; idx < jsonValue.size(); ++idx) {
                         // Name here shouldn't matter
-                        jsonValue[idx] = ToJson(DataField("", jsonValue[idx], vecPtr->getPtr(idx)));
+                        Json::Value jVal = ToJson(DataField("", jsonValue[idx], vecPtr->getPtr(idx)));
+                        jsonValue[idx].swapPayload(jVal);
                     }
                     break;
                 }
@@ -212,9 +220,6 @@ Json::Value JSONLoader::ToJson(const DataField& dataField) {
                 }
         }
     }
-
-    jsonValue.setComment(dataField.jsonValue.getComment(Json::CommentPlacement::commentBefore),
-            Json::CommentPlacement::commentBefore);
 
     return jsonValue;
 }

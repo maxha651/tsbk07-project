@@ -44,10 +44,12 @@ public:
 
 private:
     ComponentFactory componentFactory;
-    JSONLoader jsonLoader;
     std::string name;
 
     std::vector<std::string> componentNames;
     std::vector<Component*> components;
+
+    // Keep all dependent variables before this
+    JSONLoader jsonLoader;
 };
 

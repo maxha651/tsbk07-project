@@ -32,7 +32,7 @@ static GLfloat vertices[] =
 static GLuint vertexArrayObjIDTriangle;
 static GLuint vertexArrayObjIDCube;
 static GLuint program;
-static Game *game = nullptr;
+static std::unique_ptr<Game> game;
 
 
 static ModelAndShader cube = ModelAndShader("movedcube", "none");
@@ -89,7 +89,7 @@ void init()
 
 void initGameObjects()
 {
-    game = new Game(TSBK07_GAMEOBJECTS_PATH);
+    game = std::unique_ptr<Game>(new Game(TSBK07_GAMEOBJECTS_PATH));
 }
 
 void keyboard(unsigned char key, int x, int y)
@@ -133,13 +133,6 @@ void resize(GLsizei w, GLsizei h)
     glutPostRedisplay();
 }
 
-void cleanup()
-{
-    if (game != nullptr) {
-        delete game;
-    }
-}
-
 int main(int argc, char *argv[])
 {
     // Using OpenGL version 3.2
@@ -160,8 +153,6 @@ int main(int argc, char *argv[])
     init();
     initGameObjects();
     glutMainLoop();
-
-    cleanup();
 
     return 0;
 }

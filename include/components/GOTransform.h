@@ -39,9 +39,8 @@ public:
     virtual void Render() override {}
 
 private:
-    JSONLoader jsonLoader;
-    std::vector<float> jsonData[3];
     Vector3f position, rotation, scale;
-
+    // Keep all dependent variables before this
+    JSONLoader jsonLoader;
 };
 

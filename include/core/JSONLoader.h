@@ -5,6 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include <algorithm>
+#include <memory>
 
 #include <json/json.h>
 #include <json/value.h>
@@ -94,17 +95,12 @@ private:
                 name(name), jsonValue(jsonValue), dataPtr(dataPtr), vecPtr(nullptr) {}
         DataField(const std::string& name, Json::Value jsonValue, void* dataPtr, IVectorPtr* vecPtr) :
                 name(name), jsonValue(jsonValue), dataPtr(dataPtr), vecPtr(vecPtr) {}
-        ~DataField() {
-            if (vecPtr != nullptr) {
-                // TODO Fix probable memory leak
-                //delete vecPtr;
-            }
-        }
+        ~DataField() { }
 
         std::string name;
         Json::Value jsonValue;
         void* dataPtr;
-        IVectorPtr* vecPtr;
+        std::shared_ptr<IVectorPtr> vecPtr;
     };
 
     bool saveOnDestruct;

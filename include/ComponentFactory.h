@@ -15,11 +15,7 @@ class ComponentFactory {
 public:
     ComponentFactory() {}
 
-    ~ComponentFactory() {
-        for (auto* compPtr : createdComponents) {
-            delete compPtr;
-        }
-    }
+    ~ComponentFactory() {}
 
     template<typename... Args>
     static Component* GetComponent(const std::string& name, Args... args) {
@@ -29,12 +25,12 @@ public:
     template<typename... Args>
     Component* NewComponent(const std::string& name, Args... args) {
         Component* newComp = ComponentMap(name, args...);
-        createdComponents.push_back(newComp);
+        createdComponents.emplace_back(newComp);
         return newComp;
     }
 
 private:
-    std::vector<Component*> createdComponents;
+    std::vector<std::shared_ptr<Component>> createdComponents;
 
     template<typename... Args>
     static Component* ComponentMap(const std::string& name, Args... args) {

@@ -41,10 +41,11 @@ public:
 	virtual void Render() override;
 
 private:
-    JSONLoader jsonLoader;
     // DAVID: As it is now, these will be monitored by JSONLoader
     // Changes will be written back to JSON file on destruct
     std::string model, shader;
+	// Keep all dependent variables before this
+	JSONLoader jsonLoader;
 
     void init(const char *model, const char *shader);
 	void LoadObject(const char* filename);
