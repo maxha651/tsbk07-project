@@ -32,7 +32,6 @@ static GLfloat vertices[] =
 static GLuint vertexArrayObjIDTriangle;
 static GLuint vertexArrayObjIDCube;
 static GLuint program;
-static Camera camera;
 static Game *game = nullptr;
 
 
