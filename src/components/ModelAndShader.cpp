@@ -5,8 +5,8 @@
 
 #include <ModelAndShader.h>
 
-static const std::string MODEL_REL_PATH = TSBK07_MODELS_PATH;
-static const std::string SHADER_REL_PATH = TSBK07_SHADERS_PATH;
+static const char MODEL_REL_PATH[] = TSBK07_MODELS_PATH;
+static const char SHADER_REL_PATH[] = TSBK07_SHADERS_PATH;
 
 ModelAndShader::ModelAndShader(const std::string& jsonPath) :
     jsonLoader(jsonPath) {
