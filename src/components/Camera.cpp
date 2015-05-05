@@ -15,8 +15,8 @@ using Eigen::Matrix4f;
 using Eigen::Translation3f;
 
 // frustum parameters
-static const float LEFT = -1.0f, RIGHT = 1.0f, BOTTOM = -1.0f,
-        TOP = 1.0f, NEAR = 1.0f, FAR = 100.0f;
+static const float FRUSTUM_LEFT = -1.0f, FRUSTUM_RIGHT = 1.0f, FRUSTUM_BOTTOM = -1.0f,
+				FRUSTUM_TOP = 1.0f, FRUSTUM_NEAR = 1.0f, FRUSTUM_FAR = 100.0f;
 static const float MOUSE_MOVE_SCALER = 1.0f;
 
 Camera::Camera()
@@ -38,7 +38,7 @@ void Camera::Init()
     }
     Context::Instance().camera = this;
 	this->up = GOTransform::up;
-    this->projectionMatrix = Frustum(LEFT, RIGHT, BOTTOM, TOP, NEAR, FAR);
+	this->projectionMatrix = Frustum(FRUSTUM_LEFT, FRUSTUM_RIGHT, FRUSTUM_BOTTOM, FRUSTUM_TOP, FRUSTUM_NEAR, FRUSTUM_FAR);
 }
 
 Camera::~Camera()
