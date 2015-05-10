@@ -11,6 +11,7 @@
 #include <ShaderLoader.h>
 #include <Game.h>
 #include <Input.h>
+#include <Context.h>
 
 /*
  * Just put stuff here until we can refactor it into
@@ -30,10 +31,15 @@ static GLfloat vertices[] =
 
 static std::unique_ptr<Game> game;
 
-static std::unique_ptr<ModelAndShader> cube;
+static std::unique_ptr<Model> cube;
 
 void init() 
 {
+	char fragmentShader[128], vertexShader[128];
+	sprintf(vertexShader, "%s/VertexShader.glsl", TSBK07_SHADERS_PATH);
+	sprintf(fragmentShader, "%s/FragmentShader.glsl", TSBK07_SHADERS_PATH);
+	ShaderLoader shaderLoader;
+	Context::Instance().program = shaderLoader.CreateProgram(vertexShader, fragmentShader);
 
     // GL inits
     glClearColor(1.0f,0.3f,0.5f,0.0f);

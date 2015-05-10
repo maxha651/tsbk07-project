@@ -10,10 +10,12 @@
 // only using non-dereferenced pointers)
 class Camera;
 
+
 class Context
 {
 public:
     Camera* camera;
+	unsigned int program;
 
     static Context& Instance()
     {

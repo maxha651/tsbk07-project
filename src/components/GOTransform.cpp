@@ -7,7 +7,9 @@
 #include <GOTransform.h>
 
 using Eigen::Vector3f;
+using Eigen::Matrix4f;
 using Eigen::Map;
+using Eigen::AngleAxisf;
 
 const Vector3f GOTransform::right = Eigen::Vector3f::UnitX();
 const Vector3f GOTransform::up = Eigen::Vector3f::UnitY();
@@ -73,5 +75,17 @@ void GOTransform::SetScale(float x, float y, float z) {
 }
 void GOTransform::SetScale(Vector3f scale) {
     this->scale = scale;
+}
+
+Matrix4f GOTransform::GetMatrix() {
+    Eigen::Affine3f res;
+    res.setIdentity();
+    res.rotate(AngleAxisf(rotation.x(), right)
+               * AngleAxisf(rotation.y(), up)
+               * AngleAxisf(rotation.z(), forward));
+    res.translate(position);
+    res.scale(scale);
+
+    return res.matrix();
 }
 

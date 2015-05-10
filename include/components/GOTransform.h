@@ -24,6 +24,7 @@ public:
     Vector3f& GetPosition();
     Vector3f& GetRotation();
     Vector3f& GetScale();
+    Eigen::Matrix4f GetMatrix();
 
     void SetPosition(float x, float y, float z);
     void SetPosition(Vector3f);

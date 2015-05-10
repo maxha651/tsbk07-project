@@ -4,7 +4,7 @@
 
 #include <GOTransform.h>
 #include <Camera.h>
-#include <ModelAndShader.h>
+#include <Model.h>
 
 /**
  * Used for creating Component instances providing name as string.
@@ -37,8 +37,8 @@ private:
         if (name.compare("Camera") == 0) {
             return _NewComponent<Camera>(name, args...);
         }
-        else if (name.compare("ModelAndShader") == 0) {
-            return _NewComponent<ModelAndShader>(name, args...);
+        else if (name.compare("Model") == 0) {
+            return _NewComponent<Model>(name, args...);
         }
         else if (name.compare("GOTransform") == 0) {
             return _NewComponent<GOTransform>(name, args...);
