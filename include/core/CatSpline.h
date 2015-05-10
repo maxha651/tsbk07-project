@@ -17,15 +17,26 @@ using Eigen::Vector3f;
 */
 class CatSpline{
 public: 
+
+	// Constructors / destructors.
 	CatSpline();
 	CatSpline(const CatSpline & spline);
 	~CatSpline();
 
+	// Adds a spline point to the spline vector.
 	void AddSplinePoint(const Vector3f & v);
-	Vector3f GetInerpolatedSplinePoint(float t);
+
+	// Returns an interpolated spline point using the spline vector.
+	Vector3f GetInterpolatedSplinePoint(float t);
+
+	// Returns the number of points in the spline vector.
 	int GetNumberOfPoints();
+
+	// Returns the Nth point from the spline vector.
 	Vector3f & GetNthPoint(int n);
 
+	// Computes the Catmull-Rom equation at a given time t for a point quadruple (p1, p2, p3, p4).
+	static Vector3f Compute(float t, const Vector3f & p1, const Vector3f & p2, const Vector3f & p3, const Vector3f & p4);
 private: 
 	std::vector<Vector3f> vp;
 	float delta_t;
