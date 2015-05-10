@@ -25,19 +25,19 @@ using Eigen::Vector2f;
 #include <JSONLoader.h>
 #include <BaseComponent.h>
 #include <ShaderLoader.h>
+#include <Context.h>
 
 /**
 * Model and shader component.
 */
-class ModelAndShader : public BaseComponent
+class Model : public BaseComponent
 {
 public:
-	ModelAndShader(const std::string& jsonPath);
-	ModelAndShader(const char *model, const char *vertexshader, const char *fragmentshader);
-	~ModelAndShader();
+	Model(const std::string& jsonPath);
+	Model(const char *model);
+	~Model();
 	std::vector<GLfloat> vertices;
 	std::vector<GLfloat> normals;
-	GLuint program;
 	GLuint vertexArrayObjID;
 
 	virtual void Update() override;
@@ -53,9 +53,8 @@ private:
 
 	
 
-	void init(const char *model, const char *vertexshader, const char *fragmentshader);
+	void init(const char *model);
 	void LoadObject(const char* filename);
-	void LoadShader(const char *vertShader, const char *fragShader);
 	void LoadVBOAndVAO();
 };
 

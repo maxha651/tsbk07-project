@@ -1,5 +1,0 @@
-{
-	"model" : "movedcube",
-	"vertshader" : "VertexShader",
-    "fragshader" : "FragmentShader"
-}

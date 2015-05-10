@@ -3,31 +3,31 @@
 //
 // Component for model and shader
 
-#include <ModelAndShader.h>
+#include <Model.h>
 
 static const char MODEL_REL_PATH[] = TSBK07_MODELS_PATH;
 static const char SHADER_REL_PATH[] = TSBK07_SHADERS_PATH;
 
-ModelAndShader::ModelAndShader(const std::string& jsonPath) :
+Model::Model(const std::string& jsonPath) :
     jsonLoader(jsonPath) {
 
     jsonLoader.AddDataField<std::string>("model", &model);
-    jsonLoader.AddDataField<std::string>("vertshader", &vertshader);
-	jsonLoader.AddDataField<std::string>("fragshader", &fragshader);
+    //jsonLoader.AddDataField<std::string>("vertshader", &vertshader);
+	//jsonLoader.AddDataField<std::string>("fragshader", &fragshader);
     jsonLoader.Read();
 
-	init(model.c_str(), vertshader.c_str(), fragshader.c_str());
+	init(model.c_str());
 }
 
-ModelAndShader::ModelAndShader(const char *model, const char *vertexshader, const char *fragmentshader)
+Model::Model(const char *model)
 {
-    init(model, vertexshader, fragmentshader);
+    init(model);
 }
 
-void ModelAndShader::init(const char *model, const char *vertexshader, const char *fragmentshader) {
+void Model::init(const char *model) {
     std::string _model(MODEL_REL_PATH);
-    std::string vertShader(SHADER_REL_PATH);
-    std::string fragShader(SHADER_REL_PATH);
+   // std::string vertShader(SHADER_REL_PATH);
+    //std::string fragShader(SHADER_REL_PATH);
 
     // Get full object file path
     _model.append("/");
@@ -38,39 +38,29 @@ void ModelAndShader::init(const char *model, const char *vertexshader, const cha
     LoadObject(_model.c_str());
 
     // Get full shader paths
-    vertShader.append("/");
+    /*vertShader.append("/");
     fragShader.append("/");
 	vertShader.append(vertexshader);
 	fragShader.append(fragmentshader);
     // TODO: Either use this convention or something else 
     // e.g. keep separate entries in JSON.
     vertShader.append(".glsl");
-    fragShader.append(".glsl");
+    fragShader.append(".glsl");*/
 
-    // Load the shader.
-	LoadShader(vertShader.c_str(), fragShader.c_str());
 
 	// Load the VBO and VAO
 	LoadVBOAndVAO();
 
 }
 
-ModelAndShader::~ModelAndShader()
+Model::~Model()
 {
     // JSONLoader will automatically update JSON file on destruct
 }
 
-void ModelAndShader::LoadShader(const char *vertShader, const char *fragShader)
-{
-	char fragmentShader[128], vertexShader[128];
-	sprintf(vertexShader, "%s/VertexShader.glsl", TSBK07_SHADERS_PATH);
-	sprintf(fragmentShader, "%s/FragmentShader.glsl", TSBK07_SHADERS_PATH);
-	ShaderLoader shaderLoader;
-	program = shaderLoader.CreateProgram(vertShader, fragShader);
-	
-}
 
-void ModelAndShader::LoadVBOAndVAO(){
+void Model::LoadVBOAndVAO(){
+	unsigned int program = Context::Instance().program;
 	if (vertices.size() > 0) {
 		glGenVertexArrays(1, &vertexArrayObjID);
 		glBindVertexArray(vertexArrayObjID);
@@ -96,7 +86,7 @@ void ModelAndShader::LoadVBOAndVAO(){
 	}
 }
 
-void ModelAndShader::LoadObject(const char* filename)
+void Model::LoadObject(const char* filename)
 {
 
     std::vector<std::string*> coord; // Each line read from file
@@ -171,14 +161,14 @@ void ModelAndShader::LoadObject(const char* filename)
     }
 }
 
-void ModelAndShader::Update() {
+void Model::Update() {
     BaseComponent::Update();
 
 }
 
-void ModelAndShader::Render() {
+void Model::Render() {
     BaseComponent::Render();
-	glUseProgram(program);
+	glUseProgram(Context::Instance().program);
     // Draw stuff or something
 	glBindVertexArray(vertexArrayObjID);	// Select VAO
 	glDrawArrays(GL_TRIANGLES, 0, vertices.size() / 3);
