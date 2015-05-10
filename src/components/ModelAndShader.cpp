@@ -12,18 +12,19 @@ ModelAndShader::ModelAndShader(const std::string& jsonPath) :
     jsonLoader(jsonPath) {
 
     jsonLoader.AddDataField<std::string>("model", &model);
-    jsonLoader.AddDataField<std::string>("shader", &shader);
+    jsonLoader.AddDataField<std::string>("vertshader", &vertshader);
+	jsonLoader.AddDataField<std::string>("fragshader", &fragshader);
     jsonLoader.Read();
 
-    init(model.c_str(), shader.c_str());
+	init(model.c_str(), vertshader.c_str(), fragshader.c_str());
 }
 
-ModelAndShader::ModelAndShader(const char *model, const char *shader)
+ModelAndShader::ModelAndShader(const char *model, const char *vertexshader, const char *fragmentshader)
 {
-    init(model, shader);
+    init(model, vertexshader, fragmentshader);
 }
 
-void ModelAndShader::init(const char *model, const char *shader) {
+void ModelAndShader::init(const char *model, const char *vertexshader, const char *fragmentshader) {
     std::string _model(MODEL_REL_PATH);
     std::string vertShader(SHADER_REL_PATH);
     std::string fragShader(SHADER_REL_PATH);
@@ -39,14 +40,18 @@ void ModelAndShader::init(const char *model, const char *shader) {
     // Get full shader paths
     vertShader.append("/");
     fragShader.append("/");
-    vertShader.append(shader);
-    fragShader.append(shader);
+	vertShader.append(vertexshader);
+	fragShader.append(fragmentshader);
     // TODO: Either use this convention or something else 
     // e.g. keep separate entries in JSON.
-    vertShader.append(".vert");
-    fragShader.append(".frag");
+    vertShader.append(".glsl");
+    fragShader.append(".glsl");
 
     // Load the shader.
+	LoadShader(vertShader.c_str(), fragShader.c_str());
+
+	// Load the VBO and VAO
+	LoadVBOAndVAO();
 
 }
 
@@ -55,6 +60,42 @@ ModelAndShader::~ModelAndShader()
     // JSONLoader will automatically update JSON file on destruct
 }
 
+void ModelAndShader::LoadShader(const char *vertShader, const char *fragShader)
+{
+	char fragmentShader[128], vertexShader[128];
+	sprintf(vertexShader, "%s/VertexShader.glsl", TSBK07_SHADERS_PATH);
+	sprintf(fragmentShader, "%s/FragmentShader.glsl", TSBK07_SHADERS_PATH);
+	ShaderLoader shaderLoader;
+	program = shaderLoader.CreateProgram(vertShader, fragShader);
+	glUseProgram(program);
+	
+}
+
+void ModelAndShader::LoadVBOAndVAO(){
+	if (vertices.size() > 0) {
+		glGenVertexArrays(1, &vertexArrayObjID);
+		glBindVertexArray(vertexArrayObjID);
+
+		unsigned int vertexBufferObjID;
+		glGenBuffers(1, &vertexBufferObjID);
+		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObjID);
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), &vertices[0], GL_STATIC_DRAW);
+
+		glVertexAttribPointer(glGetAttribLocation(program, "in_Position"), 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(glGetAttribLocation(program, "in_Position"));
+
+		unsigned int normalsBufferObjIDCube;
+		glGenBuffers(1, &normalsBufferObjIDCube);
+		glBindBuffer(GL_ARRAY_BUFFER, normalsBufferObjIDCube);
+		glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(GLfloat), &normals[0], GL_STATIC_DRAW);
+
+		glVertexAttribPointer(glGetAttribLocation(program, "in_Normal"), 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(glGetAttribLocation(program, "in_Normal"));
+	}
+	else {
+		std::cerr << " Cube not loaded!" << std::endl;
+	}
+}
 
 void ModelAndShader::LoadObject(const char* filename)
 {
@@ -133,9 +174,12 @@ void ModelAndShader::LoadObject(const char* filename)
 
 void ModelAndShader::Update() {
     BaseComponent::Update();
+
 }
 
 void ModelAndShader::Render() {
     BaseComponent::Render();
     // Draw stuff or something
+	glBindVertexArray(vertexArrayObjID);	// Select VAO
+	glDrawArrays(GL_TRIANGLES, 0, vertices.size() / 3);
 }

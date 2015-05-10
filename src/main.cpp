@@ -28,65 +28,17 @@ static GLfloat vertices[] =
 };
 
 
-static GLuint vertexArrayObjIDTriangle;
-static GLuint vertexArrayObjIDCube;
-static GLuint program;
 static std::unique_ptr<Game> game;
 
-
-static ModelAndShader cube = ModelAndShader("movedcube", "none");
+static std::unique_ptr<ModelAndShader> cube;
 
 void init() 
 {
+
     // GL inits
     glClearColor(1.0f,0.3f,0.5f,0.0f);
     glEnable(GL_DEPTH_TEST);
 
-    // Load and compile shader
-	char fragmentShader[128], vertexShader[128];
-	sprintf(vertexShader, "%s/VertexShader.glsl", TSBK07_SHADERS_PATH);
-    sprintf(fragmentShader, "%s/FragmentShader.glsl", TSBK07_SHADERS_PATH);
-    ShaderLoader shaderLoader;
-    program = shaderLoader.CreateProgram(vertexShader, fragmentShader);
-    glUseProgram(program);
-
-    // Triangle
-	glGenVertexArrays(1, &vertexArrayObjIDTriangle);
-	glBindVertexArray(vertexArrayObjIDTriangle);
-
-	unsigned int vertexBufferObjIDTriangle;
-	glGenBuffers(1, &vertexBufferObjIDTriangle);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObjIDTriangle);
-    glBufferData(GL_ARRAY_BUFFER, 9*sizeof(GLfloat), vertices, GL_STATIC_DRAW);
-
-	glVertexAttribPointer(glGetAttribLocation(program, "in_Position"), 3, GL_FLOAT, GL_FALSE, 0, 0);
-	glEnableVertexAttribArray(glGetAttribLocation(program, "in_Position"));
-
-
-	// Cube
-	if (cube.vertices.size() > 0) {
-		glGenVertexArrays(1, &vertexArrayObjIDCube);
-		glBindVertexArray(vertexArrayObjIDCube);
-
-		unsigned int vertexBufferObjIDCube;
-		glGenBuffers(1, &vertexBufferObjIDCube);
-		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObjIDCube);
-		glBufferData(GL_ARRAY_BUFFER, cube.vertices.size() * sizeof(GLfloat), &cube.vertices[0], GL_STATIC_DRAW);
-
-		glVertexAttribPointer(glGetAttribLocation(program, "in_Position"), 3, GL_FLOAT, GL_FALSE, 0, 0);
-		glEnableVertexAttribArray(glGetAttribLocation(program, "in_Position"));
-
-		unsigned int normalsBufferObjIDCube;
-		glGenBuffers(1, &normalsBufferObjIDCube);
-		glBindBuffer(GL_ARRAY_BUFFER, normalsBufferObjIDCube);
-		glBufferData(GL_ARRAY_BUFFER, cube.normals.size() * sizeof(GLfloat), &cube.normals[0], GL_STATIC_DRAW);
-
-		glVertexAttribPointer(glGetAttribLocation(program, "in_Normal"), 3, GL_FLOAT, GL_FALSE, 0, 0);
-		glEnableVertexAttribArray(glGetAttribLocation(program, "in_Normal"));
-	}
-	else {
-		std::cerr << " Cube not loaded!" << std::endl;
-	}
 }
 
 void initGameObjects()
@@ -97,7 +49,6 @@ void initGameObjects()
 void update(int val)
 {
     game->Update();
-    game->Render();
     glutTimerFunc(UPDATE_TIME_MS, update, 0);
 }
 
@@ -110,11 +61,7 @@ void display(void)
     // glMatrixMode(GL_MODELVIEW);
     // glLoadIdentity();
 
-	glBindVertexArray(vertexArrayObjIDTriangle);	// Select VAO for triangle
-	glDrawArrays(GL_TRIANGLES, 0, 3);
-
-	glBindVertexArray(vertexArrayObjIDCube);	// Select VAO for cube
-	glDrawArrays(GL_TRIANGLES, 0, cube.vertices.size()/3);
+	game->Render();
 
     // Swap buffers
     glutSwapBuffers();

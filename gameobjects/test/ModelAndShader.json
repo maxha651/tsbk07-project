@@ -1,4 +1,5 @@
 {
-	"model" : "test/TestModel",
-	"shader" : "test/TestShader"
+	"model" : "movedcube",
+	"vertshader" : "VertexShader",
+    "fragshader" : "FragmentShader"
 }
