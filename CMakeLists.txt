@@ -63,14 +63,6 @@ ADD_DEFINITIONS (-DTSBK07_SHADERS_PATH=\"${CMAKE_SOURCE_DIR}/src/shaders\")
 ADD_DEFINITIONS (-DTSBK07_MODELS_PATH=\"${CMAKE_SOURCE_DIR}/src/models\")
 ADD_DEFINITIONS (-DTSBK07_GAMEOBJECTS_PATH=\"${CMAKE_SOURCE_DIR}/gameobjects\")
 
-IF (UNIX)
-    # Used by Max' completion engine and syntax checker
-    # .h headers are treated as C otherwise
-    # Doesn't do anything now since it didn't really do what I wanted
-    # Wrong flags being set ?
-    SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
-ENDIF ()
-
 # Exports compile commands to file
 SET (CMAKE_EXPORT_COMPILE_COMMANDS 1)
 

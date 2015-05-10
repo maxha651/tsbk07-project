@@ -89,3 +89,9 @@ Matrix4f GOTransform::GetMatrix() {
     return res.matrix();
 }
 
+Vector3f GOTransform::Rotate(const Vector3f& vec) {
+    return AngleAxisf(rotation.x(), right)
+           * AngleAxisf(rotation.y(), up)
+           * AngleAxisf(rotation.z(), forward) * vec;
+}
+

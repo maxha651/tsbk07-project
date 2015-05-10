@@ -25,6 +25,7 @@ public:
     Vector3f& GetRotation();
     Vector3f& GetScale();
     Eigen::Matrix4f GetMatrix();
+    Vector3f Rotate(const Vector3f& vec);
 
     void SetPosition(float x, float y, float z);
     void SetPosition(Vector3f);
