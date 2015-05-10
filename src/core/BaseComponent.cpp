@@ -29,6 +29,6 @@ void BaseComponent::Render() {
 
 }
 
-GOTransform& BaseComponent::GetTransform() {
-    return this->gameObject->transform;
+GOTransform* BaseComponent::GetTransform() {
+    return &this->gameObject->transform;
 }

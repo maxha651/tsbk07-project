@@ -77,8 +77,8 @@ void Camera::UpdateInput() {
 void Camera::UpdateUpVector(){
 	Matrix3f rotationMatrix;
 
-	GOTransform t = this->GetTransform();
-	Vector3f rotation = t.GetRotation();
+	GOTransform* t = this->GetTransform();
+	Vector3f& rotation = t->GetRotation();
 
 	rotationMatrix = Eigen::AngleAxisf(rotation.x(), Vector3f::UnitX()) * 
             Eigen::AngleAxisf(rotation.y(), Vector3f::UnitY()) * 
@@ -88,7 +88,8 @@ void Camera::UpdateUpVector(){
 }
 
 void Camera::UpdateWorldToView() {
-    Vector3f position = this->GetTransform().GetPosition();
+	GameObject *go = this->gameObject;
+	Vector3f& position =  this->GetTransform()->GetPosition();
     Vector3f target = position + lookDir;
     worldToViewMatrix = LookAt(position, target, up);
 }

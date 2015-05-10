@@ -16,7 +16,7 @@ GameObject::GameObject(const std::string& path) :
     for (auto component : componentNames) {
         std::string componentPath(path);
         componentPath.append("/" + component + ".json");
-        components.push_back(componentFactory.NewComponent<const std::string&>(component, componentPath));
+        AddComponent(componentFactory.NewComponent<const std::string&>(component, componentPath));
         std::cout << "GameObject: " << name << " added Component: " << component << std::endl;
     }
 }

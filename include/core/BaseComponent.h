@@ -18,7 +18,7 @@ public:
     virtual ~BaseComponent();
     virtual void Update() override;
     virtual void Render() override;
-    GOTransform& GetTransform();
+    GOTransform* GetTransform();
 private:
 };
 

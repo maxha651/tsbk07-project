@@ -14,15 +14,16 @@ using Eigen::Vector3f;
 class GOTransform : public Component {
 
 public:
+	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     GOTransform();
     GOTransform(const GOTransform& transform);
     GOTransform(Vector3f pos, Vector3f rot, Vector3f scale);
     GOTransform(const std::string& jsonPath);
     virtual ~GOTransform();
 
-    Vector3f GetPosition();
-    Vector3f GetRotation();
-    Vector3f GetScale();
+    Vector3f& GetPosition();
+    Vector3f& GetRotation();
+    Vector3f& GetScale();
 
     void SetPosition(float x, float y, float z);
     void SetPosition(Vector3f);

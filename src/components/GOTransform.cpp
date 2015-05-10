@@ -13,6 +13,7 @@ const Vector3f GOTransform::right = Eigen::Vector3f::UnitX();
 const Vector3f GOTransform::up = Eigen::Vector3f::UnitY();
 const Vector3f GOTransform::forward = Eigen::Vector3f::UnitZ();
 
+
 GOTransform::GOTransform() 
     : position{ 0.0f, 0.0f, 0.0f }, rotation{ 0.0f, 0.0f, 0.0f }, scale{ 1.0f, 1.0f, 1.0f } {
 	
@@ -48,15 +49,15 @@ void GOTransform::SetPosition(Vector3f position) {
     this->position = position;
 }
 
-Vector3f GOTransform::GetPosition() {
+Vector3f& GOTransform::GetPosition() {
     return position;
 }
 
-Vector3f GOTransform::GetRotation() {
+Vector3f& GOTransform::GetRotation() {
     return rotation;
 }
 
-Vector3f GOTransform::GetScale() {
+Vector3f& GOTransform::GetScale() {
     return scale;
 }
 
