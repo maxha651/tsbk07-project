@@ -67,7 +67,6 @@ void ModelAndShader::LoadShader(const char *vertShader, const char *fragShader)
 	sprintf(fragmentShader, "%s/FragmentShader.glsl", TSBK07_SHADERS_PATH);
 	ShaderLoader shaderLoader;
 	program = shaderLoader.CreateProgram(vertShader, fragShader);
-	glUseProgram(program);
 	
 }
 
@@ -179,6 +178,7 @@ void ModelAndShader::Update() {
 
 void ModelAndShader::Render() {
     BaseComponent::Render();
+	glUseProgram(program);
     // Draw stuff or something
 	glBindVertexArray(vertexArrayObjID);	// Select VAO
 	glDrawArrays(GL_TRIANGLES, 0, vertices.size() / 3);
