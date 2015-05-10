@@ -64,25 +64,29 @@ void init()
 
 
 	// Cube
-	glGenVertexArrays(1, &vertexArrayObjIDCube);
-	glBindVertexArray(vertexArrayObjIDCube);
+	if (cube.vertices.size() > 0) {
+		glGenVertexArrays(1, &vertexArrayObjIDCube);
+		glBindVertexArray(vertexArrayObjIDCube);
 
-	unsigned int vertexBufferObjIDCube;
-	glGenBuffers(1, &vertexBufferObjIDCube);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObjIDCube);
-	glBufferData(GL_ARRAY_BUFFER, cube.vertices.size() * sizeof(GLfloat), &cube.vertices[0], GL_STATIC_DRAW);
+		unsigned int vertexBufferObjIDCube;
+		glGenBuffers(1, &vertexBufferObjIDCube);
+		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObjIDCube);
+		glBufferData(GL_ARRAY_BUFFER, cube.vertices.size() * sizeof(GLfloat), &cube.vertices[0], GL_STATIC_DRAW);
 
-	glVertexAttribPointer(glGetAttribLocation(program, "in_Position"), 3, GL_FLOAT, GL_FALSE, 0, 0);
-	glEnableVertexAttribArray(glGetAttribLocation(program, "in_Position"));
+		glVertexAttribPointer(glGetAttribLocation(program, "in_Position"), 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(glGetAttribLocation(program, "in_Position"));
 
-	unsigned int normalsBufferObjIDCube;
-	glGenBuffers(1, &normalsBufferObjIDCube);
-	glBindBuffer(GL_ARRAY_BUFFER, normalsBufferObjIDCube);
-	glBufferData(GL_ARRAY_BUFFER, cube.normals.size() * sizeof(GLfloat), &cube.normals[0], GL_STATIC_DRAW);
+		unsigned int normalsBufferObjIDCube;
+		glGenBuffers(1, &normalsBufferObjIDCube);
+		glBindBuffer(GL_ARRAY_BUFFER, normalsBufferObjIDCube);
+		glBufferData(GL_ARRAY_BUFFER, cube.normals.size() * sizeof(GLfloat), &cube.normals[0], GL_STATIC_DRAW);
 
-	glVertexAttribPointer(glGetAttribLocation(program, "in_Normal"), 3, GL_FLOAT, GL_FALSE, 0, 0);
-	glEnableVertexAttribArray(glGetAttribLocation(program, "in_Normal"));
-
+		glVertexAttribPointer(glGetAttribLocation(program, "in_Normal"), 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(glGetAttribLocation(program, "in_Normal"));
+	}
+	else {
+		std::cerr << " Cube not loaded!" << std::endl;
+	}
 }
 
 void initGameObjects()
