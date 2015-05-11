@@ -37,7 +37,11 @@ public:
 
 	// Computes the Catmull-Rom equation at a given time t for a point quadruple (p1, p2, p3, p4).
 	static Vector3f Compute(float t, const Vector3f & p1, const Vector3f & p2, const Vector3f & p3, const Vector3f & p4);
+
 private: 
-	std::vector<Vector3f> vp;
+	// Contains all spline points.
+	std::vector<Vector3f> spline_points;
+
+	// Used to fetch 4 correct spline points when computing the Catmull-Rom equation.
 	float delta_t;
 };
