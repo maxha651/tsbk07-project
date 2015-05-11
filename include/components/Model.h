@@ -18,6 +18,7 @@
 #include <GL/freeglut.h>
 #include <Eigen/Geometry>
 
+using Eigen::Vector4f;
 using Eigen::Vector3f;
 using Eigen::Vector2f;
 
@@ -38,6 +39,7 @@ public:
 	~Model();
 	std::vector<GLfloat> vertices;
 	std::vector<GLfloat> normals;
+	std::vector<GLfloat> color;
 	GLuint vertexArrayObjID;
 
 	virtual void Update() override;
