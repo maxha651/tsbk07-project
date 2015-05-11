@@ -4,7 +4,6 @@
 //
 
 #include <BaseComponent.h>
-#include <PointLight.h>
 
 class PointLight;
 
@@ -17,13 +16,11 @@ public:
     void Update();
     void Render();
 
-    unsigned int GetTextureUnit();
-
 private:
     void Init();
 
-    std::vector<std::unique_ptr<PointLight>> pointLights;
     float xSize, ySize;
+    unsigned int fboRef;
 
     // Keep this last
     JSONLoader jsonLoader;

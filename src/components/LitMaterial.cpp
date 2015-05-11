@@ -3,8 +3,7 @@
 //
 
 #include <LitMaterial.h>
-
-static const float resolution = 0.1f;
+#include <FBOManager.h>
 
 LitMaterial::LitMaterial() {
 
@@ -25,24 +24,25 @@ LitMaterial::~LitMaterial() {
 void LitMaterial::Update() {
     BaseComponent::Update();
 
+    // Clear FBO
+    // Use our camera to draw to our FBO
+    // Probably use our own shader as well
+
 }
 
 void LitMaterial::Render() {
     BaseComponent::Render();
 
-}
+    GLuint colorTexture = FBOManager::Instance().getColorTexture(fboRef);
+    GLuint depthTexture = FBOManager::Instance().getColorTexture(fboRef);
 
-unsigned int LitMaterial::GetTextureUnit() {
-    return 0;
+    // Draw normally using FBO texture from Update
+
 }
 
 void LitMaterial::Init() {
     Vector3f xDir = GetTransform()->Rotate(GOTransform::right);
     Vector3f yDir = GetTransform()->Rotate(GOTransform::up);
 
-    for (float y = 0.0f; y < ySize; y += resolution) {
-        for (float x = 0.0f; x < xSize; x += resolution) {
-            pointLights.emplace_back(new PointLight(x * xDir + y * yDir));
-        }
-    }
+    fboRef = FBOManager::Instance().AddFBO((unsigned int)xSize, (unsigned int)ySize);
 }
