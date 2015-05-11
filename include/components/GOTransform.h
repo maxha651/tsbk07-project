@@ -21,9 +21,11 @@ public:
     GOTransform(const std::string& jsonPath);
     virtual ~GOTransform();
 
-    Vector3f& GetPosition();
-    Vector3f& GetRotation();
-    Vector3f& GetScale();
+    GOTransform &operator=(const GOTransform &other);
+
+    Vector3f GetPosition();
+    Vector3f GetRotation();
+    Vector3f GetScale();
     Eigen::Matrix4f GetMatrix();
     Vector3f Rotate(const Vector3f& vec);
 

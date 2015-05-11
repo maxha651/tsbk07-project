@@ -32,8 +32,8 @@ Game::~Game() {
 
 GameObject& Game::GetGameObject(const std::string& name) {
     for (auto& go : gameObjects) {
-        if (name.compare(go.GetName())) {
-            return go;
+        if (name.compare(go->GetName())) {
+            return *go;
         }
     }
     throw new std::exception();
@@ -41,24 +41,24 @@ GameObject& Game::GetGameObject(const std::string& name) {
 
 void Game::AddGameObject(const std::string& name) {
     std::string goPath(path + "/" + name);
-    gameObjects.emplace_back(goPath);
+    gameObjects.emplace_back(new GameObject(goPath));
 }
 
 void Game::Update() {
     for (auto& go : gameObjects) {
-        go.Update();
+        go->Update();
     }
 }
 
 void Game::SetSaveOnExit(bool value) {
     for (auto& go : gameObjects) {
-        go.SetSaveOnExit(value);
+        go->SetSaveOnExit(value);
     }
 }
 
 
 void Game::Render() {
     for (auto& go : gameObjects) {
-        go.Render();
+        go->Render();
     }
 }

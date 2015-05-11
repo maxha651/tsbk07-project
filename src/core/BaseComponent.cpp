@@ -14,7 +14,7 @@ BaseComponent::BaseComponent(const std::string &jsonPath) {
     assert(false);
 }
 
-BaseComponent::BaseComponent() {
+BaseComponent::BaseComponent() : Component() {
 
 }
 

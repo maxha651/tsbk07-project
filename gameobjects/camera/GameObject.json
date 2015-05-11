@@ -1,7 +1,6 @@
 {
 	"components" : 
 	[
-		"Camera",
-		"GOTransform"
+		"Camera"
 	]
 }

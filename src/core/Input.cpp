@@ -4,8 +4,13 @@
 
 #include <Input.h>
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 #include <GL/glew.h>
 #include <GL/freeglut.h>
+#include <iostream>
 
 using Eigen::Vector2f;
 
@@ -15,6 +20,8 @@ static const unsigned KEY_UP = 'w';
 static const unsigned KEY_DOWN = 's';
 static const unsigned KEY_ESC = 0x1B;
 
+static int x, y;
+
 void Input::Init() {
     isUp.resize(255, false);
     glutMotionFunc(MotionFunc);
@@ -22,6 +29,7 @@ void Input::Init() {
     glutKeyboardFunc(KeyboardFunc);
     glutKeyboardUpFunc(KeyboardUpFunc);
     glutMouseFunc(MouseFunc);
+    glutTimerFunc(100, TimerFunc, 0);
 }
 
 bool Input::IsKeyDown(unsigned char key) {
@@ -71,7 +79,12 @@ void Input::KeyboardUpFunc(unsigned char key, int x, int y) {
     isUp[key] = false;
 }
 
-void Input::MotionFunc(int x, int y) {
+void Input::MotionFunc(int newX, int newY) {
+    x = newX;
+    y = newY;
+}
+
+void Input::TimerFunc(int val) {
     if (inFocus) {
         int centerX = glutGet(GLUT_WINDOW_WIDTH) / 2;
         int centerY = glutGet(GLUT_WINDOW_HEIGHT) / 2;
@@ -80,10 +93,12 @@ void Input::MotionFunc(int x, int y) {
 
         // Set pointer to center position
         glutWarpPointer(centerX, centerY);
+        x = centerX; y = centerY;
     }
     else {
         mouseMove << 0.0f, 0.0f;
     }
+    glutTimerFunc(100, TimerFunc, 0);
 }
 
 void Input::MouseFunc(int button, int state, int x, int y) {

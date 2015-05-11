@@ -17,7 +17,7 @@ using Eigen::Translation3f;
 // frustum parameters
 static const float FRUSTUM_LEFT = -1.0f, FRUSTUM_RIGHT = 1.0f, FRUSTUM_BOTTOM = -1.0f,
 				FRUSTUM_TOP = 1.0f, FRUSTUM_NEAR = 1.0f, FRUSTUM_FAR = 100.0f;
-static const float MOUSE_MOVE_SCALER = 1.0f;
+static const float MOUSE_MOVE_SCALER = 0.01f;
 
 Camera::Camera()
 {
@@ -39,6 +39,7 @@ void Camera::Init()
     }
 	this->up = GOTransform::up;
 	this->projectionMatrix = Frustum(FRUSTUM_LEFT, FRUSTUM_RIGHT, FRUSTUM_BOTTOM, FRUSTUM_TOP, FRUSTUM_NEAR, FRUSTUM_FAR);
+    this->worldToViewMatrix.setIdentity();
 }
 
 Camera::~Camera()
@@ -63,13 +64,14 @@ void Camera::UpdateInput() {
 
     // Change look direction
     Vector2f mouseMove = Input::GetMouseMove();
-    lookDir += rightVec * mouseMove.x();
-    lookDir += orthoUp * mouseMove.y();
+    lookDir += rightVec * mouseMove.x() * MOUSE_MOVE_SCALER;
+    lookDir += orthoUp * mouseMove.y() * MOUSE_MOVE_SCALER;
+    lookDir.normalize();
     // Change position
     Vector2f inputAxis = Input::GetInputAxis();
     Vector3f position = gameObject->transform.GetPosition();
     position += rightVec * inputAxis.x();
-    position += lookDir.normalized() * inputAxis.y();
+    position += lookDir * inputAxis.y();
     gameObject->transform.SetPosition(position);
 }
 
@@ -78,7 +80,7 @@ void Camera::UpdateUpVector(){
 	Matrix3f rotationMatrix;
 
 	GOTransform* t = this->GetTransform();
-	Vector3f& rotation = t->GetRotation();
+	Vector3f rotation = t->GetRotation();
 
 	rotationMatrix = Eigen::AngleAxisf(rotation.x(), Vector3f::UnitX()) * 
             Eigen::AngleAxisf(rotation.y(), Vector3f::UnitY()) * 
@@ -89,7 +91,7 @@ void Camera::UpdateUpVector(){
 
 void Camera::UpdateWorldToView() {
 	GameObject *go = this->gameObject;
-	Vector3f& position =  this->GetTransform()->GetPosition();
+	Vector3f position =  this->GetTransform()->GetPosition();
     Vector3f target = position + lookDir;
     worldToViewMatrix = LookAt(position, target, up);
 }
@@ -99,8 +101,8 @@ void Camera::UpdateWorldToView() {
  *
  * Based on Ingemar's PFNP book
  */
-Matrix4f Camera::LookAt(const Vector3f &position, const Vector3f &target,
-                               const Vector3f &up) {
+Matrix4f Camera::LookAt(const Vector3f& position, const Vector3f& target,
+                               const Vector3f& up) {
     Vector3f dirVec = position - target;
     Vector3f rightVec = dirVec.cross(up);
     Vector3f orthoUp = rightVec.cross(dirVec);

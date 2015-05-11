@@ -5,11 +5,13 @@
 
 #include <Model.h>
 
+#include <GameObject.h>
+
 static const char MODEL_REL_PATH[] = TSBK07_MODELS_PATH;
 static const char SHADER_REL_PATH[] = TSBK07_SHADERS_PATH;
 
 Model::Model(const std::string& jsonPath) :
-    jsonLoader(jsonPath) {
+    BaseComponent(), jsonLoader(jsonPath) {
 
     jsonLoader.AddDataField<std::string>("model", &model);
     //jsonLoader.AddDataField<std::string>("vertshader", &vertshader);
@@ -19,7 +21,7 @@ Model::Model(const std::string& jsonPath) :
 	init(model.c_str());
 }
 
-Model::Model(const char *model)
+Model::Model(const char *model) : BaseComponent()
 {
     init(model);
 }
@@ -246,6 +248,13 @@ void Model::Render() {
 	glUseProgram(Context::Instance().program);
     // Draw stuff or something
 	glBindVertexArray(vertexArrayObjID);	// Select VAO
+
+	// Calculate transform and send to shader
+	Eigen::Matrix4f matrix = Context::Instance().camera->projectionMatrix *
+							 Context::Instance().camera->worldToViewMatrix *
+							 GetGameObject()->transform.GetMatrix();
+
+	glUniformMatrix4fv(glGetUniformLocation(Context::Instance().program, "transform"), 1, GL_TRUE, matrix.data());
 
 	glDrawArrays(GL_TRIANGLES, 0, vertices.size() / 3);
 }

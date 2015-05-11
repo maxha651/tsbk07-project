@@ -18,7 +18,7 @@
  * classes. Or not.
  */
 
-static const int UPDATE_TIME_MS = 20;
+static const int UPDATE_TIME_MS = 100;
 
 // Test triangle
 static GLfloat vertices[] =
@@ -54,13 +54,14 @@ void initGameObjects()
 
 void update(int val)
 {
+    Input::Update();
     game->Update();
+    glutPostRedisplay();
     glutTimerFunc(UPDATE_TIME_MS, update, 0);
 }
 
 void display(void)
 {
-
     // clear the screen
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(1.0, 0.0, 0.0, 1.0);//clear red
@@ -79,6 +80,14 @@ void resize(GLsizei w, GLsizei h)
     glutPostRedisplay();
 }
 
+void debug(int val) {
+    std::cout << "Input: " << Input::GetInputAxis() << std::endl;
+    std::cout << "Camera pos: " << Context::Instance().camera->GetTransform()->GetPosition() << std::endl;
+    std::cout << "Camera lookDir: " << Context::Instance().camera->lookDir << std::endl;
+
+    glutTimerFunc(1000, debug, 0);
+}
+
 int main(int argc, char *argv[])
 {
     // Using OpenGL version 3.2
@@ -91,6 +100,7 @@ int main(int argc, char *argv[])
 
     glutDisplayFunc(display);
     glutTimerFunc(UPDATE_TIME_MS, update, 0);
+    glutTimerFunc(1000, debug, 0);
 
     Input::Init();
 

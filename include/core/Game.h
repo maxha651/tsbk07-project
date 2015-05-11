@@ -35,7 +35,7 @@ public:
     void SetSaveOnExit(bool value);
 private:
     std::string path;
-    std::vector<GameObject> gameObjects;
+    std::vector<std::unique_ptr<GameObject>> gameObjects;
 
 };
 

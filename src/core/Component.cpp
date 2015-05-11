@@ -4,6 +4,9 @@
 
 #include <Component.h>
 
+Component::Component() : gameObject(nullptr) {
+
+}
 
 Component::~Component() {
 
