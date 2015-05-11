@@ -42,7 +42,7 @@ void LitMaterial::Init() {
 
     for (float y = 0.0f; y < ySize; y += resolution) {
         for (float x = 0.0f; x < xSize; x += resolution) {
-            pointLights.emplace_back(x * xDir, y * yDir);
+            pointLights.emplace_back(new PointLight(x * xDir + y * yDir));
         }
     }
 }

@@ -43,5 +43,5 @@ void RadiosityLight::AddIncomingLight(PointLight* light) {
         return;
     }
 
-    color += dot * light->intensity * light->color;
+    //color += dot * light->intensity * light->color / toDir.len;
 }
