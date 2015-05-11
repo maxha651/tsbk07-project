@@ -14,7 +14,6 @@
 */
 
 // Default constructor. Creates an empty spline. "You" need to add control / spline points "yourself".
-// You also need to set delta_t correctly.
 CatSpline::CatSpline() : spline_points(), delta_t(0)
 {
 
@@ -35,7 +34,7 @@ CatSpline::~CatSpline()
 
 }
 
-// Computes a interpolated spline point.
+// Computes an interpolated spline point.
 // "Magic numbers" from matrix under "Interpolation on the unit interval without exact derivatives" in http://en.wikipedia.org/wiki/Cubic_Hermite_spline
 //
 // Try experimenting with these numbers. I'm not really sure what will happen. ./Fredrik
@@ -86,7 +85,7 @@ Vector3f CatSpline::GetInterpolatedSplinePoint(float t)
 	float lt = (t - delta_t * (float) p) / delta_t;
 	
 	return CatSpline::Compute(lt, spline_points[p0], spline_points[p1], spline_points[p2], spline_points[p3]);
-}
+}	
 
 int CatSpline::GetNumberOfPoints()
 {
