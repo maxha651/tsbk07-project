@@ -33,10 +33,10 @@ Camera::Camera(const std::string& jsonPath) :
 
 void Camera::Init()
 {
-    if (Context::Instance().camera != nullptr) {
-        std::cout << "Camera: Overriding existing camera" << std::endl;
+    if (Context::Instance().camera == nullptr) {
+        std::cout << "Camera: Context camera was null, adding ourselves" << std::endl;
+        Context::Instance().camera = this;
     }
-    Context::Instance().camera = this;
 	this->up = GOTransform::up;
 	this->projectionMatrix = Frustum(FRUSTUM_LEFT, FRUSTUM_RIGHT, FRUSTUM_BOTTOM, FRUSTUM_TOP, FRUSTUM_NEAR, FRUSTUM_FAR);
 }

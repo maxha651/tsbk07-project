@@ -4,11 +4,11 @@
 
 #include <FBOManager.h>
 
-FBOManager::FBOManager::FBOManager() {
+FBOManager::FBOManager() {
 
 }
 
-unsigned int FBOManager::FBOManager::AddFBO(unsigned int width, unsigned int height) {
+unsigned int FBOManager::AddFBO(unsigned int width, unsigned int height) {
     struct FBOData newData;
 
     // Generate an FBO and bind it to the pipeline
@@ -41,7 +41,7 @@ unsigned int FBOManager::FBOManager::AddFBO(unsigned int width, unsigned int hei
     fboMap.insert(std::pair<unsigned int, struct FBOData>(newData.fbo, newData));
 }
 
-bool FBOManager::FBOManager::ActivateFBO(unsigned int fbo) {
+bool FBOManager::ActivateFBO(unsigned int fbo) {
     try {
         FBOData data = fboMap.at(fbo);
         glBindFramebuffer(GL_FRAMEBUFFER, data.fbo);
@@ -53,20 +53,20 @@ bool FBOManager::FBOManager::ActivateFBO(unsigned int fbo) {
     }
 }
 
-void FBOManager::FBOManager::DeactivateFBO() {
+void FBOManager::DeactivateFBO() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     current_fbo = 0;
 }
 
-unsigned int FBOManager::FBOManager::getColorTexture() {
+unsigned int FBOManager::getColorTexture() {
     return getColorTexture(current_fbo);
 }
 
-unsigned int FBOManager::FBOManager::getDepthTexture() {
+unsigned int FBOManager::getDepthTexture() {
     return getDepthTexture(current_fbo);
 }
 
-unsigned int FBOManager::FBOManager::getColorTexture(unsigned int fbo) {
+unsigned int FBOManager::getColorTexture(unsigned int fbo) {
     try {
         return fboMap.at(current_fbo).colorTex;
     } catch  (...) {
@@ -74,15 +74,15 @@ unsigned int FBOManager::FBOManager::getColorTexture(unsigned int fbo) {
     }
 }
 
-unsigned int FBOManager::FBOManager::getDepthTexture(unsigned int fbo) {
+unsigned int FBOManager::getDepthTexture(unsigned int fbo) {
     try {
-        return fboMap.at(fbo).colorDepth;
+        return fboMap.at(fbo).depthTex;
     } catch  (...) {
         return 0;
     }
 }
 
-GLuint FBOManager::FBOManager::GenerateColorTexture(unsigned int width, unsigned int height) {
+GLuint FBOManager::GenerateColorTexture(unsigned int width, unsigned int height) {
     GLuint tex;
 
     glGenTextures(1, &tex);
@@ -96,7 +96,7 @@ GLuint FBOManager::FBOManager::GenerateColorTexture(unsigned int width, unsigned
     return tex;
 }
 
-GLuint FBOManager::FBOManager::GenerateDepthTexture(unsigned int width, unsigned int height) {
+GLuint FBOManager::GenerateDepthTexture(unsigned int width, unsigned int height) {
     GLuint tex;
 
     glGenTextures(1, &tex);

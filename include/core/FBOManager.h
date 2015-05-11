@@ -12,8 +12,6 @@
 
 #include <GL/glew.h>
 
-class FBOManager {
-
 class FBOManager
 {
 public:
@@ -40,6 +38,10 @@ public:
     unsigned int getDepthTexture(unsigned int fbo);
 
 private:
+    struct FBOData {
+        GLuint fbo, colorTex, depthTex;
+    };
+
     FBOManager();
 
     GLuint GenerateColorTexture(unsigned int width, unsigned int height);
@@ -49,14 +51,8 @@ private:
     std::map<unsigned int, struct FBOData> fboMap;
     GLuint current_fbo;
 
-    struct FBOData {
-        GLuint fbo, colorTex, depthTex;
-    };
-
     // Make sure no copy constructors are implemented
     // Compiler will create these for us otherwise
     FBOManager(FBOManager const&) = delete;
     void operator=(FBOManager const&) = delete;
-};
-
 };

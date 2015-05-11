@@ -30,18 +30,17 @@ public:
     Eigen::Matrix4f worldToViewMatrix;
     Eigen::Matrix4f projectionMatrix;
 
+    static Eigen::Matrix4f LookAt(const Eigen::Vector3f& position,
+                                  const Eigen::Vector3f& target, const Eigen::Vector3f& up);
+    static Eigen::Matrix4f Perspective(float fovyInDegrees, float aspectRatio,
+                                float znear, float zfar);
+    static Eigen::Matrix4f Frustum(float left, float right, float bottom, float top,
+                            float znear, float zfar);
 private:
     void Init();
     void UpdateInput();
     void UpdateUpVector();
     void UpdateWorldToView();
-
-    static Eigen::Matrix4f LookAt(const Eigen::Vector3f& position,
-            const Eigen::Vector3f& target, const Eigen::Vector3f& up);
-    Eigen::Matrix4f Perspective(float fovyInDegrees, float aspectRatio,
-                                float znear, float zfar);
-    Eigen::Matrix4f Frustum(float left, float right, float bottom, float top,
-                            float znear, float zfar);
 
     // Keep all dependent variables before this
     JSONLoader jsonLoader;
