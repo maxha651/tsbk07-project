@@ -10,5 +10,5 @@ uniform mat4 transform;
 void main(void)
 {
    gl_Position = transform * vec4(in_Position, 1.0);
-   ex_Normal = in_Normal;
+   ex_Normal = vec3(transform * vec4(in_Normal, 1.0));
 }
