@@ -200,6 +200,77 @@ void Model::Update() {
 
 
 
+
+
+GLint attribute_v_color;
+GLuint colorBufferObjID;
+
+void Model::LoadVBOAndVAO(){
+	unsigned int program = Context::Instance().program;
+	if (vertices.size() > 0) {
+		glGenVertexArrays(1, &vertexArrayObjID);
+		glBindVertexArray(vertexArrayObjID);
+
+		unsigned int vertexBufferObjID;
+		glGenBuffers(1, &vertexBufferObjID);
+		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObjID);
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), &vertices[0], GL_STATIC_DRAW);
+
+		glVertexAttribPointer(glGetAttribLocation(program, "in_Position"), 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(glGetAttribLocation(program, "in_Position"));
+
+		unsigned int normalsBufferObjIDCube;
+		glGenBuffers(1, &normalsBufferObjIDCube);
+		glBindBuffer(GL_ARRAY_BUFFER, normalsBufferObjIDCube);
+		glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(GLfloat), &normals[0], GL_STATIC_DRAW);
+
+		glVertexAttribPointer(glGetAttribLocation(program, "in_Normal"), 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(glGetAttribLocation(program, "in_Normal"));
+
+
+		/*
+		unsigned int colorBufferObjID;
+		glGenBuffers(1, &colorBufferObjID);
+		glBindBuffer(GL_ARRAY_BUFFER, colorBufferObjID);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(triangle_colors), triangle_colors, GL_STATIC_DRAW);
+		glVertexAttribPointer(glGetAttribLocation(program, "uni_Color"), 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(glGetAttribLocation(program, "uni_Color"));*/
+		
+		SetColor(1, 0, 0, 1);
+		GLint loc = glGetUniformLocation(Context::Instance().program, "uni_Color");
+		glProgramUniform4fv(program, loc, 1, colors);
+
+
+	}
+	else {
+		std::cerr << " Cube not loaded!" << std::endl;
+	}
+}
+
+void Model::Render() {
+    BaseComponent::Render();
+	glUseProgram(Context::Instance().program);
+    // Draw stuff or something
+	glBindVertexArray(vertexArrayObjID);	// Select VAO
+
+	// Calculate transform and send to shader
+
+	Eigen::Matrix4f matrix = Context::Instance().camera->projectionMatrix *
+							Context::Instance().camera->worldToViewMatrix *
+							 GetGameObject()->transform.GetMatrix();
+
+	glUniformMatrix4fv(glGetUniformLocation(Context::Instance().program, "transform"), 1, GL_FALSE, matrix.data());
+
+	glDrawArrays(GL_TRIANGLES, 0, vertices.size() / 3);
+}
+
+void Model::SetColor(GLfloat c1, GLfloat c2, GLfloat c3, GLfloat c4) {
+	colors[0] = c1;
+	colors[0] = c2;
+	colors[0] = c3;
+	colors[0] = c4;
+}
+
 GLfloat triangle_colors[] = {
 	1.0, 1.0, 0.0,
 	1.0, 1.0, 0.0,
@@ -249,69 +320,3 @@ GLfloat triangle_colors[] = {
 	0.0, 0.0, 1.0,
 	0.0, 0.0, 1.0,
 };
-
-GLfloat t_colors[] = {
-	1.0, 1.0, 0.0,
-};
-
-GLint attribute_v_color;
-GLuint colorBufferObjID;
-
-void Model::LoadVBOAndVAO(){
-	unsigned int program = Context::Instance().program;
-	if (vertices.size() > 0) {
-		glGenVertexArrays(1, &vertexArrayObjID);
-		glBindVertexArray(vertexArrayObjID);
-
-		unsigned int vertexBufferObjID;
-		glGenBuffers(1, &vertexBufferObjID);
-		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObjID);
-		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), &vertices[0], GL_STATIC_DRAW);
-
-		glVertexAttribPointer(glGetAttribLocation(program, "in_Position"), 3, GL_FLOAT, GL_FALSE, 0, 0);
-		glEnableVertexAttribArray(glGetAttribLocation(program, "in_Position"));
-
-		unsigned int normalsBufferObjIDCube;
-		glGenBuffers(1, &normalsBufferObjIDCube);
-		glBindBuffer(GL_ARRAY_BUFFER, normalsBufferObjIDCube);
-		glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(GLfloat), &normals[0], GL_STATIC_DRAW);
-
-		glVertexAttribPointer(glGetAttribLocation(program, "in_Normal"), 3, GL_FLOAT, GL_FALSE, 0, 0);
-		glEnableVertexAttribArray(glGetAttribLocation(program, "in_Normal"));
-
-
-		color.push_back(1.0);
-		color.push_back(1.0);
-		color.push_back(1.0);
-
-		unsigned int colorBufferObjID;
-		glGenBuffers(1, &colorBufferObjID);
-		glBindBuffer(GL_ARRAY_BUFFER, colorBufferObjID);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(triangle_colors), triangle_colors, GL_STATIC_DRAW);
-
-
-		glVertexAttribPointer(glGetAttribLocation(program, "uni_Color"), 3, GL_FLOAT, GL_FALSE, 0, 0);
-		glEnableVertexAttribArray(glGetAttribLocation(program, "uni_Color"));
-
-	}
-	else {
-		std::cerr << " Cube not loaded!" << std::endl;
-	}
-}
-
-void Model::Render() {
-    BaseComponent::Render();
-	glUseProgram(Context::Instance().program);
-    // Draw stuff or something
-	glBindVertexArray(vertexArrayObjID);	// Select VAO
-
-	// Calculate transform and send to shader
-
-	Eigen::Matrix4f matrix = Context::Instance().camera->projectionMatrix *
-							Context::Instance().camera->worldToViewMatrix *
-							 GetGameObject()->transform.GetMatrix();
-
-	glUniformMatrix4fv(glGetUniformLocation(Context::Instance().program, "transform"), 1, GL_FALSE, matrix.data());
-
-	glDrawArrays(GL_TRIANGLES, 0, vertices.size() / 3);
-}

@@ -65,7 +65,7 @@ void Camera::UpdateInput() {
     // Change look direction
     Vector2f mouseMove = Input::GetMouseMove();
     lookDir += rightVec * mouseMove.x() * MOUSE_MOVE_SCALER;
-    lookDir += orthoUp * mouseMove.y() * MOUSE_MOVE_SCALER;
+    lookDir += orthoUp * -mouseMove.y() * MOUSE_MOVE_SCALER;
     lookDir.normalize();
     // Change position
     Vector2f inputAxis = Input::GetInputAxis();

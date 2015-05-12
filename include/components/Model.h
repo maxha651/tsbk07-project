@@ -39,11 +39,12 @@ public:
 	~Model();
 	std::vector<GLfloat> vertices;
 	std::vector<GLfloat> normals;
-	std::vector<GLfloat> color;
+	GLfloat colors[4];
 	GLuint vertexArrayObjID;
 
 	virtual void Update() override;
 	virtual void Render() override;
+	void SetColor(GLfloat c1, GLfloat c2, GLfloat c3, GLfloat c4);
 
 
 private:

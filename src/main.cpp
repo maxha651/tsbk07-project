@@ -41,8 +41,9 @@ void init()
 	ShaderLoader shaderLoader;
 	Context::Instance().program = shaderLoader.CreateProgram(vertexShader, fragmentShader);
 
+
     // GL inits
-    glClearColor(1.0f,0.3f,0.5f,0.0f);
+    glClearColor(0.5f,0.5f,0.5f,1.0f);
     glEnable(GL_DEPTH_TEST);
 
 }
@@ -64,8 +65,8 @@ void display(void)
 {
     // clear the screen
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(1.0, 0.5, 0.0, 1.0);//clear red
-    // glMatrixMode(GL_MODELVIEW);
+    //glClearColor(1.0, 0.5, 0.0, 1.0);//clear red
+    //glMatrixMode(GL_MODELVIEW);
     // glLoadIdentity();
 
 	game->Render();
