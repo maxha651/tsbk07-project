@@ -100,7 +100,7 @@ int main(int argc, char *argv[])
 
     glutDisplayFunc(display);
     glutTimerFunc(UPDATE_TIME_MS, update, 0);
-    glutTimerFunc(1000, debug, 0);
+    //glutTimerFunc(1000, debug, 0);
 
     Input::Init();
 

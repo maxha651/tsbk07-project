@@ -96,6 +96,7 @@ void Model::LoadObject(const char* filename)
     // Go through all elements of the coord and decide what kind of element it is
     for (size_t i = 0; i < coord.size(); i++) 
     {
+		std::cout << "Model: Line " << i << ": " << coord[i] << std::endl;
         if (coord[i].c_str()[0] == '#')   // Comment
             continue;      
         else if (coord[i].c_str()[0] == 'v' && coord[i].c_str()[1] == ' ') // Vertice
@@ -166,7 +167,10 @@ void Model::LoadObject(const char* filename)
 					std::cerr << "Model: Failed to parse vertex/normal" << std::endl;
 				}
             }
-        } 
+        }
+		else {
+			std::cout << "Model: Line couldn't be parsed" << std::endl;
+		}
     }
 }
 
