@@ -82,7 +82,7 @@ void Camera::UpdateUpVector(){
 	GOTransform* t = this->GetTransform();
 	Vector3f rotation = t->GetRotation();
 
-	rotationMatrix = Eigen::AngleAxisf(rotation.x(), Vector3f::UnitX()) * 
+	rotationMatrix = Eigen::AngleAxisf(rotation.x(), Vector3f::UnitX()) *
             Eigen::AngleAxisf(rotation.y(), Vector3f::UnitY()) * 
             Eigen::AngleAxisf(rotation.z(), Vector3f::UnitZ());
 
@@ -104,20 +104,25 @@ void Camera::UpdateWorldToView() {
 Matrix4f Camera::LookAt(const Vector3f& position, const Vector3f& target,
                                const Vector3f& up) {
     Vector3f dirVec = position - target;
-    Vector3f rightVec = dirVec.cross(up);
-    Vector3f orthoUp = rightVec.cross(dirVec);
+    dirVec.normalize();
+    Vector3f rightVec = up.cross(dirVec);
+    rightVec.normalize();
+    Vector3f orthoUp = dirVec.cross(rightVec);
 
     Matrix4f ret;
     // using this syntax is an easy way to set matrices.
     ret <<  rightVec.transpose(), 0,
             orthoUp.transpose(), 0,
             dirVec.transpose(), 0,
-            0, 0, 0, 0;
+            0, 0, 0, 1;
+
+    Eigen::Affine3f transl = Eigen::Affine3f::Identity();
+    transl.translate(-position);
 
     //std::cout << "position: " << position << ", target: " << target << " up: " << up << std::endl;
     //std::cout << "yields transform matrix: " << ret << std::endl;
 
-    return ret;
+    return ret * transl.matrix();
 }
 
 /**
