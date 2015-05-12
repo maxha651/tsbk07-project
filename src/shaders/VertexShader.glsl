@@ -12,7 +12,8 @@ uniform mat4 worldToViewMatrix;
 
 void main(void)
 {
-    gl_Position = projectionMatrix * worldToViewMatrix * transform * vec4(in_Position, 1.0);
+	mat4 totalMatrix = projectionMatrix * worldToViewMatrix * transform;
+    gl_Position = mat3(totalMatrix) * in_Position;
     ex_Normal = mat3(transform) * in_Normal;
-	ex_Surface = vec3(worldToViewMatrix * vec4(in_Position, 1.0));
+	ex_Surface = mat3(worldToViewMatrix) * in_Position;
 }
