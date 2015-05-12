@@ -258,7 +258,7 @@ void Model::Render() {
 
 	glUniformMatrix4fv(glGetUniformLocation(Context::Instance().program, "projectionMatrix"), 1, GL_FALSE, Context::Instance().camera->projectionMatrix.data());
 	glUniformMatrix4fv(glGetUniformLocation(Context::Instance().program, "worldToViewMatrix"), 1, GL_FALSE, Context::Instance().camera->worldToViewMatrix.data());
-	glUniformMatrix4fv(glGetUniformLocation(Context::Instance().program, "totMatrix"), 1, GL_FALSE, matrix.data());
+	glUniformMatrix4fv(glGetUniformLocation(Context::Instance().program, "transform"), 1, GL_FALSE, GetTransform()->GetMatrix().data());
 	GLint loc = glGetUniformLocation(Context::Instance().program, "uni_Color");
 	glProgramUniform4fv(Context::Instance().program, loc, 1, colors);
 
