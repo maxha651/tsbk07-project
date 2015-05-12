@@ -119,7 +119,7 @@ void Model::LoadObject(const char* filename)
             if (std::count(coord[i].begin(), coord[i].end(), ' ') == 3) // Check if triangle
             {
 				unsigned int vertexIndex[3], normalIndex[3]; // uvIndex[3],
-				if (EOF != sscanf(coord[i].c_str(), "f %d//%d %d//%d %d//%d",
+				if (6 == sscanf(coord[i].c_str(), "f %d//%d %d//%d %d//%d",
 								  &vertexIndex[0], &normalIndex[0], &vertexIndex[1],
 								  &normalIndex[1], &vertexIndex[2], &normalIndex[2])) {
 
@@ -136,6 +136,23 @@ void Model::LoadObject(const char* filename)
 						normals.push_back(normal[(normalIndex[n] - 1)][0]);
 						normals.push_back(normal[(normalIndex[n] - 1)][1]);
 						normals.push_back(normal[(normalIndex[n] - 1)][2]);
+					}
+				}
+				else if (3 == sscanf(coord[i].c_str(), "f %d %d %d",
+									 &vertexIndex[0], &vertexIndex[1], &vertexIndex[2])) {
+					// Add vertices to final vertice list
+					for (int n = 0; n < 3; n++) {
+						if (vertexIndex[n] > vertex.size()) {
+							std::cerr << "Model: Vertex index is out of bounds" << std::endl;
+							continue;
+						}
+						vertices.push_back(vertex[(vertexIndex[n] - 1)][0]);
+						vertices.push_back(vertex[(vertexIndex[n] - 1)][1]);
+						vertices.push_back(vertex[(vertexIndex[n] - 1)][2]);
+						Vector3f tmpNormal = vertex[(vertexIndex[n]) -1].cross(vertex[vertexIndex[(n + 1) % 3] -1]);
+						normals.push_back(tmpNormal[0]);
+						normals.push_back(tmpNormal[1]);
+						normals.push_back(tmpNormal[2]);
 					}
 				}
 				else {
