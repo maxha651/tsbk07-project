@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
     // Using OpenGL version 3.2
     glutInitContextVersion(3,2);
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_RGBA|GLUT_SINGLE);
+    glutInitDisplayMode(GLUT_DEPTH|GLUT_RGBA|GLUT_DOUBLE);
     glutInitWindowPosition(50, 25);
     glutInitWindowSize(480,480);
     glutCreateWindow("Hello OpenGL");
