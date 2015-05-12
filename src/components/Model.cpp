@@ -149,7 +149,9 @@ void Model::LoadObject(const char* filename)
 						vertices.push_back(vertex[(vertexIndex[n] - 1)][0]);
 						vertices.push_back(vertex[(vertexIndex[n] - 1)][1]);
 						vertices.push_back(vertex[(vertexIndex[n] - 1)][2]);
-						Vector3f tmpNormal = vertex[(vertexIndex[n]) -1].cross(vertex[vertexIndex[(n + 1) % 3] -1]);
+						Vector3f tmpNormal =
+								(vertex[vertexIndex[n == 2 ? 0 : (n + 1)] -1] - vertex[(vertexIndex[n]) -1]).cross(
+								(vertex[vertexIndex[n == 0 ? 2 : (n - 1)] -1] - vertex[(vertexIndex[n]) -1])).normalized();
 						normals.push_back(tmpNormal[0]);
 						normals.push_back(tmpNormal[1]);
 						normals.push_back(tmpNormal[2]);
