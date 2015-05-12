@@ -6,6 +6,10 @@ in vec3 ex_Normal;
 
 uniform vec4 uni_Color;
 
+uniform mat4 totMatrix;
+uniform mat4 projectionMatrix;
+uniform mat4 worldToViewMatrix;
+
 void main(void)
 {
 	const vec3 light = vec3(0.58, 0.58, 0.58);
