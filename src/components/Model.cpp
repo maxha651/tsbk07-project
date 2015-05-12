@@ -65,7 +65,7 @@ Model::~Model()
 void Model::LoadObject(const char* filename)
 {
 
-    std::vector<std::string*> coord; // Each line read from file
+    std::vector<std::string> coord; // Each line read from file
     std::vector<Vector3f> vertex;
 	std::vector<Vector3f> normal;
     std::ifstream in(filename);
@@ -74,40 +74,51 @@ void Model::LoadObject(const char* filename)
         std::cout << "Model file could not be opened" << std::endl;
         return;
     }
+
+	// Reserve enough space in coord so we don't get 9000+ reallocations
+	long line_count = std::count(std::istreambuf_iterator<char>(in),
+			   std::istreambuf_iterator<char>(), '\n') + 1;
+	if (line_count > 0) {
+		coord.reserve(static_cast<unsigned long>(line_count));
+	}
+	in.seekg(0, std::ios_base::beg);
+
     char buf[256];
     // Read in every line to coord
     while (!in.eof())
     {
         in.getline(buf, 256);
-        coord.push_back(new std::string(buf));
+        coord.emplace_back(buf);
     }
+
+	std::cout << "Model: Loading " << coord.size() << " vertices/normals/triangles/quads" << std::endl;
 
     // Go through all elements of the coord and decide what kind of element it is
     for (size_t i = 0; i < coord.size(); i++) 
     {
-        if (coord[i]->c_str()[0] == '#')   // Comment
+        if (coord[i].c_str()[0] == '#')   // Comment
             continue;      
-        else if (coord[i]->c_str()[0] == 'v' && coord[i]->c_str()[1] == ' ') // Vertice
+        else if (coord[i].c_str()[0] == 'v' && coord[i].c_str()[1] == ' ') // Vertice
         {
 			GLfloat tmpx, tmpy, tmpz;
-            sscanf(coord[i]->c_str(), "v %f %f %f", &tmpx, &tmpy, &tmpz); // Read in the 3 float coordinate to tmpx,tmpy,tmpz
+            sscanf(coord[i].c_str(), "v %f %f %f", &tmpx, &tmpy, &tmpz); // Read in the 3 float coordinate to tmpx,tmpy,tmpz
 			vertex.push_back(Vector3f(tmpx, tmpy, tmpz));       // and then add it to the end of our vertex list
 		
         }
-        else if (coord[i]->c_str()[0] == 'v' && coord[i]->c_str()[1] == 'n') // Normal
+        else if (coord[i].c_str()[0] == 'v' && coord[i].c_str()[1] == 'n') // Normal
         {
             float tmpx, tmpy, tmpz; 
-            sscanf(coord[i]->c_str(), "vn %f %f %f", &tmpx, &tmpy, &tmpz);
+            sscanf(coord[i].c_str(), "vn %f %f %f", &tmpx, &tmpy, &tmpz);
 			normal.push_back(Vector3f(tmpx, tmpy, tmpz));       // and then add it to the end of our vertex list
 
         }
-        else if (coord[i]->c_str()[0] == 'f') // Face
+        else if (coord[i].c_str()[0] == 'f') // Face
         {
 			
-            if (count(coord[i]->begin(), coord[i]->end(), ' ') == 3) // Check if triangle
+            if (std::count(coord[i].begin(), coord[i].end(), ' ') == 3) // Check if triangle
             {
 				unsigned int vertexIndex[3], normalIndex[3]; // uvIndex[3],
-				if (EOF != sscanf(coord[i]->c_str(), "f %d//%d %d//%d %d//%d",
+				if (EOF != sscanf(coord[i].c_str(), "f %d//%d %d//%d %d//%d",
 								  &vertexIndex[0], &normalIndex[0], &vertexIndex[1],
 								  &normalIndex[1], &vertexIndex[2], &normalIndex[2])) {
 
@@ -133,7 +144,7 @@ void Model::LoadObject(const char* filename)
             else{ // else quad
 				
 				unsigned int vertexIndex[4], normalIndex[4]; // uvIndex[3],
-				if (EOF != sscanf(coord[i]->c_str(), "f %d//%d %d//%d %d//%d %d//%d",
+				if (EOF != sscanf(coord[i].c_str(), "f %d//%d %d//%d %d//%d %d//%d",
 								  &vertexIndex[0], &normalIndex[0], &vertexIndex[1], &normalIndex[1],
 								  &vertexIndex[2], &normalIndex[2], &vertexIndex[3], &normalIndex[3])) {
 
