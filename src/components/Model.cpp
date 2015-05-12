@@ -107,16 +107,27 @@ void Model::LoadObject(const char* filename)
             if (count(coord[i]->begin(), coord[i]->end(), ' ') == 3) // Check if triangle
             {
 				unsigned int vertexIndex[3], normalIndex[3]; // uvIndex[3],
-				sscanf(coord[i]->c_str(), "f %d//%d %d//%d %d//%d", &vertexIndex[0], &normalIndex[0], &vertexIndex[1], &normalIndex[1], &vertexIndex[2], &normalIndex[2]);
+				if (EOF != sscanf(coord[i]->c_str(), "f %d//%d %d//%d %d//%d",
+								  &vertexIndex[0], &normalIndex[0], &vertexIndex[1],
+								  &normalIndex[1], &vertexIndex[2], &normalIndex[2])) {
 
-				// Add vertices to final vertice list
-				for (int n = 0; n < 3; n++){
-					vertices.push_back(vertex[(vertexIndex[n] - 1)][0]);
-					vertices.push_back(vertex[(vertexIndex[n] - 1)][1]);
-					vertices.push_back(vertex[(vertexIndex[n] - 1)][2]);
-					normals.push_back(normal[(normalIndex[n] - 1)][0]);
-					normals.push_back(normal[(normalIndex[n] - 1)][1]);
-					normals.push_back(normal[(normalIndex[n] - 1)][2]);
+					// Add vertices to final vertice list
+					for (int n = 0; n < 3; n++) {
+						if (vertexIndex[n] > vertex.size() ||
+								normalIndex[n] > normal.size()) {
+							std::cerr << "Model: Vertex/normal index is out of bounds" << std::endl;
+							continue;
+						}
+						vertices.push_back(vertex[(vertexIndex[n] - 1)][0]);
+						vertices.push_back(vertex[(vertexIndex[n] - 1)][1]);
+						vertices.push_back(vertex[(vertexIndex[n] - 1)][2]);
+						normals.push_back(normal[(normalIndex[n] - 1)][0]);
+						normals.push_back(normal[(normalIndex[n] - 1)][1]);
+						normals.push_back(normal[(normalIndex[n] - 1)][2]);
+					}
+				}
+				else {
+					std::cerr << "Model: Failed to parse vertex/normal" << std::endl;
 				}
             }
             else{ // else quad
