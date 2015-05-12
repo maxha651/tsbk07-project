@@ -22,6 +22,7 @@ class GameObject {
 public:
     GameObject();
     GameObject(const std::string& path);
+    GameObject(const std::string& name, const std::string& path);
     virtual ~GameObject();
 
     template<class T> T GetComponent() const {

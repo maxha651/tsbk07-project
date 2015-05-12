@@ -21,8 +21,12 @@ GameObject::GameObject(const std::string& path) :
     }
 }
 
+GameObject::GameObject(const std::string &name, const std::string &path) : GameObject(path) {
+    this->name = name;
+}
+
 GameObject::~GameObject() {
-    std::cout << "GameObject: Deleting gameObject: " << name << ", copy error?" << std::endl;
+    std::cout << "GameObject: Deleting gameObject: " << name << std::endl;
 }
 
 void GameObject::AddComponent(Component* component) {
