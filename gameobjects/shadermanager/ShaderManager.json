@@ -1,6 +1,7 @@
 {
   "shaders" :
   [
-	"lab1-1"
+	"lab1-1",
+    "invertcolor"
   ]
 }
