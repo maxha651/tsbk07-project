@@ -27,6 +27,7 @@ public:
 private:
     std::vector<std::string> shaders;
     std::vector<GLuint> programs;
+    bool hasSwitched;
     int currentProgram;
 
     // Keep last

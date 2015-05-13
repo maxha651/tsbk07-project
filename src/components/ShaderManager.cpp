@@ -30,6 +30,12 @@ void ShaderManager::Update() {
     BaseComponent::Update();
 
     if (Input::IsKeyDown('p')) {
-        Context::Instance().program = programs[++currentProgram % programs.size()];
+        if (!hasSwitched) {
+            Context::Instance().program = programs[++currentProgram % programs.size()];
+            hasSwitched = true;
+        }
+    }
+    else {
+        hasSwitched = false;
     }
 }
