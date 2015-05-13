@@ -246,9 +246,12 @@ void Model::LoadVBOAndVAO(){
 
 void Model::Render() {
     BaseComponent::Render();
-	glUseProgram(Context::Instance().program);
-    // Draw stuff or something
+	// Draw stuff or something
 	glBindVertexArray(vertexArrayObjID);	// Select VAO
+
+	glUseProgram(Context::Instance().program);
+	LoadVBOAndVAO();
+
 
 	// Calculate transform and send to shader
 

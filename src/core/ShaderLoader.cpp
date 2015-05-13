@@ -7,10 +7,10 @@
 #include<fstream>
 #include<vector>
 
-ShaderLoader::ShaderLoader(void){}
+ShaderLoader::ShaderLoader(){}
 
 
-ShaderLoader::~ShaderLoader(void){}
+ShaderLoader::~ShaderLoader(){}
 
 
 std::string ShaderLoader::ReadShader(const char *filename)

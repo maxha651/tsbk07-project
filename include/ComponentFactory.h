@@ -5,6 +5,7 @@
 #include <GOTransform.h>
 #include <Camera.h>
 #include <Model.h>
+#include <ShaderManager.h>
 
 /**
  * Used for creating Component instances providing name as string.
@@ -42,6 +43,9 @@ private:
         }
         else if (name.compare("GOTransform") == 0) {
             return _NewComponent<GOTransform>(name, args...);
+        }
+        else if (name.compare("ShaderManager") == 0) {
+            return _NewComponent<ShaderManager>(name, args...);
         }
         /* ADD NEW CLASSES HERE */
         else {
