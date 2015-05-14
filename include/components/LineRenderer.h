@@ -14,6 +14,7 @@ class LineRenderer : public BaseComponent
 {
 public:
 	LineRenderer();
+	LineRenderer(const std::string& jsonPath);
 	~LineRenderer();
 	
 	GLuint vertexArrayObjID;

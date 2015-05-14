@@ -5,6 +5,9 @@ LineRenderer::LineRenderer()
 {
 }
 
+LineRenderer::LineRenderer(const std::string &jsonPath) {
+
+}
 
 LineRenderer::~LineRenderer()
 {
@@ -53,4 +56,8 @@ void LineRenderer::Render() {
 	glProgramUniform4fv(Context::Instance().program, loc, 1, colors);
 
 	glDrawArrays(GL_LINES, 0, vertices.size() / 3);
+}
+
+void LineRenderer::Update() {
+	BaseComponent::Update();
 }
