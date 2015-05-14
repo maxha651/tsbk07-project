@@ -37,7 +37,7 @@ Game::~Game() {
 
 GameObject& Game::GetGameObject(const std::string& name) {
     for (auto& go : gameObjects) {
-        if (name.compare(go->GetName())) {
+        if (name.compare(go->GetName()) == 0) {
             return *go;
         }
     }
