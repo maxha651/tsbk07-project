@@ -21,5 +21,5 @@ void main(void)
 	
 	shade = clamp(dot(normalize(ex_Normal), light), 0.0, 1.0);
 
-	out_Color = vec4(uni_Color.x * shade, uni_Color.y * shade, uni_Color.z * shade, 1.0);
+	out_Color = vec4(uni_Color.x * shade, uni_Color.y * shade, uni_Color.z * shade, uni_Color.z);
 }
