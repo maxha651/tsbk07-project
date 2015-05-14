@@ -25,6 +25,11 @@ Game::Game(const std::string& path) : path(path) {
         /* could not open directory */
         std::cerr << "Game: Couldn't open directory " << path << std::endl;
     }
+
+    if (Context::Instance().game == nullptr) {
+        Context::Instance().game = this;
+        std::cout << "Game: Added ourselves to Context" << std::endl;
+    }
 }
 
 Game::~Game() {

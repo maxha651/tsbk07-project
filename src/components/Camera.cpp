@@ -29,14 +29,15 @@ Camera::Camera(const std::string& jsonPath) :
     jsonLoader.AddArrayField<float>("lookDir", lookDir.data(), 3);
     jsonLoader.Read();
     Init();
-}
-
-void Camera::Init()
-{
+    // Only add ourselves when loading from JSON
     if (Context::Instance().camera == nullptr) {
         std::cout << "Camera: Context camera was null, adding ourselves" << std::endl;
         Context::Instance().camera = this;
     }
+}
+
+void Camera::Init()
+{
 	this->up = GOTransform::up;
 	this->projectionMatrix = Frustum(FRUSTUM_LEFT, FRUSTUM_RIGHT, FRUSTUM_BOTTOM, FRUSTUM_TOP, FRUSTUM_NEAR, FRUSTUM_FAR);
     this->worldToViewMatrix.setIdentity();

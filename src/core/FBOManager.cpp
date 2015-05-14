@@ -25,8 +25,8 @@ unsigned int FBOManager::AddFBO(unsigned int width, unsigned int height) {
     glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, newData.depthTex, 0);
 
     // I don't understand this
-    //drawbuffer.push_back(GL_COLOR_ATTACHMENT0);
-    //glDrawBuffers(drawbuffer.size(), &drawbuffer[0]);
+    drawbuffer.push_back(GL_COLOR_ATTACHMENT0);
+    glDrawBuffers(drawbuffer.size(), &drawbuffer[0]);
 
     // Check for FBO completeness
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE){

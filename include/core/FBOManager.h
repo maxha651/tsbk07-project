@@ -8,6 +8,7 @@
 #endif
 
 #include <iostream>
+#include <vector>
 #include <map>
 
 #include <GL/glew.h>
@@ -24,17 +25,11 @@ public:
     }
 
     unsigned int AddFBO(unsigned int width, unsigned int height);
-
     bool ActivateFBO(unsigned int fbo);
-
     void DeactivateFBO();
-
     unsigned int getColorTexture();
-
     unsigned int getDepthTexture();
-
     unsigned int getColorTexture(unsigned int fbo);
-
     unsigned int getDepthTexture(unsigned int fbo);
 
 private:
@@ -43,11 +38,10 @@ private:
     };
 
     FBOManager();
-
     GLuint GenerateColorTexture(unsigned int width, unsigned int height);
-
     GLuint GenerateDepthTexture(unsigned int width, unsigned int height);
 
+    std::vector<GLuint> drawbuffer;
     std::map<unsigned int, struct FBOData> fboMap;
     GLuint current_fbo;
 

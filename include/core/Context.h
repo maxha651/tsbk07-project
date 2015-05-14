@@ -6,20 +6,19 @@
 // Keeps pointers to global stuff
 //
 
-#include <mutex>
-
 // Forward declarations (no need to include headers when
 // only using non-dereferenced pointers)
+class Game;
 class Camera;
 class PointLight;
 
 class Context
 {
 public:
+    Game* game;
     Camera* camera;
 	unsigned int program;
-    std::map<size_t, PointLight*> pointLights;
-    size_t pointLightsRefCntr;
+    unsigned int renderer;
 
     static Context& Instance()
     {
@@ -28,7 +27,7 @@ public:
         return instance;
     }
 private:
-    Context() : camera(nullptr), pointLightsRefCntr(0) {};
+    Context() : game(nullptr), camera(nullptr), renderer(0) {};
 
     // Make sure no copy constructors are implemented
     // Compiler will create these for us otherwise

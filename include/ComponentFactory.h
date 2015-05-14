@@ -6,6 +6,7 @@
 #include <Camera.h>
 #include <Model.h>
 #include <ShaderManager.h>
+#include <Mirror.h>
 
 /**
  * Used for creating Component instances providing name as string.
@@ -46,6 +47,9 @@ private:
         }
         else if (name.compare("ShaderManager") == 0) {
             return _NewComponent<ShaderManager>(name, args...);
+        }
+        else if (name.compare("Mirror") == 0) {
+            return _NewComponent<Mirror>(name, args...);
         }
         /* ADD NEW CLASSES HERE */
         else {
