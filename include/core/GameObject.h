@@ -25,10 +25,10 @@ public:
     GameObject(const std::string& name, const std::string& path);
     virtual ~GameObject();
 
-    template<class T> T GetComponent() const {
+    template<class T> T* GetComponent() const {
         for (auto c : components) {
-            if (typeid(c) == typeid(T)) {
-                return c;
+            if (typeid(*c) == typeid(T)) {
+                return dynamic_cast<T*>(c);
             }
         }
         return nullptr;
