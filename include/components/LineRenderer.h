@@ -21,6 +21,7 @@ public:
 	std::vector<GLfloat> vertices;
 	GLfloat colors[4];
 
+	void LineRenderer::AddLine(Vector3f from, Vector3f to);
 	void SetColor(GLfloat c1, GLfloat c2, GLfloat c3, GLfloat c4);
 	virtual void Update() override;
 	virtual void Render() override;

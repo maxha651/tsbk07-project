@@ -34,29 +34,37 @@ void LineRenderer::LoadVBOAndVAO(){
 
 void LineRenderer::Render() {
 	BaseComponent::Render();
-	// Draw stuff or something
-	glBindVertexArray(vertexArrayObjID);	// Select VAO
 
-	glUseProgram(Context::Instance().program);
+	if (vertices.size() > 0) {
+		// Draw stuff or something
+		glBindVertexArray(vertexArrayObjID);	// Select VAO
 
-	// Calculate transform and send to shader
+		glUseProgram(Context::Instance().program);
 
-	/*Eigen::Matrix4f matrix = Context::Instance().camera->projectionMatrix *
-	Context::Instance().camera->worldToViewMatrix *
-	GetGameObject()->transform.GetMatrix();*/
+		LoadVBOAndVAO();
 
-	Camera *c = Context::Instance().camera;
+		Camera *c = Context::Instance().camera;
 	
 
-	glUniformMatrix4fv(glGetUniformLocation(Context::Instance().program, "projectionMatrix"), 1, GL_FALSE, Context::Instance().camera->projectionMatrix.data());
-	glUniformMatrix4fv(glGetUniformLocation(Context::Instance().program, "worldToViewMatrix"), 1, GL_FALSE, Context::Instance().camera->worldToViewMatrix.data());
-	glUniformMatrix4fv(glGetUniformLocation(Context::Instance().program, "transform"), 1, GL_FALSE, GetTransform()->GetMatrix().data());
-	GLint loc = glGetUniformLocation(Context::Instance().program, "uni_Color");
-	glProgramUniform4fv(Context::Instance().program, loc, 1, colors);
-
-	glDrawArrays(GL_LINES, 0, vertices.size() / 3);
+		// Calculate transform and send to shader
+		glUniformMatrix4fv(glGetUniformLocation(Context::Instance().program, "projectionMatrix"), 1, GL_FALSE, Context::Instance().camera->projectionMatrix.data());
+		glUniformMatrix4fv(glGetUniformLocation(Context::Instance().program, "worldToViewMatrix"), 1, GL_FALSE, Context::Instance().camera->worldToViewMatrix.data());
+		glUniformMatrix4fv(glGetUniformLocation(Context::Instance().program, "transform"), 1, GL_FALSE, GetTransform()->GetMatrix().data());
+		GLint loc = glGetUniformLocation(Context::Instance().program, "uni_Color");
+		glProgramUniform4fv(Context::Instance().program, loc, 1, colors);
+		glDrawArrays(GL_LINES, 0, vertices.size() / 3);
+	}
 }
 
 void LineRenderer::Update() {
 	BaseComponent::Update();
+}
+
+void LineRenderer::AddLine(Vector3f from, Vector3f to){
+	vertices.push_back(from.x());
+	vertices.push_back(from.y());
+	vertices.push_back(from.z());
+	vertices.push_back(to.x());
+	vertices.push_back(to.y());
+	vertices.push_back(to.z());
 }
