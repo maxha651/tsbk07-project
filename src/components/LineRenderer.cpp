@@ -1,6 +1,5 @@
 #include "LineRenderer.h"
 
-
 LineRenderer::LineRenderer()
 {
 }
