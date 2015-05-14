@@ -7,6 +7,7 @@
 #include <Model.h>
 #include <ShaderManager.h>
 #include <Mirror.h>
+#include <LineRenderer.h>
 
 /**
  * Used for creating Component instances providing name as string.
@@ -50,7 +51,10 @@ private:
         }
         else if (name.compare("Mirror") == 0) {
             return _NewComponent<Mirror>(name, args...);
-        }
+		}
+		else if (name.compare("LineRenderer") == 0) {
+			return _NewComponent<LineRenderer>(name, args...);
+		}
         /* ADD NEW CLASSES HERE */
         else {
             std::cerr << "ComponentFactory: Couldn't find class" << std::endl;

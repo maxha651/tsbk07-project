@@ -268,9 +268,9 @@ void Model::Render() {
 
 void Model::SetColor(GLfloat c1, GLfloat c2, GLfloat c3, GLfloat c4) {
 	colors[0] = c1;
-	colors[0] = c2;
-	colors[0] = c3;
-	colors[0] = c4;
+	colors[1] = c2;
+	colors[2] = c3;
+	colors[3] = c4;
 }
 
 GLfloat triangle_colors[] = {

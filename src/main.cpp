@@ -12,6 +12,8 @@
 #include <Game.h>
 #include <Input.h>
 #include <Context.h>
+#include <CatSpline.h>
+#include <Context.h>
 
 /*
  * Just put stuff here until we can refactor it into
@@ -33,6 +35,11 @@ static std::unique_ptr<Game> game;
 
 static std::unique_ptr<Model> cube;
 
+static CatSpline spline;
+
+
+
+
 void init() 
 {
 	char fragmentShader[128], vertexShader[128];
@@ -46,11 +53,58 @@ void init()
     glClearColor(0.5f,0.5f,0.5f,1.0f);
     glEnable(GL_DEPTH_TEST);
 
+
 }
+
+
+std::vector<GLfloat> line_vertexs;
+
+
+float colors[] =
+{
+	1, 0, 0, 1
+};
+
+GLuint vertexArrayObjIDLines;
 
 void initGameObjects()
 {
     game = std::unique_ptr<Game>(new Game(TSBK07_GAMEOBJECTS_PATH));
+
+	spline.AddSplinePoint(Vector3f(0, 0, -10));
+	spline.AddSplinePoint(Vector3f(10, 0, 0));
+	spline.AddSplinePoint(Vector3f(0, 0, 10));
+	spline.AddSplinePoint(Vector3f(-10, 0, 0));
+	spline.AddSplinePoint(Vector3f(0, 0, -10));
+
+	Vector3f v = Vector3f(0,0,-10);
+	for (int i = 0; i < 100; i++){
+		line_vertexs.push_back(v.x());
+		line_vertexs.push_back(v.y());
+		line_vertexs.push_back(v.z());
+		v = spline.GetInterpolatedSplinePoint(i / 100.0f);
+		line_vertexs.push_back(v.x());
+		line_vertexs.push_back(v.y());
+		line_vertexs.push_back(v.z());
+	}
+
+
+	/*glGenVertexArrays(1, &vertexArrayObjIDLines);
+	glBindVertexArray(vertexArrayObjIDLines);
+
+	unsigned int vertexBufferObjIDLines;
+	glGenBuffers(1, &vertexBufferObjIDLines);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObjIDLines);
+	glBufferData(GL_ARRAY_BUFFER, line_vertexs.size() * sizeof(GLfloat), &line_vertexs[0], GL_STATIC_DRAW);
+
+	glVertexAttribPointer(glGetAttribLocation(Context::Instance().program, "in_Position"), 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(glGetAttribLocation(Context::Instance().program, "in_Position"));*/
+
+	GameObject &go = game->GetGameObject("leftwall");
+	std::cout << go.GetName() << std::endl;
+	Model *m = go.GetComponent<Model>();
+	m->SetColor(1, 0, 0, 1);
+	std::cout << m->colors[1] << std::endl;
 }
 
 void update(int val)
@@ -60,6 +114,10 @@ void update(int val)
     glutPostRedisplay();
     glutTimerFunc(UPDATE_TIME_MS, update, 0);
 }
+
+float t = 0;
+
+
 
 void display(void)
 {
@@ -71,8 +129,27 @@ void display(void)
 
 	game->Render();
 
+	/*Eigen::Matrix4f m;
+	m.setIdentity();
+	
+	glUniformMatrix4fv(glGetUniformLocation(Context::Instance().program, "transform"), 1, GL_FALSE, m.data());
+	GLint loc = glGetUniformLocation(Context::Instance().program, "uni_Color");
+	glProgramUniform4fv(Context::Instance().program, loc, 1, colors);
+	glBindVertexArray(vertexArrayObjIDLines);
+	glDrawArrays(GL_LINES, 0, line_vertexs.size()/3);*/
+
+
     // Swap buffers
     glutSwapBuffers();
+
+	t = t + 0.01;
+	float sinvalue = abs(sin(t));
+
+	//std::cout << spline.GetInterpolatedSplinePoint(sinvalue) << std::endl;
+
+
+	//Context::Instance().camera->GetTransform()->SetPosition(spline.GetInterpolatedSplinePoint(sinvalue));
+	//Context::Instance().camera->lookDir = Vector3f(0,0,0);
 }
 
 void resize(GLsizei w, GLsizei h)
