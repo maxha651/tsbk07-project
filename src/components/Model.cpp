@@ -250,14 +250,12 @@ void Model::Render() {
 	glBindVertexArray(vertexArrayObjID);	// Select VAO
 
 	glUseProgram(Context::Instance().program);
-	LoadVBOAndVAO();
-
 
 	// Calculate transform and send to shader
 
-	Eigen::Matrix4f matrix = Context::Instance().camera->projectionMatrix *
+	/*Eigen::Matrix4f matrix = Context::Instance().camera->projectionMatrix *
 							Context::Instance().camera->worldToViewMatrix *
-							 GetGameObject()->transform.GetMatrix();
+							 GetGameObject()->transform.GetMatrix();*/
 
 	glUniformMatrix4fv(glGetUniformLocation(Context::Instance().program, "projectionMatrix"), 1, GL_FALSE, Context::Instance().camera->projectionMatrix.data());
 	glUniformMatrix4fv(glGetUniformLocation(Context::Instance().program, "worldToViewMatrix"), 1, GL_FALSE, Context::Instance().camera->worldToViewMatrix.data());
