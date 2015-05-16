@@ -201,114 +201,130 @@ void Model::AddVerticesFromVector3(std::vector<GLfloat> *ver, Vector3f vec){
 	}
 }
 
+
 void Model::SplitTriangles() {
-	std::vector<GLfloat> newVertices;
-	std::vector<GLfloat> newNormals;
-	Vector3f scale = GetTransform()->GetScale();
+	bool patchingDone = false;
 
-	//Split each triangle and add its vertices to newVertices
+	while (!patchingDone){
 
-	for (int i = 0; i < vertices.size() / 9; i++){
-		// Get each vertice off triangle
-		int verticeIdx = i * 9;
-		Vector3f p1 = Vector3f(vertices[0 + verticeIdx], vertices[1 + verticeIdx], vertices[2 + verticeIdx]);
-		Vector3f p2 = Vector3f(vertices[3 + verticeIdx], vertices[4 + verticeIdx], vertices[5 + verticeIdx]);
-		Vector3f p3 = Vector3f(vertices[6 + verticeIdx], vertices[7 + verticeIdx], vertices[8 + verticeIdx]);
+		std::vector<GLfloat> newVertices;
+		std::vector<GLfloat> newNormals;
+		Vector3f scale = GetTransform()->GetScale();
 
-		// Get normals for each vertice off triangle
-		Vector3f n1 = Vector3f(normals[0 + verticeIdx], normals[1 + verticeIdx], normals[2 + verticeIdx]);
-		Vector3f n2 = Vector3f(normals[3 + verticeIdx], normals[4 + verticeIdx], normals[5 + verticeIdx]);
-		Vector3f n3 = Vector3f(normals[6 + verticeIdx], normals[7 + verticeIdx], normals[8 + verticeIdx]);
+		//Split each triangle and add its vertices to newVertices
 
-		// Get each side of the triangle
-		Vector3f v1 = p1 - p2;
-		Vector3f v2 = p1 - p3;
-		Vector3f v3 = p2 - p3;
+		for (int i = 0; i < vertices.size() / 9; i++){
+			// Get each vertice off triangle
+			int verticeIdx = i * 9;
+			Vector3f p1 = Vector3f(vertices[0 + verticeIdx], vertices[1 + verticeIdx], vertices[2 + verticeIdx]);
+			Vector3f p2 = Vector3f(vertices[3 + verticeIdx], vertices[4 + verticeIdx], vertices[5 + verticeIdx]);
+			Vector3f p3 = Vector3f(vertices[6 + verticeIdx], vertices[7 + verticeIdx], vertices[8 + verticeIdx]);
 
-		Vector3f scaledVector1 = Vector3f(scale.x()*v1.x(), scale.y()*v1.y(), scale.z()*v1.z());
-		Vector3f scaledVector2 = Vector3f(scale.x()*v2.x(), scale.y()*v2.y(), scale.z()*v2.z());
-		// Only split if triangle area is greater than MIN_PATCH_AREA
+			// Get normals for each vertice off triangle
+			Vector3f n1 = Vector3f(normals[0 + verticeIdx], normals[1 + verticeIdx], normals[2 + verticeIdx]);
+			Vector3f n2 = Vector3f(normals[3 + verticeIdx], normals[4 + verticeIdx], normals[5 + verticeIdx]);
+			Vector3f n3 = Vector3f(normals[6 + verticeIdx], normals[7 + verticeIdx], normals[8 + verticeIdx]);
 
-		if ((scaledVector1.norm()*scaledVector2.norm() / 2) >= MIN_PATCH_AREA){//scaledVector.norm()
-			// Get the longest side
-			Vector3f splitPoint;
-			if (v1.squaredNorm() > v2.squaredNorm()){
-				if (v1.squaredNorm() > v3.squaredNorm()){
-					// v1 longest
-					splitPoint = p1 - v1 / 2;
-					// New triangle 1
-					AddVerticesFromVector3(&newVertices, p1);
-					AddVerticesFromVector3(&newVertices, splitPoint);
-					AddVerticesFromVector3(&newVertices, p3);
-	
-						// New triangle 2
-					AddVerticesFromVector3(&newVertices, p2);
-					AddVerticesFromVector3(&newVertices, splitPoint);
-					AddVerticesFromVector3(&newVertices, p3);
-				}
-				else{
-					// v3 longest
-					splitPoint = p2 - v3 / 2;
-					// New triangle 1
-					AddVerticesFromVector3(&newVertices, p2);
-					AddVerticesFromVector3(&newVertices, splitPoint);
-					AddVerticesFromVector3(&newVertices, p1);
+			// Get each side of the triangle
+			Vector3f v1 = (p1 - p2);
+			Vector3f v2 = (p1 - p3);
+			Vector3f v3 = (p2 - p3);
+
+			// Take scale in consideration when deciding what triangle sides are the longest
+			Vector3f sv1 = Vector3f(scale.x()*v1.x(), scale.y()*v1.y(), scale.z()*v1.z());
+			Vector3f sv2 = Vector3f(scale.x()*v2.x(), scale.y()*v2.y(), scale.z()*v2.z());
+			Vector3f sv3 = Vector3f(scale.x()*v3.x(), scale.y()*v3.y(), scale.z()*v3.z());
+
+			// Only split if triangle area is greater than MIN_PATCH_AREA
+			if (sv1.norm()*sv2.norm() >= MIN_PATCH_AREA){
+				patchingDone = false;
+				// Get the longest side
+				Vector3f splitPoint;
+				if (sv1.squaredNorm() > sv2.squaredNorm()){
+					if (sv1.squaredNorm() > sv3.squaredNorm()){
+						// v1 longest
+						splitPoint = p1 - v1 / 2;
+						// New triangle 1
+						AddVerticesFromVector3(&newVertices, p1);
+						AddVerticesFromVector3(&newVertices, splitPoint);
+						AddVerticesFromVector3(&newVertices, p3);
 
 						// New triangle 2
-					AddVerticesFromVector3(&newVertices, p3);
-					AddVerticesFromVector3(&newVertices, splitPoint);
-					AddVerticesFromVector3(&newVertices, p1);
-				}
-			}
-			else{
-				if (v2.squaredNorm() > v3.squaredNorm()){
-					// v2 longest
-					splitPoint = p1 - v2 / 2;
-					//Triangle 1
-					AddVerticesFromVector3(&newVertices, p1);
-					AddVerticesFromVector3(&newVertices, splitPoint);
-					AddVerticesFromVector3(&newVertices, p2);
-					//Triangle 2
-					AddVerticesFromVector3(&newVertices, p2);
-					AddVerticesFromVector3(&newVertices, splitPoint);
-					AddVerticesFromVector3(&newVertices, p3);
+						AddVerticesFromVector3(&newVertices, p2);
+						AddVerticesFromVector3(&newVertices, splitPoint);
+						AddVerticesFromVector3(&newVertices, p3);
+					}
+					else{
+						// v3 longest
+						splitPoint = p2 - v3 / 2;
+						// New triangle 1
+						AddVerticesFromVector3(&newVertices, p2);
+						AddVerticesFromVector3(&newVertices, splitPoint);
+						AddVerticesFromVector3(&newVertices, p1);
 
+						// New triangle 2
+						AddVerticesFromVector3(&newVertices, p3);
+						AddVerticesFromVector3(&newVertices, splitPoint);
+						AddVerticesFromVector3(&newVertices, p1);
+					}
 				}
 				else{
-					// v3 longest
-					splitPoint = p2 - v3 / 2;
-					// New triangle 1
-					AddVerticesFromVector3(&newVertices, p2);
-					AddVerticesFromVector3(&newVertices, splitPoint);
-					AddVerticesFromVector3(&newVertices, p1);
-					
-					// New triangle 2
-					AddVerticesFromVector3(&newVertices, p3);
-					AddVerticesFromVector3(&newVertices, splitPoint);
-					AddVerticesFromVector3(&newVertices, p1);
+					if (sv2.squaredNorm() > sv3.squaredNorm()){
+						// v2 longest
+						splitPoint = p1 - v2 / 2;
+						//Triangle 1
+						AddVerticesFromVector3(&newVertices, p1);
+						AddVerticesFromVector3(&newVertices, splitPoint);
+						AddVerticesFromVector3(&newVertices, p2);
+						//Triangle 2
+						AddVerticesFromVector3(&newVertices, p2);
+						AddVerticesFromVector3(&newVertices, splitPoint);
+						AddVerticesFromVector3(&newVertices, p3);
+
+					}
+					else{
+						// v3 longest
+						splitPoint = p2 - v3 / 2;
+						// New triangle 1
+						AddVerticesFromVector3(&newVertices, p2);
+						AddVerticesFromVector3(&newVertices, splitPoint);
+						AddVerticesFromVector3(&newVertices, p1);
+
+						// New triangle 2
+						AddVerticesFromVector3(&newVertices, p3);
+						AddVerticesFromVector3(&newVertices, splitPoint);
+						AddVerticesFromVector3(&newVertices, p1);
+					}
+				}
+				// Add normals for both triangles
+				for (int k = 0; k < 2; k++){
+					AddVerticesFromVector3(&newNormals, n1);
+					AddVerticesFromVector3(&newNormals, n2);
+					AddVerticesFromVector3(&newNormals, n3);
 				}
 			}
-			// Add normals for both triangles
-			for (int k = 0; k < 2; k++){
-				AddVerticesFromVector3(&newNormals, n1);
-				AddVerticesFromVector3(&newNormals, n2);
-				AddVerticesFromVector3(&newNormals, n3);
+			else{ // Add complete triangle to patchedVertices
+				AddVerticesFromVector3(&patchedVertices, p1);
+				AddVerticesFromVector3(&patchedVertices, p2);
+				AddVerticesFromVector3(&patchedVertices, p3);
+
+				// Add normals
+				AddVerticesFromVector3(&patchedNormals, n1);
+				AddVerticesFromVector3(&patchedNormals, n2);
+				AddVerticesFromVector3(&patchedNormals, n3);
 			}
 		}
-		else{ // Add triangle without splitting
-			AddVerticesFromVector3(&newVertices, p1);
-			AddVerticesFromVector3(&newVertices, p2);
-			AddVerticesFromVector3(&newVertices, p3);
 
-			// Add normals
-			AddVerticesFromVector3(&newNormals, n1);
-			AddVerticesFromVector3(&newNormals, n2);
-			AddVerticesFromVector3(&newNormals, n3);
+		// If there are any triangles left to patch then add em to vertices / normals
+		if (newVertices.size() > 0){
+			vertices = newVertices;
+			normals = newNormals;
+		}
+		// Else we're done with patching
+		else{
+			patchingDone = true;
 		}
 	}
-
-	vertices = newVertices;
-	normals = newNormals;
 }
 
 
@@ -317,12 +333,13 @@ void Model::Update() {
     BaseComponent::Update();
 }
 
+
+
 void Model::Start() {
 	BaseComponent::Start();
+
 	SplitTriangles();
-	SplitTriangles();
-	SplitTriangles();
-	SplitTriangles();
+
 	LoadVBOAndVAO();
 
 }
@@ -339,7 +356,7 @@ void Model::LoadVBOAndVAO(){
 		unsigned int vertexBufferObjID;
 		glGenBuffers(1, &vertexBufferObjID);
 		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObjID);
-		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), &vertices[0], GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, patchedVertices.size() * sizeof(GLfloat), &patchedVertices[0], GL_STATIC_DRAW);
 
 		glVertexAttribPointer(glGetAttribLocation(program, "in_Position"), 3, GL_FLOAT, GL_FALSE, 0, 0);
 		glEnableVertexAttribArray(glGetAttribLocation(program, "in_Position"));
@@ -347,7 +364,7 @@ void Model::LoadVBOAndVAO(){
 		unsigned int normalsBufferObjIDCube;
 		glGenBuffers(1, &normalsBufferObjIDCube);
 		glBindBuffer(GL_ARRAY_BUFFER, normalsBufferObjIDCube);
-		glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(GLfloat), &normals[0], GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, patchedNormals.size() * sizeof(GLfloat), &patchedNormals[0], GL_STATIC_DRAW);
 
 		glVertexAttribPointer(glGetAttribLocation(program, "in_Normal"), 3, GL_FLOAT, GL_FALSE, 0, 0);
 		glEnableVertexAttribArray(glGetAttribLocation(program, "in_Normal"));
@@ -388,7 +405,7 @@ void Model::Render() {
 	GLint loc = glGetUniformLocation(Context::Instance().program, "uni_Color");
 	glProgramUniform4fv(Context::Instance().program, loc, 1, colors);
 
-	glDrawArrays(GL_TRIANGLES, 0, vertices.size() / 3); // use GL_LINE_STRIP to kind of see the grid, not totaly correct
+	glDrawArrays(GL_TRIANGLES, 0, patchedVertices.size() / 3); // use GL_LINE_STRIP to kind of see the grid, not totaly correct
 }
 
 void Model::SetColor(GLfloat c1, GLfloat c2, GLfloat c3, GLfloat c4) {

@@ -21,6 +21,8 @@
 using Eigen::Vector4f;
 using Eigen::Vector3f;
 using Eigen::Vector2f;
+using Eigen::Matrix3f;
+using Eigen::Matrix4f;
 
 // Ours
 #include <JSONLoader.h>
@@ -37,6 +39,8 @@ public:
 	Model(const std::string& jsonPath);
 	Model(const char *model);
 	~Model();
+	std::vector<GLfloat> patchedVertices;
+	std::vector<GLfloat> patchedNormals;
 	std::vector<GLfloat> vertices;
 	std::vector<GLfloat> normals;
 	GLfloat colors[4];
@@ -55,7 +59,7 @@ private:
 	// Keep all dependent variables before this
 	JSONLoader jsonLoader;
 	
-	float MIN_PATCH_AREA = 0.1f;
+	float MIN_PATCH_AREA = 2.0f;
 
 	void Model::AddVerticesFromVector3(std::vector<GLfloat> *ver, Vector3f vec);
 	void Model::SplitTriangles();

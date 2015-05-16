@@ -92,10 +92,14 @@ void initGameObjects()
 	Vector3f v2;
 	Vector3f v3;
 
-	for (int n = 0; n < leftwall->vertices.size(); n += 9){
-		v1 = Vector3f(leftwall->vertices[n], leftwall->vertices[n + 1], leftwall->vertices[n + 2]);
-		v2 = Vector3f(leftwall->vertices[n + 3], leftwall->vertices[n + 4], leftwall->vertices[n + 5]);
-		v3 = Vector3f(leftwall->vertices[n + 6], leftwall->vertices[n + 7], leftwall->vertices[n + 8]);
+	Matrix4f mat4 = leftwall->GetTransform()->GetMatrix();
+	Matrix3f mat3;
+	mat3 = mat4.block<3, 3>(0, 0);
+
+	for (int n = 0; n < leftwall->patchedVertices.size(); n += 9){
+		v1 = mat3* Vector3f(leftwall->patchedVertices[n], leftwall->patchedVertices[n + 1], leftwall->patchedVertices[n + 2]);
+		v2 = mat3 * Vector3f(leftwall->patchedVertices[n + 3], leftwall->patchedVertices[n + 4], leftwall->patchedVertices[n + 5]);
+		v3 = mat3 * Vector3f(leftwall->patchedVertices[n + 6], leftwall->patchedVertices[n + 7], leftwall->patchedVertices[n + 8]);
 		l->AddLine(v1, v2);
 		l->AddLine(v2, v3);
 		l->AddLine(v1, v3);
