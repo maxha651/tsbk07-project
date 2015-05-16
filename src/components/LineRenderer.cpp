@@ -60,6 +60,10 @@ void LineRenderer::Update() {
 	BaseComponent::Update();
 }
 
+void LineRenderer::Start() {
+	BaseComponent::Start();
+}
+
 void LineRenderer::AddLine(Vector3f from, Vector3f to){
 	vertices.push_back(from.x());
 	vertices.push_back(from.y());

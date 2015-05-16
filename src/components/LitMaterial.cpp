@@ -30,6 +30,10 @@ void LitMaterial::Update() {
 
 }
 
+void LitMaterial::Start() {
+	BaseComponent::Start();
+}
+
 void LitMaterial::Render() {
     BaseComponent::Render();
 

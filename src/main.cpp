@@ -71,6 +71,7 @@ GLuint vertexArrayObjIDLines;
 void initGameObjects()
 {
     game = std::unique_ptr<Game>(new Game(TSBK07_GAMEOBJECTS_PATH));
+	game->Start();
 
 	spline.AddSplinePoint(Vector3f(0, 0, -10));
 	spline.AddSplinePoint(Vector3f(10, 0, 0));
@@ -78,29 +79,37 @@ void initGameObjects()
 	spline.AddSplinePoint(Vector3f(-10, 0, 0));
 	spline.AddSplinePoint(Vector3f(0, 0, -10));
 
-	GameObject &go = game->GetGameObject("linerenderer");
-	std::cout << go.GetName() << std::endl;
+	/*GameObject &go = game->GetGameObject("linerenderer");
 	LineRenderer *l = go.GetComponent<LineRenderer>();
-	/*Vector3f from = Vector3f(0, 0, 0);
-	Vector3f to = Vector3f(10, 10, 10);
-	l->AddLine(from, to);
-	from = Vector3f(10, 10, 10);
-	to = Vector3f(10, 5, 1);
-	l->AddLine(to, from);
-	from = Vector3f(10, 5, 1);
-	to = Vector3f(0, 0, 0);
-	l->AddLine(to, from);*/
 
-	Vector3f oldV = Vector3f(0,0,-10);
+	GameObject &got = game->GetGameObject("plate");
+	Model *plate = got.GetComponent<Model>();
+
+	GameObject &leftgo = game->GetGameObject("leftwall");
+	Model *leftwall = leftgo.GetComponent<Model>();
+
+	Vector3f v1;
+	Vector3f v2;
+	Vector3f v3;
+
+	for (int n = 0; n < leftwall->vertices.size(); n += 9){
+		v1 = Vector3f(leftwall->vertices[n], leftwall->vertices[n + 1], leftwall->vertices[n + 2]);
+		v2 = Vector3f(leftwall->vertices[n + 3], leftwall->vertices[n + 4], leftwall->vertices[n + 5]);
+		v3 = Vector3f(leftwall->vertices[n + 6], leftwall->vertices[n + 7], leftwall->vertices[n + 8]);
+		l->AddLine(v1, v2);
+		l->AddLine(v2, v3);
+		l->AddLine(v1, v3);
+	}*/
+	
+
+	/*Vector3f oldV = Vector3f(0,0,-10);
 	Vector3f v = Vector3f(0, 0, -10);
-	for (int i = 0; i < 100; i++){
-
+	for (int i = 50; i < 100; i++){
 
 		v = spline.GetInterpolatedSplinePoint(i / 99.0f);
 		l->AddLine(oldV, v);
 		oldV = v;
-	}
-
+	}*/
 
 }
 

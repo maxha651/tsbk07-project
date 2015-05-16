@@ -42,6 +42,7 @@ public:
 
     void Update();
     void Render();
+	void Start();
 
 private:
     ComponentFactory componentFactory;

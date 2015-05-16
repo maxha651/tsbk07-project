@@ -45,34 +45,38 @@ void Mirror::Update() {
     BaseComponent::Update();
 }
 
+void Mirror::Start() {
+	BaseComponent::Start();
+}
+
 void Mirror::Render() {
-    if (Context::Instance().renderer == rendererRef) {
-        // To prevent recursion
-        return;
-    }
-    BaseComponent::Render();
+	/*if (Context::Instance().renderer == rendererRef) {
+		// To prevent recursion
+		return;
+	}
+	BaseComponent::Render();
 
-    // Change us to renderer
-    unsigned int oldRenderer = Context::Instance().renderer;
-    Context::Instance().renderer = rendererRef;
-    // Change to our camera
-    Camera* oldCamera = Context::Instance().camera;
-    Context::Instance().camera = &camera;
-    // Change target to our FBO
-    FBOManager::Instance().ActivateFBO(fboRef);
+	// Change us to renderer
+	unsigned int oldRenderer = Context::Instance().renderer;
+	Context::Instance().renderer = rendererRef;
+	// Change to our camera
+	Camera* oldCamera = Context::Instance().camera;
+	Context::Instance().camera = &camera;
+	// Change target to our FBO
+	FBOManager::Instance().ActivateFBO(fboRef);
 
-    // Change to special shaders TODO ???
+	// Change to special shaders TODO ???
 
-    // Render to texture
-    Context::Instance().game->Render();
+	// Render to texture
+	Context::Instance().game->Render();
 
-    // Reset
-    Context::Instance().camera = oldCamera;
-    Context::Instance().renderer = oldRenderer;
-    // Render to screen
-    FBOManager::Instance().ActivateFBO(0);
+	// Reset
+	Context::Instance().camera = oldCamera;
+	Context::Instance().renderer = oldRenderer;
+	// Render to screen
+	FBOManager::Instance().ActivateFBO(0);
 
-    RenderTexture();
+	RenderTexture();*/
 }
 
 void Mirror::RenderTexture() {

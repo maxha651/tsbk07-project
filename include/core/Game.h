@@ -32,6 +32,7 @@ public:
 
     void Update();
     void Render();
+	void Start();
     void SetSaveOnExit(bool value);
 private:
     std::string path;

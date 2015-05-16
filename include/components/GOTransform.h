@@ -42,6 +42,7 @@ public:
 
     virtual void Update() override {}
     virtual void Render() override {}
+	virtual void Start() override {}
 
 private:
     Vector3f position, rotation, scale;

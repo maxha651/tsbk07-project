@@ -15,6 +15,7 @@ public:
 
     void Update();
     void Render();
+	void Start();
 
 private:
     void Init();

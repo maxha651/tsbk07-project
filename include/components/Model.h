@@ -44,6 +44,7 @@ public:
 
 	virtual void Update() override;
 	virtual void Render() override;
+	virtual void Start() override;
 	void SetColor(GLfloat c1, GLfloat c2, GLfloat c3, GLfloat c4);
 
 
@@ -53,9 +54,11 @@ private:
     std::string model, vertshader, fragshader;
 	// Keep all dependent variables before this
 	JSONLoader jsonLoader;
-
 	
+	float MIN_PATCH_AREA = 0.1f;
 
+	void Model::AddVerticesFromVector3(std::vector<GLfloat> *ver, Vector3f vec);
+	void Model::SplitTriangles();
 	void init(const char *model);
 	void LoadObject(const char* filename);
 	void LoadVBOAndVAO();

@@ -46,6 +46,12 @@ void GameObject::Update() {
     }
 }
 
+void GameObject::Start() {
+	for (auto* component : components) {
+		component->Start();
+	}
+}
+
 const std::string& GameObject::GetName() const {
     return name;
 }

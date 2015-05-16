@@ -186,3 +186,7 @@ Eigen::Matrix4f Camera::Frustum(float left, float right, float bottom, float top
 void Camera::Render() {
     BaseComponent::Render();
 }
+
+void Camera::Start() {
+	BaseComponent::Render();
+}

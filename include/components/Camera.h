@@ -23,6 +23,7 @@ public:
 
     virtual void Update() override;
     virtual void Render() override;
+	virtual void Start() override;
 
     Eigen::Vector3f up;
     Eigen::Vector3f lookDir;

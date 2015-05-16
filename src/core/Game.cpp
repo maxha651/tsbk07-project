@@ -67,3 +67,10 @@ void Game::Render() {
         go->Render();
     }
 }
+
+
+void Game::Start() {
+	for (auto& go : gameObjects) {
+		go->Start();
+	}
+}
