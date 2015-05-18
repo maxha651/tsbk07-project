@@ -322,12 +322,40 @@ void Model::Start() {
 
 	SplitTriangles();
 
+	UpdateVerticesAndNormals();
+
 	LoadVBOAndVAO();
 
 }
 
-GLint attribute_v_color;
-GLuint colorBufferObjID;
+// inverterad skalning
+
+void Model::UpdateVerticesAndNormals(){
+	Eigen::Matrix4f mat4 = GetGameObject()->transform.GetMatrix();
+
+	for (int i = 0; i < patchedVertices.size(); i += 3){
+		Vector4f v = Vector4f(patchedVertices[i + 0], patchedVertices[i + 1], patchedVertices[i + 2], 1);
+		v = mat4 * v;
+		patchedVertices[i + 0] = v.x();
+		patchedVertices[i + 1] = v.y();
+		patchedVertices[i + 2] = v.z();
+	}
+
+	Eigen::Matrix3f mat3;
+	mat3 = mat4.block<3, 3>(0, 0);
+
+	mat3 = mat3.inverse().eval();
+	mat3 = mat3.transpose().eval();
+	for (int i = 0; i < patchedNormals.size(); i += 3){
+		Vector3f v = Vector3f(patchedNormals[i + 0], patchedNormals[i + 1], patchedNormals[i + 2]);
+		v = mat3 * v;
+		v.normalize();
+		patchedNormals[i + 0] = v.x();
+		patchedNormals[i + 1] = v.y();
+		patchedNormals[i + 2] = v.z();
+	}
+}
+
 
 void Model::LoadVBOAndVAO(){
 	unsigned int program = Context::Instance().program;
