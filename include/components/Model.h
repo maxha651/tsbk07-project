@@ -61,7 +61,8 @@ private:
 	
 	float MIN_PATCH_AREA = 2.0f;
 
-	void Model::AddTriangle(std::vector<GLfloat> *ver, Vector3f vec1, Vector3f vec2, Vector3f vec3);
+	void UpdateVerticesAndNormals();
+	void AddTriangle(std::vector<GLfloat> *ver, Vector3f vec1, Vector3f vec2, Vector3f vec3);
 	void SplitTriangles();
 	void init(const char *model);
 	void LoadObject(const char* filename);
