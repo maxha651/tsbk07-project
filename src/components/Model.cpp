@@ -206,26 +206,28 @@ void Model::AddTriangle(std::vector<GLfloat> *ver, Vector3f vec1, Vector3f vec2,
 
 void Model::SplitTriangles() {
 	bool patchingDone = false;
+	std::vector<GLfloat> newVertices = vertices;
+	std::vector<GLfloat> newNormals = normals;
 
 	while (!patchingDone){
 
-		std::vector<GLfloat> newVertices;
-		std::vector<GLfloat> newNormals;
+		std::vector<GLfloat> tmpVertices;
+		std::vector<GLfloat> tmpNormals;
 		Vector3f scale = GetTransform()->GetScale();
 
 		//Split each triangle and add its vertices to newVertices
 
-		for (int i = 0; i < vertices.size() / 9; i++){
+		for (int i = 0; i < newVertices.size() / 9; i++){
 			// Get each vertice off triangle
 			int verticeIdx = i * 9;
-			Vector3f p1 = Vector3f(vertices[0 + verticeIdx], vertices[1 + verticeIdx], vertices[2 + verticeIdx]);
-			Vector3f p2 = Vector3f(vertices[3 + verticeIdx], vertices[4 + verticeIdx], vertices[5 + verticeIdx]);
-			Vector3f p3 = Vector3f(vertices[6 + verticeIdx], vertices[7 + verticeIdx], vertices[8 + verticeIdx]);
+			Vector3f p1 = Vector3f(newVertices[0 + verticeIdx], newVertices[1 + verticeIdx], newVertices[2 + verticeIdx]);
+			Vector3f p2 = Vector3f(newVertices[3 + verticeIdx], newVertices[4 + verticeIdx], newVertices[5 + verticeIdx]);
+			Vector3f p3 = Vector3f(newVertices[6 + verticeIdx], newVertices[7 + verticeIdx], newVertices[8 + verticeIdx]);
 
 			// Get normals for each vertice off triangle
-			Vector3f n1 = Vector3f(normals[0 + verticeIdx], normals[1 + verticeIdx], normals[2 + verticeIdx]);
-			Vector3f n2 = Vector3f(normals[3 + verticeIdx], normals[4 + verticeIdx], normals[5 + verticeIdx]);
-			Vector3f n3 = Vector3f(normals[6 + verticeIdx], normals[7 + verticeIdx], normals[8 + verticeIdx]);
+			Vector3f n1 = Vector3f(newNormals[0 + verticeIdx], newNormals[1 + verticeIdx], newNormals[2 + verticeIdx]);
+			Vector3f n2 = Vector3f(newNormals[3 + verticeIdx], newNormals[4 + verticeIdx], newNormals[5 + verticeIdx]);
+			Vector3f n3 = Vector3f(newNormals[6 + verticeIdx], newNormals[7 + verticeIdx], newNormals[8 + verticeIdx]);
 
 			// Get each side of the triangle
 			Vector3f v1 = (p1 - p2);
@@ -247,19 +249,19 @@ void Model::SplitTriangles() {
 						// v1 longest
 						splitPoint = p1 - v1 / 2;
 						// New triangle 1
-						AddTriangle(&newVertices, p1, splitPoint, p3);
+						AddTriangle(&tmpVertices, p1, splitPoint, p3);
 
 						// New triangle 2
-						AddTriangle(&newVertices, p2, splitPoint, p3);
+						AddTriangle(&tmpVertices, p2, splitPoint, p3);
 					}
 					else{
 						// v3 longest
 						splitPoint = p2 - v3 / 2;
 						// New triangle 1
-						AddTriangle(&newVertices, p2, splitPoint, p1);
+						AddTriangle(&tmpVertices, p2, splitPoint, p1);
 
 						// New triangle 2
-						AddTriangle(&newVertices, p3, splitPoint, p1);
+						AddTriangle(&tmpVertices, p3, splitPoint, p1);
 					}
 				}
 				else{
@@ -267,24 +269,24 @@ void Model::SplitTriangles() {
 						// v2 longest
 						splitPoint = p1 - v2 / 2;
 						//Triangle 1
-						AddTriangle(&newVertices, p1, splitPoint, p2);
+						AddTriangle(&tmpVertices, p1, splitPoint, p2);
 						//Triangle 2
-						AddTriangle(&newVertices, p2, splitPoint, p3);
+						AddTriangle(&tmpVertices, p2, splitPoint, p3);
 
 					}
 					else{
 						// v3 longest
 						splitPoint = p2 - v3 / 2;
 						// New triangle 1
-						AddTriangle(&newVertices, p2, splitPoint, p1);
+						AddTriangle(&tmpVertices, p2, splitPoint, p1);
 
 						// New triangle 2
-						AddTriangle(&newVertices, p3, splitPoint, p1);
+						AddTriangle(&tmpVertices, p3, splitPoint, p1);
 					}
 				}
 				// Add normals for both triangles
 				for (int k = 0; k < 2; k++){
-					AddTriangle(&newNormals, n1, n2, n3);
+					AddTriangle(&tmpNormals, n1, n2, n3);
 				}
 			}
 			else{ // Add complete triangle to patchedVertices
@@ -297,8 +299,8 @@ void Model::SplitTriangles() {
 
 		// If there are any triangles left to patch then add em to vertices / normals
 		if (newVertices.size() > 0){
-			vertices = newVertices;
-			normals = newNormals;
+			newVertices = tmpVertices;
+			newNormals = tmpNormals;
 		}
 		// Else we're done with patching
 		else{
