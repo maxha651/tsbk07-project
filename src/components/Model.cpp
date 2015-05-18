@@ -15,7 +15,7 @@ Model::Model(const std::string& jsonPath) :
     BaseComponent(), jsonLoader(jsonPath) {
 
     jsonLoader.AddDataField<std::string>("model", &model);
-	jsonLoader.AddArrayField<float>("color", colors, 4);
+	jsonLoader.AddArrayField<float>("color", color, 4);
     //jsonLoader.AddDataField<std::string>("vertshader", &vertshader);
 	//jsonLoader.AddDataField<std::string>("fragshader", &fragshader);
     jsonLoader.Read();
@@ -328,7 +328,6 @@ void Model::Start() {
 
 }
 
-// inverterad skalning
 
 void Model::UpdateVerticesAndNormals(){
 	Eigen::Matrix4f mat4 = GetGameObject()->transform.GetMatrix();
@@ -379,6 +378,19 @@ void Model::LoadVBOAndVAO(){
 		glVertexAttribPointer(glGetAttribLocation(program, "in_Normal"), 3, GL_FLOAT, GL_FALSE, 0, 0);
 		glEnableVertexAttribArray(glGetAttribLocation(program, "in_Normal"));
 
+		for (int i = 0; i < patchedVertices.size() / 3; i++){
+			colors.push_back(color[0]);
+			colors.push_back(color[1]);
+			colors.push_back(color[2]);
+			colors.push_back(color[3]);
+		}
+		unsigned int colorsBufferObjIDCube;
+		glGenBuffers(1, &colorsBufferObjIDCube);
+		glBindBuffer(GL_ARRAY_BUFFER, colorsBufferObjIDCube);
+		glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(GLfloat), &colors[0], GL_STATIC_DRAW);
+
+		glVertexAttribPointer(glGetAttribLocation(program, "in_Color"), 4, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(glGetAttribLocation(program, "in_Color"));
 
 		/*
 		unsigned int colorBufferObjID;
@@ -412,7 +424,7 @@ void Model::Render() {
 	glUniformMatrix4fv(glGetUniformLocation(Context::Instance().program, "projectionMatrix"), 1, GL_FALSE, Context::Instance().camera->projectionMatrix.data());
 	glUniformMatrix4fv(glGetUniformLocation(Context::Instance().program, "worldToViewMatrix"), 1, GL_FALSE, Context::Instance().camera->worldToViewMatrix.data());
 	glUniformMatrix4fv(glGetUniformLocation(Context::Instance().program, "transform"), 1, GL_FALSE, GetTransform()->GetMatrix().data());
-	glProgramUniform4fv(Context::Instance().program, glGetUniformLocation(Context::Instance().program, "uni_Color"), 1, colors);
+	//glProgramUniform4fv(Context::Instance().program, glGetUniformLocation(Context::Instance().program, "uni_Color"), 1, color);
 
 	glDrawArrays(GL_TRIANGLES, 0, patchedVertices.size() / 3); // use GL_LINE_STRIP to kind of see the grid, not totaly correct
 }

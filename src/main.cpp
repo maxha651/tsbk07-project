@@ -15,6 +15,7 @@
 #include <CatSpline.h>
 #include <Context.h>
 #include <LineRenderer.h>
+#include <RaycastMesh.h>
 
 /*
  * Just put stuff here until we can refactor it into
@@ -60,12 +61,6 @@ void init()
 
 std::vector<GLfloat> line_vertexs;
 
-
-float colors[] =
-{
-	1, 0, 0, 1
-};
-
 GLuint vertexArrayObjIDLines;
 
 void initGameObjects()
@@ -73,33 +68,58 @@ void initGameObjects()
     game = std::unique_ptr<Game>(new Game(TSBK07_GAMEOBJECTS_PATH));
 	game->Start();
 
+	// -------------- Test Code ----------------------
+	
+	//spline
 	spline.AddSplinePoint(Vector3f(0, 0, -10));
 	spline.AddSplinePoint(Vector3f(10, 0, 0));
 	spline.AddSplinePoint(Vector3f(0, 0, 10));
 	spline.AddSplinePoint(Vector3f(-10, 0, 0));
 	spline.AddSplinePoint(Vector3f(0, 0, -10));
 
-	/*GameObject &go = game->GetGameObject("linerenderer");
-	LineRenderer *l = go.GetComponent<LineRenderer>();
-
-	GameObject &got = game->GetGameObject("plate");
+	// Create raycast mesh for leftwall and ray cast on it
+	GameObject &got = game->GetGameObject("leftwall");
 	Model *plate = got.GetComponent<Model>();
+	std::vector<int> patchedIndices;
+	for (int i = 0; i < plate->patchedVertices.size(); i++){
+		patchedIndices.push_back(i);
+	}
 
-	GameObject &leftgo = game->GetGameObject("leftwall");
-	Model *leftwall = leftgo.GetComponent<Model>();
+	RaycastMesh *rm = createRaycastMesh(plate->patchedVertices.size(), &plate->patchedVertices[0], plate->patchedVertices.size() / 3, (const RmUint32 *)&patchedIndices[0]);
+	// Raycast
+	RmReal to[3] = {0, 0, 0 };
+	RmReal from[3] = { 10, 5, -2 };
+	RmReal hitLocation[3] = { 0, 0, 0 };
+	RmReal normal[3];
+	RmReal hitDistance;
+	RmUint32 triangleIndex = -1;
+	bool hit = rm->raycast(from, to, hitLocation, normal, &hitDistance, &triangleIndex);
 
+	// color the triangle we hit with red
+	plate->colors[triangleIndex * 4] = 1;
+	plate->colors[triangleIndex * 4 + 1] = 0;
+	plate->colors[triangleIndex * 4 + 4] = 1;
+	plate->colors[triangleIndex * 4 + 5] = 0;
+	plate->colors[triangleIndex * 4 + 8] = 1;
+	plate->colors[triangleIndex * 4 + 9] = 0;
+	plate->LoadVBOAndVAO();
+
+	// Draw line for the raycast
+	GameObject &go = game->GetGameObject("linerenderer");
+	LineRenderer *l = go.GetComponent<LineRenderer>();
 	Vector3f v1;
 	Vector3f v2;
 	Vector3f v3;
+	l->AddLine(Vector3f(from[0], from[1], from[2]), Vector3f(to[0], to[1], to[2]));
 
-	Matrix4f mat4 = leftwall->GetTransform()->GetMatrix();
-	Matrix3f mat3;
-	mat3 = mat4.block<3, 3>(0, 0);
+	// Draw lines for all vertices on left wall to see the patches
+	/*GameObject &leftgo = game->GetGameObject("leftwall");
+	Model *leftwall = leftgo.GetComponent<Model>();
 
 	for (int n = 0; n < leftwall->patchedVertices.size(); n += 9){
-		v1 = mat3* Vector3f(leftwall->patchedVertices[n], leftwall->patchedVertices[n + 1], leftwall->patchedVertices[n + 2]);
-		v2 = mat3 * Vector3f(leftwall->patchedVertices[n + 3], leftwall->patchedVertices[n + 4], leftwall->patchedVertices[n + 5]);
-		v3 = mat3 * Vector3f(leftwall->patchedVertices[n + 6], leftwall->patchedVertices[n + 7], leftwall->patchedVertices[n + 8]);
+		v1 = Vector3f(leftwall->patchedVertices[n], leftwall->patchedVertices[n + 1], leftwall->patchedVertices[n + 2]);
+		v2 = Vector3f(leftwall->patchedVertices[n + 3], leftwall->patchedVertices[n + 4], leftwall->patchedVertices[n + 5]);
+		v3 = Vector3f(leftwall->patchedVertices[n + 6], leftwall->patchedVertices[n + 7], leftwall->patchedVertices[n + 8]);
 		l->AddLine(v1, v2);
 		l->AddLine(v2, v3);
 		l->AddLine(v1, v3);

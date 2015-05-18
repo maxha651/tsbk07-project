@@ -43,14 +43,15 @@ public:
 	std::vector<GLfloat> patchedNormals;
 	std::vector<GLfloat> vertices;
 	std::vector<GLfloat> normals;
-	GLfloat colors[4];
+	std::vector<GLfloat> colors;
+	GLfloat color[4]; // A single color read from json used as base color for the object
 	GLuint vertexArrayObjID;
 
 	virtual void Update() override;
 	virtual void Render() override;
 	virtual void Start() override;
 	void SetColor(GLfloat c1, GLfloat c2, GLfloat c3, GLfloat c4);
-
+	void LoadVBOAndVAO();
 
 private:
     // DAVID: As it is now, these will be monitored by JSONLoader
@@ -59,13 +60,12 @@ private:
 	// Keep all dependent variables before this
 	JSONLoader jsonLoader;
 	
-	float MIN_PATCH_AREA = 2.0f;
+	float MIN_PATCH_AREA = 1.0f;
 
 	void UpdateVerticesAndNormals();
 	void AddTriangle(std::vector<GLfloat> *ver, Vector3f vec1, Vector3f vec2, Vector3f vec3);
 	void SplitTriangles();
 	void init(const char *model);
 	void LoadObject(const char* filename);
-	void LoadVBOAndVAO();
 };
 
