@@ -120,9 +120,6 @@ void Model::LoadObject(const char* filename)
 								  &vertexIndex[0], &normalIndex[0], &vertexIndex[1],
 								  &normalIndex[1], &vertexIndex[2], &normalIndex[2])) {
 
-					Vector3f vi = Vector3f(2, 2, 2);
-					std::cout << vi.squaredNorm() << std::endl;
-
 					// Add vertices to final vertice list
 					for (int n = 0; n < 3; n++) {
 						if (vertexIndex[n] > vertex.size() ||
@@ -195,12 +192,17 @@ void Model::LoadObject(const char* filename)
 
 }
 
-void Model::AddVerticesFromVector3(std::vector<GLfloat> *ver, Vector3f vec){
+void Model::AddTriangle(std::vector<GLfloat> *ver, Vector3f vec1, Vector3f vec2, Vector3f vec3){
 	for (int n = 0; n < 3; n++){
-		ver->push_back(vec[n]);
+		ver->push_back(vec1[n]);
+	}
+	for (int n = 0; n < 3; n++){
+		ver->push_back(vec2[n]);
+	}
+	for (int n = 0; n < 3; n++){
+		ver->push_back(vec3[n]);
 	}
 }
-
 
 void Model::SplitTriangles() {
 	bool patchingDone = false;
@@ -245,27 +247,19 @@ void Model::SplitTriangles() {
 						// v1 longest
 						splitPoint = p1 - v1 / 2;
 						// New triangle 1
-						AddVerticesFromVector3(&newVertices, p1);
-						AddVerticesFromVector3(&newVertices, splitPoint);
-						AddVerticesFromVector3(&newVertices, p3);
+						AddTriangle(&newVertices, p1, splitPoint, p3);
 
 						// New triangle 2
-						AddVerticesFromVector3(&newVertices, p2);
-						AddVerticesFromVector3(&newVertices, splitPoint);
-						AddVerticesFromVector3(&newVertices, p3);
+						AddTriangle(&newVertices, p2, splitPoint, p3);
 					}
 					else{
 						// v3 longest
 						splitPoint = p2 - v3 / 2;
 						// New triangle 1
-						AddVerticesFromVector3(&newVertices, p2);
-						AddVerticesFromVector3(&newVertices, splitPoint);
-						AddVerticesFromVector3(&newVertices, p1);
+						AddTriangle(&newVertices, p2, splitPoint, p1);
 
 						// New triangle 2
-						AddVerticesFromVector3(&newVertices, p3);
-						AddVerticesFromVector3(&newVertices, splitPoint);
-						AddVerticesFromVector3(&newVertices, p1);
+						AddTriangle(&newVertices, p3, splitPoint, p1);
 					}
 				}
 				else{
@@ -273,45 +267,31 @@ void Model::SplitTriangles() {
 						// v2 longest
 						splitPoint = p1 - v2 / 2;
 						//Triangle 1
-						AddVerticesFromVector3(&newVertices, p1);
-						AddVerticesFromVector3(&newVertices, splitPoint);
-						AddVerticesFromVector3(&newVertices, p2);
+						AddTriangle(&newVertices, p1, splitPoint, p2);
 						//Triangle 2
-						AddVerticesFromVector3(&newVertices, p2);
-						AddVerticesFromVector3(&newVertices, splitPoint);
-						AddVerticesFromVector3(&newVertices, p3);
+						AddTriangle(&newVertices, p2, splitPoint, p3);
 
 					}
 					else{
 						// v3 longest
 						splitPoint = p2 - v3 / 2;
 						// New triangle 1
-						AddVerticesFromVector3(&newVertices, p2);
-						AddVerticesFromVector3(&newVertices, splitPoint);
-						AddVerticesFromVector3(&newVertices, p1);
+						AddTriangle(&newVertices, p2, splitPoint, p1);
 
 						// New triangle 2
-						AddVerticesFromVector3(&newVertices, p3);
-						AddVerticesFromVector3(&newVertices, splitPoint);
-						AddVerticesFromVector3(&newVertices, p1);
+						AddTriangle(&newVertices, p3, splitPoint, p1);
 					}
 				}
 				// Add normals for both triangles
 				for (int k = 0; k < 2; k++){
-					AddVerticesFromVector3(&newNormals, n1);
-					AddVerticesFromVector3(&newNormals, n2);
-					AddVerticesFromVector3(&newNormals, n3);
+					AddTriangle(&newNormals, n1, n2, n3);
 				}
 			}
 			else{ // Add complete triangle to patchedVertices
-				AddVerticesFromVector3(&patchedVertices, p1);
-				AddVerticesFromVector3(&patchedVertices, p2);
-				AddVerticesFromVector3(&patchedVertices, p3);
+				AddTriangle(&patchedVertices, p1, p2, p3);
 
 				// Add normals
-				AddVerticesFromVector3(&patchedNormals, n1);
-				AddVerticesFromVector3(&patchedNormals, n2);
-				AddVerticesFromVector3(&patchedNormals, n3);
+				AddTriangle(&patchedNormals, n1, n2, n3);
 			}
 		}
 
