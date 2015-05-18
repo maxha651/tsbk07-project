@@ -61,8 +61,8 @@ private:
 	
 	float MIN_PATCH_AREA = 2.0f;
 
-	void Model::AddVerticesFromVector3(std::vector<GLfloat> *ver, Vector3f vec);
-	void Model::SplitTriangles();
+	void AddVerticesFromVector3(std::vector<GLfloat> *ver, Vector3f vec);
+	void SplitTriangles();
 	void init(const char *model);
 	void LoadObject(const char* filename);
 	void LoadVBOAndVAO();
