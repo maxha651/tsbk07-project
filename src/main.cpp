@@ -68,6 +68,7 @@ void initGameObjects()
     game = std::unique_ptr<Game>(new Game(TSBK07_GAMEOBJECTS_PATH));
 	game->Start();
 
+	return;
 	// -------------- Test Code ----------------------
 	
 	//spline

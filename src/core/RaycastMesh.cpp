@@ -35,6 +35,8 @@
 
 #pragma warning(disable:4100)
 
+#include <string.h>
+
 namespace RAYCAST_MESH
 {
 

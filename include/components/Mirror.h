@@ -27,8 +27,11 @@ private:
     void RenderTexture();
     void LoadVBOAndVAO();
 
+    unsigned int vertexArrayObjID;
     unsigned int rendererRef;
     unsigned int fboRef;
+    unsigned int program;
+    unsigned int texProgram;
     float width, height;
     Eigen::Vector3f normal;
 

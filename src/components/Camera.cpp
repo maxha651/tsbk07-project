@@ -54,7 +54,7 @@ void Camera::Update() {
 }
 
 void Camera::UpdateInput() {
-    if (!Input::IsInFocus()) {
+    if (!Input::IsInFocus() || Context::Instance().camera != this) {
         return;
     }
 

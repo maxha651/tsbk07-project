@@ -34,7 +34,7 @@ public:
 
 private:
     struct FBOData {
-        GLuint fbo, colorTex, depthTex;
+        GLuint fbo, colorTex, depthTex, width, height;
     };
 
     FBOManager();
