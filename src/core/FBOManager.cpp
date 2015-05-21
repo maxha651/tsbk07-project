@@ -55,7 +55,7 @@ bool FBOManager::ActivateFBO(unsigned int fbo) {
         //glBindTexture(GL_TEXTURE_2D, 0);
         glBindFramebuffer(GL_FRAMEBUFFER, data.fbo);
 
-        glClearColor(1.0,1.0,1.0,0.0);
+        glClearColor(0.0,0.0,0.0,0.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glEnable(GL_DEPTH_TEST);

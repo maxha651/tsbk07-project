@@ -12,10 +12,10 @@ static const std::string TEX_SHADER = "texture";
 
 static GLfloat vertices[] =
 {
-    0.0f,0.0f,0.0f,
-    0.0f,10.0f,0.0f,
-    10.0f,0.0f,0.0f,
-	10.0f,10.0f,0.0f,
+    -1.0f,-1.0f,0.0f,
+    -1.0f,1.0f,0.0f,
+    1.0f,-1.0f,0.0f,
+	1.0f,1.0f,0.0f,
 };
 static GLuint indices[] =
 {
@@ -53,7 +53,7 @@ void Mirror::Init() {
     fboRef = FBOManager::Instance().AddFBO((unsigned int) width, (unsigned int) height);
     camera.SetGameObject(GetGameObject());
     camera.lookDir = normal;
-	camera.projectionMatrix = Camera::Frustum(-1.0f, 1.0f, -1.0f, 1.0f, 0.1f, 100.0f);
+	//camera.projectionMatrix = Camera::Frustum(-.1f, .1f, -10.0f, 10.0f, 1.0f, 100.0f);
 
 	ShaderLoader shaderLoader;
 	std::string shadersPath(TSBK07_SHADERS_PATH);
