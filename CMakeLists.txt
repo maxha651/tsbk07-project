@@ -43,15 +43,6 @@ ENABLE_LANGUAGE (CXX)
 SET (CMAKE_CXX_STANDARD 11)
 SET (CMAKE_CXX_STANDARD_REQUIRED ON)
 SET (BUILD_SHARED_LIBS OFF)
-# Disable optimization in debug mode
-IF (UNIX OR CYGWIN)
-    SET (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0")
-    #SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wall -Wextra -Wcast-align -Wcast-qual \
-    #-Wctor-dtor-privacy -Wdisabled-optimization -Wformat=2 -Winit-self -Wlogical-op \
-    #-Wmissing-declarations -Wmissing-include-dirs -Wnoexcept -Wold-style-cast -Woverloaded-virtual \
-    #-Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wstrict-null-sentinel -Wstrict-overflow=5 \
-    #-Wswitch-default -Wundef -Werror -Wno-unused")
-ENDIF ()
 
 ADD_DEFINITIONS (-DGL_GLEXT_PROTOTYPES)
 ADD_DEFINITIONS (-DEIGEN_DONT_ALIGN)
@@ -78,6 +69,10 @@ IF (WIN32)
         #SET (CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS} "/NODEFAULTLIBS:LIBCMT" )
         SET (CMAKE_DEBUG_POSTFIX "d")
     ENDIF (MSVC)
+ENDIF ()
+
+IF (UNIX)
+    SET (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0")
 ENDIF ()
 
 ## External libraries ##
@@ -135,7 +130,7 @@ IF (MSVC)
 ENDIF ()
 
 FILE (GLOB_RECURSE SOURCES "${CMAKE_SOURCE_DIR}/src/**.cpp")
-FILE (GLOB_RECURSE CORE_SOURCES "${CMAKE_SOURCE_DIR}/src/**.cpp")
+FILE (GLOB_RECURSE CORE_SOURCES "${CMAKE_SOURCE_DIR}/src/core/**.cpp")
 FILE (GLOB_RECURSE COMPONENT_SOURCES "${CMAKE_SOURCE_DIR}/src/**.cpp")
 FILE (GLOB_RECURSE HEADERS "${CMAKE_SOURCE_DIR}/include/**.h")
 FILE (GLOB_RECURSE HEADERS_CPP "${CMAKE_SOURCE_DIR}/include/**.hpp")
