@@ -4,6 +4,7 @@
 
 #include <FBOManager.h>
 #include <assert.h>
+#include <GL/freeglut_std.h>
 
 FBOManager::FBOManager() {
 
@@ -54,7 +55,7 @@ bool FBOManager::ActivateFBO(unsigned int fbo) {
         //glBindTexture(GL_TEXTURE_2D, 0);
         glBindFramebuffer(GL_FRAMEBUFFER, data.fbo);
 
-        glClearColor(0.5,0.5,0.5,1.0);
+        glClearColor(1.0,1.0,1.0,0.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glEnable(GL_DEPTH_TEST);
@@ -81,6 +82,8 @@ bool FBOManager::ActivateFBO(unsigned int fbo) {
 
 void FBOManager::DeactivateFBO() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glClearColor(.5,.5,.5,1.0);
+    glViewport(0, 0, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
     current_fbo = 0;
 }
 

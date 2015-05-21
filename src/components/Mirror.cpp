@@ -89,7 +89,6 @@ void Mirror::Update() {
 	GLuint oldProgram = Context::Instance().program;
 	Context::Instance().program = program;
 
-	int x = glutGet(GLUT_WINDOW_WIDTH), y = glutGet(GLUT_WINDOW_HEIGHT);
 	// Change target to our FBO
 	FBOManager::Instance().ActivateFBO(fboRef);
 
@@ -102,8 +101,7 @@ void Mirror::Update() {
 	Context::Instance().program = oldProgram;
 	Context::Instance().camera = oldCamera;
 	Context::Instance().renderer = oldRenderer;
-	FBOManager::Instance().ActivateFBO(0);
-	glViewport(0, 0, x, y);
+	FBOManager::Instance().DeactivateFBO();
 }
 
 void Mirror::RenderTexture() {
