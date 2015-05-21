@@ -53,6 +53,7 @@ void Mirror::Init() {
     fboRef = FBOManager::Instance().AddFBO((unsigned int) width, (unsigned int) height);
     camera.SetGameObject(GetGameObject());
     camera.lookDir = normal;
+	camera.projectionMatrix = Camera::Frustum(-1.0f, 1.0f, -1.0f, 1.0f, 0.1f, 100.0f);
 
 	ShaderLoader shaderLoader;
 	std::string shadersPath(TSBK07_SHADERS_PATH);
@@ -87,6 +88,7 @@ void Mirror::Update() {
 	// Change to special shaders
 	GLuint oldProgram = Context::Instance().program;
 	Context::Instance().program = program;
+
 	int x = glutGet(GLUT_WINDOW_WIDTH), y = glutGet(GLUT_WINDOW_HEIGHT);
 	// Change target to our FBO
 	FBOManager::Instance().ActivateFBO(fboRef);
@@ -153,6 +155,6 @@ void Mirror::LoadVBOAndVAO(){
 	glEnableVertexAttribArray(glGetAttribLocation(texProgram, "in_TexCoord"));
 
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, FBOManager::Instance().getColorTexture(fboRef));
+	glBindTexture(GL_TEXTURE_2D, GL_TEXTURE0);//FBOManager::Instance().getColorTexture(fboRef));
 	glUniform1i(glGetUniformLocation(texProgram, "texUnit"), FBOManager::Instance().getColorTexture(fboRef));
 }

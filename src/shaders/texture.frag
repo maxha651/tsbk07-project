@@ -1,6 +1,6 @@
 #version 330 core
 
-out vec4 out_Color;
+layout(location = 0) out vec4 out_Color;
 
 in vec3 ex_Normal;
 in vec2 ex_TexCoord;

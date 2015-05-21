@@ -2,6 +2,8 @@
   "shaders" :
   [
 	"lab1-1",
-    "invertcolor"
+    "invertcolor",
+    "mirror",
+    "texture"
   ]
 }
