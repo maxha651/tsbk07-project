@@ -12,11 +12,22 @@ using Eigen::Vector3f;
 static const std::string SHADER = "mirror";
 static const std::string TEX_SHADER = "texture";
 
-Mirror::Mirror() : width(0), height(0), normal(1, 0, 0) {
+Mirror::Mirror() : width(0), height(0), normal(1, 0, 0), start(0, 0, 0),
+                   left(0, 0, 0), right(0, 0, 0) {
 
 }
 
-Mirror::Mirror(const std::string& jsonPath) : jsonLoader(jsonPath) {
+Mirror::Mirror(float width, float height, const Eigen::Vector3f& normal,
+               const Eigen::Vector3f &start, const Eigen::Vector3f &left,
+               Eigen::Vector3f &right) : width(width), height(height),
+                normal(normal), start(start), left(left), right(right) {
+    this->width = (int) width;
+    this->height = (int) height;
+    this->normal.normalize();
+}
+
+Mirror::Mirror(const std::string& jsonPath) : jsonLoader(jsonPath),
+    start(-1, -1, 0), left(-1, 1, 0), right(1, -1, 0) {
     jsonLoader.AddDataField("width", &width);
     jsonLoader.AddDataField("height", &height);
     jsonLoader.AddArrayField("normal", normal.data(), 3);
@@ -44,7 +55,7 @@ void Mirror::Init() {
 										 (shadersPath + "/" + SHADER + ".frag").c_str());
 	texProgram = shaderLoader.CreateProgram((shadersPath + "/" + TEX_SHADER + ".vert").c_str(),
 										 (shadersPath + "/" + TEX_SHADER + ".frag").c_str());
-	LoadVBOAndVAO(Vector3f(-1, -1, 0), Vector3f(-1, 1, 0), Vector3f(1, -1, 0));
+	LoadVBOAndVAO();
 }
 
 void Mirror::Render() {
@@ -109,7 +120,7 @@ void Mirror::RenderTexture() {
 /**
  * Set up our VAO context with vertices, indices buffers and such.
  */
-void Mirror::LoadVBOAndVAO(const Vector3f& start, const Vector3f& left, const Vector3f& right) {
+void Mirror::LoadVBOAndVAO() {
 	glGenVertexArrays(1, &vertexArrayObjID);
 	glBindVertexArray(vertexArrayObjID);
 
@@ -118,9 +129,9 @@ void Mirror::LoadVBOAndVAO(const Vector3f& start, const Vector3f& left, const Ve
     vertices.insert(vertices.end(), right.data(), right.data() + 3);
     Vector3f end = -1 * start + left + right;
     vertices.insert(vertices.end(), end.data(), end.data() + 3);
-
+    // Two triangles forming quad
     indices = { 0, 1, 2, 1, 2, 3 };
-
+    // Map to entire surface
     texCoords = { 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f };
 
 	unsigned int vertexBufferObjID;

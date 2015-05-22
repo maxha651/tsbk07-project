@@ -16,6 +16,8 @@ class Mirror : public BaseComponent {
 
 public:
     Mirror();
+    Mirror(float width, float height, const Eigen::Vector3f& normal,
+           const Eigen::Vector3f& start, const Eigen::Vector3f& left, Eigen::Vector3f& right);
     Mirror(const std::string& jsonPath);
     void Init();
 
@@ -25,7 +27,7 @@ public:
 
 private:
     void RenderTexture();
-    void LoadVBOAndVAO(const Eigen::Vector3f& start, const Eigen::Vector3f& end, const Eigen::Vector3f& end2);
+    void LoadVBOAndVAO();
 
     unsigned int vertexArrayObjID;
     unsigned int rendererRef;
@@ -35,6 +37,7 @@ private:
     float width, height;
     std::vector<float> vertices, texCoords;
     std::vector<unsigned int> indices;
+    Eigen::Vector3f start, right, left;
     Eigen::Vector3f normal;
 
     Camera camera;
