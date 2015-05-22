@@ -23,17 +23,16 @@ unsigned int FBOManager::AddFBO(unsigned int width, unsigned int height) {
     newData.colorTex = GenerateColorTexture(width, height);
     newData.depthTex = GenerateDepthTexture(width, height);
 
-    // Bind textures to pipeline. texture_depth is optional
-    // 0 is the mipmap level. 0 is the heightest
-
+    // Attach textures
     glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, newData.colorTex, 0);
     glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, newData.depthTex);
 
-    //drawbuffer.push_back(GL_COLOR_ATTACHMENT0);
-    //glDrawBuffers(drawbuffer.size(), &drawbuffer[0]);
+    // Save for reference
+    drawbuffer.push_back(GL_COLOR_ATTACHMENT0);
+    drawbuffer.push_back(GL_DEPTH_ATTACHMENT);
 
     // Check for FBO completeness
-    if (glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE){
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE){
         std::cerr << "FBOManager: Error! FrameBuffer is not complete" << std::endl;
         assert(false);
     }
@@ -49,29 +48,25 @@ unsigned int FBOManager::AddFBO(unsigned int width, unsigned int height) {
 bool FBOManager::ActivateFBO(unsigned int fbo) {
     try {
         FBOData data = fboMap.find(fbo)->second;
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, data.colorTex);
-        //glEnable(GL_TEXTURE_2D);
-        //glBindTexture(GL_TEXTURE_2D, 0);
+        // Bind us
         glBindFramebuffer(GL_FRAMEBUFFER, data.fbo);
 
+        // We're not the screen, don't want background color
         glClearColor(0.0,0.0,0.0,0.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
         glEnable(GL_DEPTH_TEST);
 
-        // TODO This should be handled better
-        GLuint dBuffer[] = { GL_COLOR_ATTACHMENT0, GL_DEPTH_ATTACHMENT };
-        glDrawBuffers(2, dBuffer);
+        // Rendering to draw buffers ? I think this is location in shader. Not sure
+        glDrawBuffers(2, &drawbuffer[0]);
         glViewport(0, 0, data.width, data.height);
-
-        current_fbo = data.fbo;
 
         // Check for FBO completeness
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+            DeactivateFBO();
             std::cerr << "FBOManager: Error! FrameBuffer is not complete" << std::endl;
             assert(false);
         }
+        current_fbo = data.fbo;
         return true;
     }
     catch (std::exception& e) {
@@ -81,6 +76,9 @@ bool FBOManager::ActivateFBO(unsigned int fbo) {
 }
 
 void FBOManager::DeactivateFBO() {
+    if (current_fbo != 0) {
+        glBindTexture(GL_TEXTURE_2D, fboMap.find(current_fbo)->second.colorTex);
+    }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glClearColor(.5,.5,.5,1.0);
     glViewport(0, 0, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
@@ -118,9 +116,15 @@ GLuint FBOManager::GenerateColorTexture(unsigned int width, unsigned int height)
 
     glGenTextures(1, &tex);
     glBindTexture(GL_TEXTURE_2D, tex);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    // Specify image (most importantly, set mipmap level)
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, NULL);
+    // Generate (this allocates memory depending on glTexImage2D info, otherwise use glTexStorage)
+    glGenerateMipmap(GL_TEXTURE_2D);
+    // Set sensible paramters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
     return tex;
 }

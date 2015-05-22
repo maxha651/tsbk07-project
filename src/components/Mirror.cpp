@@ -62,6 +62,7 @@ void Mirror::Init() {
 										 (shadersPath + "/" + SHADER + ".frag").c_str());
 	texProgram = shaderLoader.CreateProgram((shadersPath + "/" + TEX_SHADER + ".vert").c_str(),
 										 (shadersPath + "/" + TEX_SHADER + ".frag").c_str());
+	LoadVBOAndVAO();
 }
 
 void Mirror::Render() {
@@ -79,7 +80,7 @@ void Mirror::Update() {
 	BaseComponent::Update();
 	camera.Update();
 
-	// Change us to renderer
+	// Change us to renderer NOT USED
 	unsigned int oldRenderer = Context::Instance().renderer;
 	Context::Instance().renderer = rendererRef;
 	// Change to our camera
@@ -94,7 +95,6 @@ void Mirror::Update() {
 
 	// Render to texture
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 	Context::Instance().game->Render();
 
 	// Reset
@@ -105,10 +105,18 @@ void Mirror::Update() {
 }
 
 void Mirror::RenderTexture() {
+	/* Render texture to surface program */
 	glUseProgram(texProgram);
 
-	LoadVBOAndVAO();
+	/* Change to our context */
+	glBindVertexArray(vertexArrayObjID);
 
+	/* I think this only works since noone else is doing texture stuff... TBD I guess */
+	//glActiveTexture(GL_TEXTURE_2D_ARRAY);
+    //glBindTexture(GL_TEXTURE_2D, mipmap);
+	glUniform1i(glGetUniformLocation(texProgram, "texUnit"), GL_TEXTURE0);
+
+	/* Upload matrices */
 	glUniformMatrix4fv(glGetUniformLocation(texProgram, "projectionMatrix"), 1, GL_FALSE, Context::Instance().camera->projectionMatrix.data());
 	glUniformMatrix4fv(glGetUniformLocation(texProgram, "worldToViewMatrix"), 1, GL_FALSE, Context::Instance().camera->worldToViewMatrix.data());
 	glUniformMatrix4fv(glGetUniformLocation(texProgram, "transform"), 1, GL_FALSE, GetTransform()->GetMatrix().data());
@@ -116,7 +124,10 @@ void Mirror::RenderTexture() {
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0L);
 }
 
-void Mirror::LoadVBOAndVAO(){
+/**
+ * Set up our VAO context with vertices, indices buffers and such.
+ */
+void Mirror::LoadVBOAndVAO() {
 	glGenVertexArrays(1, &vertexArrayObjID);
 	glBindVertexArray(vertexArrayObjID);
 
@@ -151,8 +162,4 @@ void Mirror::LoadVBOAndVAO(){
 
 	glVertexAttribPointer(glGetAttribLocation(texProgram, "in_TexCoord"), 2, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(glGetAttribLocation(texProgram, "in_TexCoord"));
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, GL_TEXTURE0);//FBOManager::Instance().getColorTexture(fboRef));
-	glUniform1i(glGetUniformLocation(texProgram, "texUnit"), FBOManager::Instance().getColorTexture(fboRef));
 }
