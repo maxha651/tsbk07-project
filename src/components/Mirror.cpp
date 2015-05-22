@@ -7,28 +7,10 @@
 #include <Context.h>
 #include <Game.h>
 
+using Eigen::Vector3f;
+
 static const std::string SHADER = "mirror";
 static const std::string TEX_SHADER = "texture";
-
-static GLfloat vertices[] =
-{
-    -1.0f,-1.0f,0.0f,
-    -1.0f,1.0f,0.0f,
-    1.0f,-1.0f,0.0f,
-	1.0f,1.0f,0.0f,
-};
-static GLuint indices[] =
-{
-	0, 1, 2, 1, 2, 3
-};
-
-static GLfloat texCoords[] =
-{
-    0.0f, 0.0f,
-    0.0f, 1.0f,
-    1.0f, 0.0f,
-	1.0f, 1.0f,
-};
 
 Mirror::Mirror() : width(0), height(0), normal(1, 0, 0) {
 
@@ -62,7 +44,7 @@ void Mirror::Init() {
 										 (shadersPath + "/" + SHADER + ".frag").c_str());
 	texProgram = shaderLoader.CreateProgram((shadersPath + "/" + TEX_SHADER + ".vert").c_str(),
 										 (shadersPath + "/" + TEX_SHADER + ".frag").c_str());
-	LoadVBOAndVAO();
+	LoadVBOAndVAO(Vector3f(-1, -1, 0), Vector3f(-1, 1, 0), Vector3f(1, -1, 0));
 }
 
 void Mirror::Render() {
@@ -127,14 +109,24 @@ void Mirror::RenderTexture() {
 /**
  * Set up our VAO context with vertices, indices buffers and such.
  */
-void Mirror::LoadVBOAndVAO() {
+void Mirror::LoadVBOAndVAO(const Vector3f& start, const Vector3f& left, const Vector3f& right) {
 	glGenVertexArrays(1, &vertexArrayObjID);
 	glBindVertexArray(vertexArrayObjID);
+
+    vertices.insert(vertices.end(), start.data(), start.data() + 3);
+    vertices.insert(vertices.end(), left.data(), left.data() + 3);
+    vertices.insert(vertices.end(), right.data(), right.data() + 3);
+    Vector3f end = -1 * start + left + right;
+    vertices.insert(vertices.end(), end.data(), end.data() + 3);
+
+    indices = { 0, 1, 2, 1, 2, 3 };
+
+    texCoords = { 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f };
 
 	unsigned int vertexBufferObjID;
 	glGenBuffers(1, &vertexBufferObjID);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObjID);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), &vertices[0], GL_STATIC_DRAW);
 
 	glVertexAttribPointer(glGetAttribLocation(texProgram, "in_Position"), 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(glGetAttribLocation(texProgram, "in_Position"));
@@ -144,7 +136,7 @@ void Mirror::LoadVBOAndVAO() {
 
 	glGenBuffers(1, &indicesBufferObjID);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicesBufferObjID);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), &indices[0], GL_STATIC_DRAW);
 
 	unsigned int normalsBufferObjIDCube;
 
@@ -158,7 +150,7 @@ void Mirror::LoadVBOAndVAO() {
 	unsigned int texCoordsBufferObjIDCube;
 	glGenBuffers(1, &texCoordsBufferObjIDCube);
 	glBindBuffer(GL_ARRAY_BUFFER, texCoordsBufferObjIDCube);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(texCoords), texCoords, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, texCoords.size() * sizeof(GLfloat), &texCoords[0], GL_STATIC_DRAW);
 
 	glVertexAttribPointer(glGetAttribLocation(texProgram, "in_TexCoord"), 2, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(glGetAttribLocation(texProgram, "in_TexCoord"));
