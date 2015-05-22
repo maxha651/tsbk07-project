@@ -47,12 +47,12 @@ unsigned int FBOManager::AddFBO(unsigned int width, unsigned int height) {
 
 bool FBOManager::ActivateFBO(unsigned int fbo) {
     try {
-        FBOData data = fboMap.find(fbo)->second;
+        FBOData data = fboMap[fbo];
         // Bind us
         glBindFramebuffer(GL_FRAMEBUFFER, data.fbo);
 
         // We're not the screen, don't want background color
-        glClearColor(0.0,0.0,0.0,0.0);
+        glClearColor(0.0,0.0,0.1,1.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glEnable(GL_DEPTH_TEST);
 
@@ -77,7 +77,7 @@ bool FBOManager::ActivateFBO(unsigned int fbo) {
 
 void FBOManager::DeactivateFBO() {
     if (current_fbo != 0) {
-        glBindTexture(GL_TEXTURE_2D, fboMap.find(current_fbo)->second.colorTex);
+        glBindTexture(GL_TEXTURE_2D, fboMap[current_fbo].colorTex);
     }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glClearColor(.5,.5,.5,1.0);
@@ -95,7 +95,7 @@ unsigned int FBOManager::getDepthTexture() {
 
 unsigned int FBOManager::getColorTexture(unsigned int fbo) {
     try {
-        return fboMap.find(current_fbo)->second.colorTex;
+        return fboMap[fbo].colorTex;
     } catch  (std::exception& e) {
         std::cout << e.what() << std::endl;
         assert(false);
@@ -104,7 +104,7 @@ unsigned int FBOManager::getColorTexture(unsigned int fbo) {
 
 unsigned int FBOManager::getDepthTexture(unsigned int fbo) {
     try {
-        return fboMap.find(fbo)->second.depthTex;
+        return fboMap[fbo].depthTex;
     } catch  (std::exception& e) {
         std::cout << e.what() << std::endl;
         assert(false);

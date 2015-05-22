@@ -104,9 +104,9 @@ void Mirror::RenderTexture() {
 	/* Change to our context */
 	glBindVertexArray(vertexArrayObjID);
 
-	/* I think this only works since noone else is doing texture stuff... TBD I guess */
-	//glActiveTexture(GL_TEXTURE_2D_ARRAY);
-    //glBindTexture(GL_TEXTURE_2D, mipmap);
+	/* TBD I guess */
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, FBOManager::Instance().getColorTexture(fboRef));
 	glUniform1i(glGetUniformLocation(texProgram, "texUnit"), GL_TEXTURE0);
 
 	/* Upload matrices */
