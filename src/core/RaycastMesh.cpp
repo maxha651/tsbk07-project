@@ -2,8 +2,6 @@
 #include <math.h>
 #include <assert.h>
 #include <vector>
-#include <iostream>
-
 
 // This code snippet allows you to create an axis aligned bounding volume tree for a triangle mesh so that you can do
 // high-speed raycasting.
@@ -34,8 +32,6 @@
 // 
 
 #pragma warning(disable:4100)
-
-#include <string.h>
 
 namespace RAYCAST_MESH
 {
@@ -548,9 +544,9 @@ namespace RAYCAST_MESH
 					RmUint32 tri = (*i);
 
 					{
-						RmUint32 i1 = indices[tri + 0];
-						RmUint32 i2 = indices[tri + 1];
-						RmUint32 i3 = indices[tri + 2];
+						RmUint32 i1 = indices[tri * 3 + 0];
+						RmUint32 i2 = indices[tri * 3 + 1];
+						RmUint32 i3 = indices[tri * 3 + 2];
 
 						const RmReal *p1 = &vertices[i1 * 3];
 						const RmReal *p2 = &vertices[i2 * 3];
@@ -677,9 +673,9 @@ namespace RAYCAST_MESH
 					if (raycastTriangles[tri] != raycastFrame)
 					{
 						raycastTriangles[tri] = raycastFrame;
-						RmUint32 i1 = indices[tri + 0];
-						RmUint32 i2 = indices[tri + 1];
-						RmUint32 i3 = indices[tri + 2];
+						RmUint32 i1 = indices[tri * 3 + 0];
+						RmUint32 i2 = indices[tri * 3 + 1];
+						RmUint32 i3 = indices[tri * 3 + 2];
 
 						const RmReal *p1 = &vertices[i1 * 3];
 						const RmReal *p2 = &vertices[i2 * 3];
@@ -796,7 +792,7 @@ namespace RAYCAST_MESH
 			dir[1] *= recipDistance;
 			dir[2] *= recipDistance;
 			mRaycastFrame++;
-			//RmUint32 nearestTriIndex = TRI_EOF;
+			//RmUint32 
 			*nearestTriIndex = TRI_EOF;
 			mRoot->raycast(ret, from, to, dir, hitLocation, hitNormal, hitDistance, mVertices, mIndices, distance, this, mRaycastTriangles, mRaycastFrame, mLeafTriangles, *nearestTriIndex);
 			return ret;
@@ -831,9 +827,9 @@ namespace RAYCAST_MESH
 				mFaceNormals = (RmReal *)::malloc(sizeof(RmReal) * 3 * mTcount);
 				for (RmUint32 i = 0; i<mTcount; i++)
 				{
-					RmUint32 i1 = mIndices[i + 0];
-					RmUint32 i2 = mIndices[i + 1];
-					RmUint32 i3 = mIndices[i + 2];
+					RmUint32 i1 = mIndices[i * 3 + 0];
+					RmUint32 i2 = mIndices[i * 3 + 1];
+					RmUint32 i3 = mIndices[i * 3 + 2];
 					const RmReal*p1 = &mVertices[i1 * 3];
 					const RmReal*p2 = &mVertices[i2 * 3];
 					const RmReal*p3 = &mVertices[i3 * 3];
@@ -847,7 +843,7 @@ namespace RAYCAST_MESH
 			faceNormal[2] = src[2];
 		}
 
-		virtual bool bruteForceRaycast(const RmReal *from, const RmReal *to, RmReal *hitLocation, RmReal *hitNormal, RmReal *hitDistance)
+		virtual bool bruteForceRaycast(const RmReal *from, const RmReal *to, RmReal *hitLocation, RmReal *hitNormal, RmReal *hitDistance, RmUint32 *nearestTriIndex)
 		{
 			bool ret = false;
 
@@ -869,9 +865,9 @@ namespace RAYCAST_MESH
 
 			for (RmUint32 tri = 0; tri<mTcount; tri++)
 			{
-				RmUint32 i1 = indices[tri + 0];
-				RmUint32 i2 = indices[tri + 1];
-				RmUint32 i3 = indices[tri + 2];
+				RmUint32 i1 = indices[tri * 3 + 0];
+				RmUint32 i2 = indices[tri * 3 + 1];
+				RmUint32 i3 = indices[tri * 3 + 2];
 
 				const RmReal *p1 = &vertices[i1 * 3];
 				const RmReal *p2 = &vertices[i2 * 3];
