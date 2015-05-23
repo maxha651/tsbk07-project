@@ -7,7 +7,9 @@
 #include <GL/freeglut_std.h>
 
 FBOManager::FBOManager() {
-
+	// Save for reference
+	drawbuffer.push_back(GL_COLOR_ATTACHMENT0);
+	drawbuffer.push_back(GL_DEPTH_ATTACHMENT);
 }
 
 unsigned int FBOManager::AddFBO(unsigned int width, unsigned int height) {
@@ -26,10 +28,6 @@ unsigned int FBOManager::AddFBO(unsigned int width, unsigned int height) {
     // Attach textures
     glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, newData.colorTex, 0);
     glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, newData.depthTex);
-
-    // Save for reference
-    drawbuffer.push_back(GL_COLOR_ATTACHMENT0);
-    drawbuffer.push_back(GL_DEPTH_ATTACHMENT);
 
     // Check for FBO completeness
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE){
