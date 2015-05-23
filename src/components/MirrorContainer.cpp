@@ -54,12 +54,12 @@ void MirrorContainer::Init() {
     for (int y = 0; y < height; y += res) {
         for (int x = 0; x < width; x += res) {
             Vector3f localStart = start + GOTransform::right * x + GOTransform::up * y;
-            mirrors.emplace_back(new Mirror(res, res, normal, localStart,
-                                            localStart + GOTransform::up * res,
-                                            localStart + GOTransform::right * res, color));
-            GameObject* newGameObject = new GameObject();
-            newGameObject->transform.SetPosition(localStart);
-            Context::Instance().game->AddGameObject(newGameObject);
+            //mirrors.emplace_back(new Mirror(res, res, normal, localStart,
+            //                                localStart + GOTransform::up * res,
+            //                                localStart + GOTransform::right * res, color));
+            //GameObject* newGameObject = new GameObject();
+            //newGameObject->transform.SetPosition(localStart);
+            //Context::Instance().game->AddGameObject(newGameObject);
         }
     }
 }
