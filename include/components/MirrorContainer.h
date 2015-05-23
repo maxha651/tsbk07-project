@@ -4,9 +4,27 @@
 //
 
 #include <BaseComponent.h>
+#include "Mirror.h"
 
 class MirrorContainer : public BaseComponent {
 
+public:
+    MirrorContainer();
+    MirrorContainer(GameObject* gameObject, int width, int height, int res);
+    MirrorContainer(const std::string& jsonPath);
+
+    virtual void Start() override;
+    virtual void Update() override;
+    void virtual Render() override;
+
+private:
+    void Init();
+
+    std::vector<Mirror> mirrors;
+    float width, height, res;
+
+    // Keep last
+    JSONLoader jsonLoader;
 };
 
 
