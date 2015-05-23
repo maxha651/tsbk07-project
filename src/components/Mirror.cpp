@@ -47,7 +47,6 @@ void Mirror::Init() {
     static unsigned int rendererRef = 0;
     this->rendererRef = ++rendererRef;
     fboRef = FBOManager::Instance().AddFBO((unsigned int) width, (unsigned int) height);
-	//camera.projectionMatrix = Camera::Frustum(-1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 100.0f);
 
 	ShaderLoader shaderLoader;
 	std::string shadersPath(TSBK07_SHADERS_PATH);
@@ -57,7 +56,6 @@ void Mirror::Init() {
 	texProgram = shaderLoader.CreateProgram((shadersPath + "/" + TEX_SHADER + ".vert").c_str(),
 										 (shadersPath + "/" + TEX_SHADER + ".frag").c_str());
 	LoadVBOAndVAO();
-	//gameObject = new GameObject();
 }
 
 void Mirror::Render() {
@@ -65,18 +63,24 @@ void Mirror::Render() {
 	RenderTexture();
 }
 
+void Mirror::Awake() {
+	camera.lookDir = normal;
+	//camera.projectionMatrix = Camera::Frustum(-1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 100.0f);
+	GameObject *cameraObject = new GameObject();
+	cameraObject->transform = *this->GetTransform();
+	cameraObject->AddComponent(&camera);
+	Context::Instance().game->AddGameObject(cameraObject);
+}
+
 void Mirror::Start() {
 	BaseComponent::Start();
 	Init();
 	//cameraObject->transform.SetPosition(start);
 	//camera.SetGameObject(cameraObject.get());
-	camera.lookDir = normal;
-	camera.Start();
 }
 
 void Mirror::Update() {
 	BaseComponent::Update();
-	//camera.Update();
 
 	// Change us to renderer NOT USED
 	unsigned int oldRenderer = Context::Instance().renderer;

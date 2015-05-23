@@ -29,6 +29,7 @@ public:
 
     GameObject& GetGameObject(const std::string& name);
     void AddGameObject(const std::string& name);
+    void AddGameObject(GameObject* gameObject);
 
     void Update();
     void Render();

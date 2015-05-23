@@ -26,6 +26,7 @@ public:
 
     virtual void Update() override;
     virtual void Render() override;
+    virtual void Awake() override;
 	virtual void Start() override;
 
 private:

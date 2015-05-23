@@ -50,6 +50,10 @@ void Game::AddGameObject(const std::string& name) {
     gameObjects.emplace_back(new GameObject(name, goPath));
 }
 
+void Game::AddGameObject(GameObject* gameObject) {
+    gameObjects.emplace_back(gameObject);
+}
+
 void Game::Update() {
     for (auto& go : gameObjects) {
         go->Update();
