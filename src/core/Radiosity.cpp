@@ -4,6 +4,7 @@
 
 #include <Radiosity.h>
 #include <math.h>
+#include <memory>
 
 Radiosity::Radiosity() {
 
@@ -20,23 +21,23 @@ void Radiosity::CalculateRadiosity(){
 		
 		// Grab all patches.
 		for (int i = 0; i < patches.size(); i++){
-			Patch & currentPatch = patches[i];
+			Patch* currentPatch = patches[i].get();
 
 			// For every patch we compare the patch with every other patch.
 			for (int j = 0; j < patches.size(); j++){
 
 				if (!(i == j)){
-					Patch & targetedPatch = patches[j];
+					Patch* targetedPatch = patches[j].get();
 
 					// Calculate the middle position of the current patch.
-					RmReal from[3] = { (currentPatch.vert1.x() + currentPatch.vert2.x() + currentPatch.vert3.x()) / 3.0f,
-						(currentPatch.vert1.y() + currentPatch.vert2.y() + currentPatch.vert3.y()) / 3.0f,
-						(currentPatch.vert1.z() + currentPatch.vert2.z() + currentPatch.vert3.z()) / 3.0f };
+					RmReal from[3] = { (currentPatch->vert1.x() + currentPatch->vert2.x() + currentPatch->vert3.x()) / 3.0f,
+						(currentPatch->vert1.y() + currentPatch->vert2.y() + currentPatch->vert3.y()) / 3.0f,
+						(currentPatch->vert1.z() + currentPatch->vert2.z() + currentPatch->vert3.z()) / 3.0f };
 
 					// Calculate the middle position of the target patch.
-					RmReal to[3] = { (targetedPatch.vert1.x() + targetedPatch.vert2.x() + targetedPatch.vert3.x()) / 3.0f,
-						(targetedPatch.vert1.y() + targetedPatch.vert2.y() + targetedPatch.vert3.y()) / 3.0f,
-						(targetedPatch.vert1.z() + targetedPatch.vert2.z() + targetedPatch.vert3.z()) / 3.0f };
+					RmReal to[3] = { (targetedPatch->vert1.x() + targetedPatch->vert2.x() + targetedPatch->vert3.x()) / 3.0f,
+						(targetedPatch->vert1.y() + targetedPatch->vert2.y() + targetedPatch->vert3.y()) / 3.0f,
+						(targetedPatch->vert1.z() + targetedPatch->vert2.z() + targetedPatch->vert3.z()) / 3.0f };
 
 					// Need to overshoot.
 					to[0] = 2 * to[0] - from[0];
@@ -55,39 +56,38 @@ void Radiosity::CalculateRadiosity(){
 						
 						// Calculate angles from normal to patches.
 						Vector3f rayCastLineBackward = Vector3f(from[0] - to[0], from[1] - to[1], from[2] - to[2]);
-						float phi1 = std::fmax(0.0f, rayCastLineBackward.dot(targetedPatch.normal) / (rayCastLineBackward.norm()*targetedPatch.normal.norm()));
+						float phi1 = std::fmax(0.0f, rayCastLineBackward.dot(targetedPatch->normal) / (rayCastLineBackward.norm()*targetedPatch->normal.norm()));
 				
 						Vector3f rayCastLine = Vector3f(to[0] - from[0], to[1] - from[1], to[2] - from[2]);
-						float phi2 = std::fmax(0.0f, rayCastLine.dot(currentPatch.normal) / (rayCastLine.norm()*currentPatch.normal.norm()));
+						float phi2 = std::fmax(0.0f, rayCastLine.dot(currentPatch->normal) / (rayCastLine.norm()*currentPatch->normal.norm()));
 
 						// Calculate the total energy to a temp variable so that we can do multiple iterations with bouncing.
 						// Using the radiosity equation described at wikipedia: http://en.wikipedia.org/wiki/Radiosity_(computer_graphics)
-						currentPatch.totalEnergyTemp += targetedPatch.reflectivity * targetedPatch.totalEnergy * (1.0f / (M_PI*hitDistance*hitDistance)) * phi1 * phi2;
+						currentPatch->totalEnergyTemp += targetedPatch->reflectivity * targetedPatch->totalEnergy * (1.0f / (M_PI*hitDistance*hitDistance)) * phi1 * phi2;
 					}
 					else {
 						// If we did not hit the patch we probably hit something else. Add no energy.
-						currentPatch.totalEnergyTemp += Vector3f(0, 0, 0);
+						currentPatch->totalEnergyTemp += Vector3f(0, 0, 0);
 					}
 				}
 			}
 
 			// Finalize current patch totanl energy temp with the emitted energy and total from earlier iterations.
-			Vector3f E = currentPatch.emittedEnergy; 
-			currentPatch.totalEnergyTemp = E + currentPatch.totalEnergy + currentPatch.totalEnergyTemp;
+			Vector3f E = currentPatch->emittedEnergy; 
+			currentPatch->totalEnergyTemp = E + currentPatch->totalEnergy + currentPatch->totalEnergyTemp;
 		}
 
 		// For each iteration we need to zero the temp energy and set the actual total energy to the total temp energy.
 		for (int i = 0; i < patches.size(); i++){
-			Patch & currentPatch = patches[i];
-			currentPatch.totalEnergy =  currentPatch.totalEnergyTemp;
-			currentPatch.totalEnergyTemp = Vector3f();
+			patches[i]->totalEnergy =  patches[i]->totalEnergyTemp;
+			patches[i]->totalEnergyTemp = Vector3f();
 		}
 	}
 }
 
 
 
-void Radiosity::AddPatches(std::vector<Patch> p){
+void Radiosity::AddPatches(std::vector<std::shared_ptr<Patch>> p){
 	patches.insert(patches.end(), p.begin(), p.end());
 }
 
@@ -95,13 +95,13 @@ void Radiosity::CreateRayCastMesh(){
 
 	for (int i = 0; i < patches.size(); i++){
 		for (int j = 0; j < 3; j++){
-			vertices.push_back(patches[i].vert1[j]);
+			vertices.push_back(patches[i]->vert1[j]);
 		}
 		for (int j = 0; j < 3; j++){
-			vertices.push_back(patches[i].vert2[j]);
+			vertices.push_back(patches[i]->vert2[j]);
 		}
 		for (int j = 0; j < 3; j++){
-			vertices.push_back(patches[i].vert3[j]);
+			vertices.push_back(patches[i]->vert3[j]);
 		}
 	}
 

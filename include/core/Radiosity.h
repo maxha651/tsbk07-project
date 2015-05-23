@@ -9,6 +9,7 @@
 #include <vector>
 #include <cstdio>
 #include <iostream>
+#include <memory>
 
 // Third party
 #include <Eigen/Geometry>
@@ -29,12 +30,12 @@ public:
 	
 	Radiosity();
 	virtual ~Radiosity();
-	void AddPatches(std::vector<Patch> p);
+	void AddPatches(std::vector<std::shared_ptr<Patch>> p);
 	void CalculateRadiosity();
 	void CreateRayCastMesh();
 
 	RaycastMesh *rm;
-	std::vector<Patch> patches;
+	std::vector<std::shared_ptr<Patch>> patches;
 	std::vector<int> indices;
 	std::vector<float> vertices;
 	int iterations = 1;

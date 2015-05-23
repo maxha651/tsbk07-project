@@ -12,6 +12,7 @@
 #include <fstream>
 #include <cstdio>
 #include <iostream>
+#include <memory>
 
 // Third party
 #include <GL/glew.h>
@@ -42,7 +43,7 @@ public:
 	~Model();
 	std::vector<GLfloat> patchedVertices;
 	std::vector<GLfloat> patchedNormals;
-	std::vector<Patch> patches;
+	std::vector<std::shared_ptr<Patch>> patches;
 	std::vector<GLfloat> vertices;
 	std::vector<GLfloat> normals;
 	std::vector<GLfloat> energy;

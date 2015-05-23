@@ -293,10 +293,10 @@ void Model::SplitTriangles() {
 			}
 			else{ // Add complete triangle to patchedVertices
 				AddTriangle(&patchedVertices, p1, p2, p3);
-				Patch p = Patch(p1, p2, p3, n1);
-				p.emittedEnergy = emitted_energy;
-				p.reflectivity = reflectivity;
-				patches.push_back(p);
+				Patch* p = new Patch(p1, p2, p3, n1);
+				p->emittedEnergy = emitted_energy;
+				p->reflectivity = reflectivity;
+				patches.emplace_back(p);
 
 				// Add normals
 				AddTriangle(&patchedNormals, n1, n2, n3);
@@ -335,9 +335,9 @@ void Model::Start() {
 
 	for (int i = 0; i < patches.size(); i++){
 		for (int j = 0; j < 3; j++){
-			energy.push_back(patches[i].totalEnergy.x());
-			energy.push_back(patches[i].totalEnergy.y());
-			energy.push_back(patches[i].totalEnergy.z());
+			energy.push_back(patches[i]->totalEnergy.x());
+			energy.push_back(patches[i]->totalEnergy.y());
+			energy.push_back(patches[i]->totalEnergy.z());
 			energy.push_back(1);
 		}
 	}
@@ -377,12 +377,12 @@ void Model::UpdateVerticesAndNormals(){
 	Eigen::Matrix4f mats4 = GetGameObject()->transform.GetMatrix();
 
 	for (int i = 0; i < patches.size(); i++){
-		Vector4f v1 = mats4 * Vector4f(patches[i].vert1[0], patches[i].vert1[1], patches[i].vert1[2], 1);
-		Vector4f v2 = mats4 * Vector4f(patches[i].vert2[0], patches[i].vert2[1], patches[i].vert2[2], 1);
-		Vector4f v3 = mats4 * Vector4f(patches[i].vert3[0], patches[i].vert3[1], patches[i].vert3[2], 1);
-		patches[i].vert1 = v1.head<3>();
-		patches[i].vert2 = v2.head<3>();
-		patches[i].vert3 = v3.head<3>();
+		Vector4f v1 = mats4 * Vector4f(patches[i]->vert1[0], patches[i]->vert1[1], patches[i]->vert1[2], 1);
+		Vector4f v2 = mats4 * Vector4f(patches[i]->vert2[0], patches[i]->vert2[1], patches[i]->vert2[2], 1);
+		Vector4f v3 = mats4 * Vector4f(patches[i]->vert3[0], patches[i]->vert3[1], patches[i]->vert3[2], 1);
+		patches[i]->vert1 = v1.head<3>();
+		patches[i]->vert2 = v2.head<3>();
+		patches[i]->vert3 = v3.head<3>();
 	}
 
 	Eigen::Matrix3f mats3;
@@ -391,10 +391,10 @@ void Model::UpdateVerticesAndNormals(){
 	mats3 = mats3.inverse().eval();
 	mats3 = mats3.transpose().eval();
 	for (int i = 0; i < patches.size(); i++){
-		Vector3f v = patches[i].normal;
+		Vector3f v = patches[i]->normal;
 		v = mats3 * v;
 		v.normalize();
-		patches[i].normal = v;
+		patches[i]->normal = v;
 	}
 }
 
