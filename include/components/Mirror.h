@@ -12,7 +12,8 @@
 #include <JSONLoader.h>
 #include <Camera.h>
 #include <Color.h>
-#include <GameObject.h>
+
+class GameObject;
 
 class Mirror : public BaseComponent {
 
@@ -44,7 +45,7 @@ private:
     Color color;
 
     Camera camera;
-    GameObject cameraObject;
+    std::unique_ptr<GameObject> cameraObject;
     // Keep last
     JSONLoader jsonLoader;
 };

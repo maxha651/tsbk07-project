@@ -6,6 +6,8 @@
 
 #include <Eigen/Geometry>
 
+#include <GameObject.h>
+
 using Eigen::Vector3f;
 using Eigen::Vector4f;
 

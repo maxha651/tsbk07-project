@@ -6,6 +6,8 @@
 #include <BaseComponent.h>
 #include "Mirror.h"
 
+class GameObject;
+
 class MirrorContainer : public BaseComponent {
 
 public:
@@ -21,7 +23,7 @@ private:
     void Init();
 
     std::vector<Mirror> mirrors;
-    std::vector<GameObject> mirrorObjects;
+    std::vector<std::unique_ptr<GameObject>> mirrorObjects;
     float width, height, res;
     Eigen::Vector3f normal;
     Color color;
