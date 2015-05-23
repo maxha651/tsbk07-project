@@ -84,68 +84,97 @@ void initGameObjects()
 	spline.AddSplinePoint(Vector3f(0, 0, -10));
 
 	// Create raycast mesh for leftwall and ray cast on it
-	GameObject &got = game->GetGameObject("plate");
+	GameObject &got = game->GetGameObject("leftwall");
 	Model *plate = got.GetComponent<Model>();
 	std::vector<int> patchedIndices;
 	for (int i = 0; i < plate->patchedVertices.size(); i++){
 		patchedIndices.push_back(i);
 	}
 
+	std::cout << "Building raycastmesh" << std::endl;
 	RaycastMesh *rm = createRaycastMesh(plate->patchedVertices.size(), &plate->patchedVertices[0], plate->patchedVertices.size() / 3, (const RmUint32 *)&patchedIndices[0]);
-	int counter = 0;
 
 	for (int n = 0; n < plate->patchedVertices.size(); n += 9){
 		
-		if (plate->patchedVertices[n] >= 5.45f){
-			// Raycast
-			RmReal to[3] = { (plate->patchedVertices[n] + plate->patchedVertices[n + 3] + plate->patchedVertices[n + 6]) / 3,
-				(plate->patchedVertices[n + 1] + plate->patchedVertices[n + 4] + plate->patchedVertices[n + 7]) / 3,
-				(plate->patchedVertices[n + 2] + plate->patchedVertices[n + 5] + plate->patchedVertices[n + 8]) / 3 };
-			RmReal from[3] = { 8, 5, -2 };
-			to[0] = 2*to[0] - from[0];
-			to[1] = 2*to[1] - from[1];
-			to[2] = 2*to[2] - from[2];
-			RmReal hitLocation[3] = { 0, 0, 0 };
-			RmReal normal[3];
-			RmReal hitDistance;
-			int triangleIndex = -1;
-			bool hit = rm->raycast(from, to, hitLocation, normal, &hitDistance, (RmUint32*)&triangleIndex);
+		// Raycast
+		RmReal to[3] = { (plate->patchedVertices[n] + plate->patchedVertices[n + 3] + plate->patchedVertices[n + 6]) / 3,
+			(plate->patchedVertices[n + 1] + plate->patchedVertices[n + 4] + plate->patchedVertices[n + 7]) / 3,
+			(plate->patchedVertices[n + 2] + plate->patchedVertices[n + 5] + plate->patchedVertices[n + 8]) / 3 };
+		RmReal from[3] = { 3, 0, 2 };
+		to[0] = 2*to[0] - from[0];
+		to[1] = 2*to[1] - from[1];
+		to[2] = 2*to[2] - from[2];
+		RmReal hitLocation[3] = { 0, 0, 0 };
+		RmReal normal[3];
+		RmReal hitDistance;
+		int triangleIndex = -1;
 
-			if (triangleIndex > -1){
-				triangleIndex *= 3;
-				Vector3f rayCastLineBackward = Vector3f(from[0] - to[0], from[1] - to[1], from[2] - to[2]);
-				Vector3f normals1 = Vector3f(plate->patchedNormals[triangleIndex * 3], plate->patchedNormals[triangleIndex * 3 + 1], plate->patchedNormals[triangleIndex * 3 + 2]);
-				float angle = acos(rayCastLineBackward.dot(normals1) / rayCastLineBackward.norm()*normals1.norm());
-				float fi1 = rayCastLineBackward.dot(normals1) / rayCastLineBackward.norm()*normals1.norm();
-				float deg = angle * 180 / M_PI;
-				//std::cout << fi1 << std::endl;
+		bool hit = rm->raycast(from, to, hitLocation, normal, &hitDistance, (RmUint32*)&triangleIndex);
 
-				Vector3f rayCastLine = Vector3f(to[0] - from[0], to[1] - from[1], to[2] - from[2]);
-				Vector3f normals2 = Vector3f(-1, 0, 0);
-				float angle2 = acos(rayCastLine.dot(normals2) / rayCastLine.norm()*normals2.norm());
-				float fi2 = rayCastLine.dot(normals2) / rayCastLine.norm()*normals2.norm();
-				float deg2 = angle2 * 180 / M_PI;
-				//std::cout << fi2 << std::endl;
+		if (triangleIndex > -1 && triangleIndex * 3 < plate->patchedVertices.size()/3){
+			triangleIndex *= 3;
+			Vector3f rayCastLineBackward = Vector3f(from[0] - to[0], from[1] - to[1], from[2] - to[2]);
+			Vector3f normals1 = Vector3f(plate->patchedNormals[triangleIndex], plate->patchedNormals[triangleIndex + 1], plate->patchedNormals[triangleIndex + 2]);
+			float angle = acos(rayCastLineBackward.dot(normals1) / rayCastLineBackward.norm()*normals1.norm());
+			float fi1 = rayCastLineBackward.dot(normals1) / rayCastLineBackward.norm()*normals1.norm();
+			float deg = angle * 180 / M_PI;
+			//std::cout << fi1 << std::endl;
 
-				// Calculate radiosity
-				Vector3f B = Vector3f(0.7f, 0.7f, 0.7f);
-				Vector3f E = Vector3f(0.1f, 0.1f, 0.1f); //Emitted energy
-				float p = 3.0f; // Reflectivity
-				int vis = 1;
+			Vector3f rayCastLine = Vector3f(to[0] - from[0], to[1] - from[1], to[2] - from[2]);
+			Vector3f normals2 = Vector3f(1, 0, 0);
+			float angle2 = acos(rayCastLine.dot(normals2) / rayCastLine.norm()*normals2.norm());
+			float fi2 = rayCastLine.dot(normals2) / rayCastLine.norm()*normals2.norm();
+			float deg2 = angle2 * 180 / M_PI;
+			//std::cout << fi2 << std::endl;
 
-				Vector3f totalEnergy = E + p*B*(1 / (M_PI*hitDistance*hitDistance))*fi1*fi2*vis;
-				std::cout << "(1 / M_PI*hitDistance*hitDistance)" << (1 / (M_PI*hitDistance*hitDistance)) << std::endl;
-				std::cout << "fi1*fi2 :" << fi1*fi2 << std::endl;
-				std::cout << "totalEnergy :" << totalEnergy << std::endl;
+			// Calculate radiosity
+			Vector3f B = Vector3f(0.7f, 0.7f, 0.7f);
+			Vector3f E = Vector3f(0.1f, 0.1f, 0.1f); //Emitted energy
+			float p = 10.0f; // Reflectivity
+			int vis = 1; // visible
 
-				for (int i = 0; i < 12; i += 4){
-					plate->colors[triangleIndex * 4 + i] = plate->colors[triangleIndex * 4 + i] + totalEnergy.x();
-					plate->colors[triangleIndex * 4 + 1 + i] = plate->colors[triangleIndex * 4 + 1 + i] + totalEnergy.y();
-					plate->colors[triangleIndex * 4 + 2 + i] = plate->colors[triangleIndex * 4 + 2 + i] + totalEnergy.z();
-				}
-				//l->AddLine(Vector3f(from[0], from[1], from[2]), Vector3f(to[0], to[1], to[2]));
+			Vector3f totalEnergy = E + p*B*(1 / (M_PI*hitDistance*hitDistance))*fi1*fi2*vis;
+
+			for (int i = 0; i < 12; i += 4){
+				plate->colors[triangleIndex * 4 + i] = plate->colors[triangleIndex * 4 + i] + totalEnergy.x();// min(plate->colors[triangleIndex * 4 + i] + totalEnergy.x(), 1.0f);
+				plate->colors[triangleIndex * 4 + 1 + i] = plate->colors[triangleIndex * 4 + 1 + i] + totalEnergy.y();// min(plate->colors[triangleIndex * 4 + 1 + i] + totalEnergy.y(), 1.0f);
+				plate->colors[triangleIndex * 4 + 2 + i] = plate->colors[triangleIndex * 4 + 2 + i] + totalEnergy.z();// min(plate->colors[triangleIndex * 4 + 2 + i] + totalEnergy.z(), 1.0f);
+			}
+			//l->AddLine(Vector3f(from[0], from[1], from[2]), Vector3f(to[0], to[1], to[2]));
+		}
+	}
+	// Make sure all the same vertices has the same colors
+	Vector3f verticeToCheck;
+	for (int i = 0; i < plate->patchedVertices.size()/3; i++){
+		std::vector<Vector4f> colorsToChange;
+		std::vector<int> colorIdx;
+		verticeToCheck = Vector3f(plate->patchedVertices[i*3], plate->patchedVertices[i*3 + 1], plate->patchedVertices[i*3 + 2]);
+		for (int j = 0; j < plate->patchedVertices.size()/3; j++){
+			if (i != j &&
+				(int)(verticeToCheck.x() * 1000) == (int)(plate->patchedVertices[j * 3] * 1000) &&
+				(int)(verticeToCheck.y() * 1000) == (int)(plate->patchedVertices[j * 3 + 1] * 1000) &&
+				(int)(verticeToCheck.z() * 1000) == (int)(plate->patchedVertices[j * 3 + 2] * 1000)){
+				colorsToChange.push_back(Vector4f(plate->colors[j * 4], plate->colors[j * 4 + 1], plate->colors[j * 4 + 2], plate->colors[j * 4 + 3]));
+				colorIdx.push_back(j);
 			}
 		}
+		// Add all colors together and divide
+		for (int k = 0; k < colorsToChange.size(); k++){
+			plate->colors[i*4] += colorsToChange[k].x();
+			plate->colors[i*4 + 1] += colorsToChange[k].y();
+			plate->colors[i*4 + 2] += colorsToChange[k].z();
+		}
+
+		plate->colors[i*4] /= (colorsToChange.size() + 1);
+		plate->colors[i*4 + 1] /= (colorsToChange.size() + 1);
+		plate->colors[i*4 + 2] /= (colorsToChange.size() + 1);
+
+		for (int l = 0; l < colorIdx.size(); l++){
+			plate->colors[colorIdx[l] * 4] = plate->colors[i * 4];
+			plate->colors[colorIdx[l] * 4 + 1] = plate->colors[i * 4 + 1];
+			plate->colors[colorIdx[l] * 4 + 2] = plate->colors[i * 4 + 2];
+		}
+
 	}
 	plate->LoadVBOAndVAO();
 
@@ -156,13 +185,28 @@ void initGameObjects()
 	Vector3f v2;
 	Vector3f v3;
 	// Draw lines for all vertices on left wall to see the patches
-	GameObject &leftgo = game->GetGameObject("leftwall");
+	GameObject &leftgo = game->GetGameObject("backwall");
 	Model *leftwall = leftgo.GetComponent<Model>();
-
+	Vector3f nv = Vector3f(leftwall->patchedNormals[0], leftwall->patchedNormals[1], leftwall->patchedNormals[2]);
+	Vector3f pos = Vector3f(leftwall->patchedVertices[0], leftwall->patchedVertices[1], leftwall->patchedVertices[2]);
+	Vector3f target = pos + nv;
+	l->AddLine(pos, target);
 	for (int n = 0; n < leftwall->patchedVertices.size(); n += 9){
 		v1 = Vector3f(leftwall->patchedVertices[n], leftwall->patchedVertices[n + 1], leftwall->patchedVertices[n + 2]);
 		v2 = Vector3f(leftwall->patchedVertices[n + 3], leftwall->patchedVertices[n + 4], leftwall->patchedVertices[n + 5]);
 		v3 = Vector3f(leftwall->patchedVertices[n + 6], leftwall->patchedVertices[n + 7], leftwall->patchedVertices[n + 8]);
+		l->AddLine(v1, v2);
+		l->AddLine(v2, v3);
+		l->AddLine(v1, v3);
+	}
+
+	GameObject &platego = game->GetGameObject("plate");
+	Model *platecom = platego.GetComponent<Model>();
+
+	for (int n = 0; n < platecom->patchedVertices.size(); n += 9){
+		v1 = Vector3f(platecom->patchedVertices[n], platecom->patchedVertices[n + 1], platecom->patchedVertices[n + 2]);
+		v2 = Vector3f(platecom->patchedVertices[n + 3], platecom->patchedVertices[n + 4], platecom->patchedVertices[n + 5]);
+		v3 = Vector3f(platecom->patchedVertices[n + 6], platecom->patchedVertices[n + 7], platecom->patchedVertices[n + 8]);
 		l->AddLine(v1, v2);
 		l->AddLine(v2, v3);
 		l->AddLine(v1, v3);

@@ -60,7 +60,7 @@ private:
 	// Keep all dependent variables before this
 	JSONLoader jsonLoader;
 	
-	float MIN_PATCH_AREA = 0.5f;
+	float MIN_PATCH_AREA = 0.2f;
 
 	void UpdateVerticesAndNormals();
 	void AddTriangle(std::vector<GLfloat> *ver, Vector3f vec1, Vector3f vec2, Vector3f vec3);
