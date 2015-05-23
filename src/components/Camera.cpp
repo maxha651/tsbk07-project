@@ -24,8 +24,8 @@ Camera::Camera()
     Init();
 }
 
-Camera::Camera(const std::string& jsonPath) :
-	jsonLoader(jsonPath) {
+Camera::Camera(GameObject* gameObject, const std::string& jsonPath) :
+	BaseComponent(gameObject), jsonLoader(jsonPath) {
     jsonLoader.AddArrayField<float>("lookDir", lookDir.data(), 3);
     jsonLoader.Read();
     Init();

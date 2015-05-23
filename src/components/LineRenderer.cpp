@@ -4,7 +4,8 @@ LineRenderer::LineRenderer()
 {
 }
 
-LineRenderer::LineRenderer(const std::string &jsonPath) {
+LineRenderer::LineRenderer(GameObject* gameObject, const std::string &jsonPath)
+		: BaseComponent(gameObject) {
 
 }
 

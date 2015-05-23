@@ -21,7 +21,7 @@ public:
     Mirror();
     Mirror(float width, float height, const Eigen::Vector3f& normal, const Eigen::Vector3f& start,
            const Eigen::Vector3f& left, const Eigen::Vector3f& right, const Color& color);
-    Mirror(const std::string& jsonPath);
+    Mirror(GameObject* gameObject, const std::string& jsonPath);
     void Init();
 
     virtual void Update() override;

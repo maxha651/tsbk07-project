@@ -8,7 +8,8 @@
 
 ShaderManager::ShaderManager() {}
 
-ShaderManager::ShaderManager(const std::string &jsonPath) : jsonLoader(jsonPath) {
+ShaderManager::ShaderManager(GameObject* gameObject, const std::string &jsonPath)
+        : BaseComponent(gameObject), jsonLoader(jsonPath) {
     jsonLoader.AddArrayField<std::string>("shaders", &shaders);
     jsonLoader.Read();
 

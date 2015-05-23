@@ -8,6 +8,7 @@
 #include <ShaderManager.h>
 #include <Mirror.h>
 #include <LineRenderer.h>
+#include <MirrorContainer.h>
 
 /**
  * Used for creating Component instances providing name as string.
@@ -54,6 +55,9 @@ private:
 		}
 		else if (name.compare("LineRenderer") == 0) {
 			return _NewComponent<LineRenderer>(name, args...);
+		}
+		else if (name.compare("MirrorContainer") == 0) {
+			return _NewComponent<MirrorContainer>(name, args...);
 		}
         /* ADD NEW CLASSES HERE */
         else {

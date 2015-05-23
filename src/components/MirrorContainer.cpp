@@ -7,6 +7,7 @@
 #include <Eigen/Geometry>
 
 #include <GameObject.h>
+#include <Game.h>
 
 using Eigen::Vector3f;
 using Eigen::Vector4f;
@@ -20,7 +21,8 @@ MirrorContainer::MirrorContainer(GameObject *gameObject, int width, int height, 
     Init();
 }
 
-MirrorContainer::MirrorContainer(const std::string &jsonPath) : jsonLoader(jsonPath) {
+MirrorContainer::MirrorContainer(GameObject* gameObject, const std::string &jsonPath)
+        : BaseComponent(gameObject), jsonLoader(jsonPath) {
     jsonLoader.AddDataField("width", &width);
     jsonLoader.AddDataField("height", &height);
     jsonLoader.AddDataField("res", &res);
@@ -31,35 +33,32 @@ MirrorContainer::MirrorContainer(const std::string &jsonPath) : jsonLoader(jsonP
     Init();
 }
 
+void MirrorContainer::Awake() {
+    BaseComponent::Awake();
+}
+
 void MirrorContainer::Start() {
     BaseComponent::Start();
+}
+
+void MirrorContainer::Update() {
+    BaseComponent::Update();
+}
+
+void MirrorContainer::Render() {
+    BaseComponent::Render();
+}
+
+void MirrorContainer::Init() {
     Vector3f start = GetTransform()->GetPosition();
     for (int y = 0; y < height; y += res) {
         for (int x = 0; x < width; x += res) {
             Vector3f localStart = start + GOTransform::right * x + GOTransform::up * y;
             mirrors.emplace_back(res, res, normal, localStart, localStart + GOTransform::up * res,
                                  localStart + GOTransform::right * res, color);
+            GameObject* newGameObject = new GameObject();
+            newGameObject->transform.SetPosition(localStart);
+            Context::Instance().game->AddGameObject(newGameObject);
         }
     }
-
-    for (auto& mirror : mirrors) {
-        mirror.Start();
-    }
-}
-
-void MirrorContainer::Update() {
-    BaseComponent::Update();
-    for (auto& mirror : mirrors) {
-        mirror.Update();
-    }
-}
-
-void MirrorContainer::Render() {
-    BaseComponent::Render();
-    for (auto& mirror : mirrors) {
-        mirror.Render();
-    }
-}
-
-void MirrorContainer::Init() {
 }

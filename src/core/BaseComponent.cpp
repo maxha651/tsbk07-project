@@ -9,9 +9,8 @@
 #include <GameObject.h>
 
 
-BaseComponent::BaseComponent(const std::string &jsonPath) {
-    std::cerr << "Component doesn't implement JSON constructor :(" << std::endl;
-    assert(false);
+BaseComponent::BaseComponent(GameObject* gameObject) : Component(gameObject) {
+
 }
 
 BaseComponent::BaseComponent() : Component() {

@@ -38,8 +38,8 @@ GOTransform::GOTransform(Vector3f pos, Vector3f rot, Vector3f scale)
 
 }
 
-GOTransform::GOTransform(const std::string& jsonPath)
-    : jsonLoader(jsonPath) {
+GOTransform::GOTransform(GameObject* gameObject, const std::string& jsonPath)
+    : Component(gameObject), jsonLoader(jsonPath) {
     // XXX: This is kind of ugly but I'm confusing myself
     jsonLoader.AddArrayField("position", position.data(), 3);
     jsonLoader.AddArrayField("rotation", rotation.data(), 3);

@@ -14,6 +14,7 @@ class Component {
 
 public:
     Component();
+    Component(GameObject *gameObject);
     virtual ~Component();
     virtual GameObject* GetGameObject();
     virtual void SetGameObject(GameObject* go);

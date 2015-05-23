@@ -18,7 +18,7 @@ public:
     GOTransform();
     GOTransform(const GOTransform& transform);
     GOTransform(Vector3f pos, Vector3f rot, Vector3f scale);
-    GOTransform(const std::string& jsonPath);
+    GOTransform(GameObject* gameObject, const std::string& jsonPath);
     virtual ~GOTransform();
 
     GOTransform &operator=(const GOTransform &other);

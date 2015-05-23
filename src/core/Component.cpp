@@ -8,6 +8,10 @@ Component::Component() : gameObject(nullptr) {
 
 }
 
+Component::Component(GameObject *gameObject) : gameObject(gameObject) {
+
+}
+
 Component::~Component() {
 
 }
@@ -20,4 +24,3 @@ void Component::SetGameObject(GameObject* go){
 GameObject* Component::GetGameObject(){
 	return this->gameObject;
 }
-

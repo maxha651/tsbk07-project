@@ -18,7 +18,7 @@ class Camera : public BaseComponent
 public:
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     Camera();
-    Camera(const std::string& jsonPath);
+    Camera(GameObject* gameObject, const std::string& jsonPath);
     ~Camera();
 
     virtual void Update() override;

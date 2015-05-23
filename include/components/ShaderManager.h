@@ -20,7 +20,7 @@ class ShaderManager : public BaseComponent {
 
 public:
     ShaderManager();
-    ShaderManager(const std::string& jsonPath);
+    ShaderManager(GameObject* gameObject, const std::string& jsonPath);
 
     void Update() override;
 

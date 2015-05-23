@@ -13,8 +13,9 @@ class MirrorContainer : public BaseComponent {
 public:
     MirrorContainer();
     MirrorContainer(GameObject* gameObject, int width, int height, int res);
-    MirrorContainer(const std::string& jsonPath);
+    MirrorContainer(GameObject* gameObject, const std::string& jsonPath);
 
+    virtual void Awake() override;
     virtual void Start() override;
     virtual void Update() override;
     virtual void Render() override;

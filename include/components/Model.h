@@ -37,7 +37,7 @@ using Eigen::Matrix4f;
 class Model : public BaseComponent
 {
 public:
-	Model(const std::string& jsonPath);
+	Model(GameObject* gameObject, const std::string& jsonPath);
 	Model(const char *model);
 	~Model();
 	std::vector<GLfloat> patchedVertices;

@@ -14,7 +14,7 @@ class BaseComponent : public Component {
 
 public:
     BaseComponent();
-    BaseComponent(const std::string& jsonPath);
+    BaseComponent(GameObject* gameObject);
     virtual ~BaseComponent();
     virtual void Update() override;
     virtual void Awake() override;

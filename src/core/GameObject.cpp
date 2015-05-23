@@ -8,7 +8,7 @@ GameObject::GameObject() {
 }
 
 GameObject::GameObject(const std::string& path) :
-    jsonLoader(path + "/GameObject.json"), transform(path + "/GOTransform.json") {
+    jsonLoader(path + "/GameObject.json"), transform(this, path + "/GOTransform.json") {
 
     jsonLoader.AddArrayField<std::string>("components", &componentNames);
     jsonLoader.Read();
@@ -16,7 +16,8 @@ GameObject::GameObject(const std::string& path) :
     for (auto component : componentNames) {
         std::string componentPath(path);
         componentPath.append("/" + component + ".json");
-        Component* newComponent = componentFactory.NewComponent<const std::string&>(component, componentPath);
+        Component* newComponent = componentFactory.NewComponent
+                <GameObject*, const std::string&>(component, this, componentPath);
         if (newComponent != nullptr) {
             std::cout << "GameObject: " << name << " added Component: " << component << std::endl;
             AddComponent(newComponent);

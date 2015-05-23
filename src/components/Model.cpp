@@ -12,8 +12,8 @@ static const char MODEL_REL_PATH[] = TSBK07_MODELS_PATH;
 static const char SHADER_REL_PATH[] = TSBK07_SHADERS_PATH;
 
 
-Model::Model(const std::string& jsonPath) :
-    BaseComponent(), jsonLoader(jsonPath) {
+Model::Model(GameObject* gameObject, const std::string& jsonPath) :
+    BaseComponent(gameObject), jsonLoader(jsonPath) {
 
     jsonLoader.AddDataField<std::string>("model", &model);
 	jsonLoader.AddArrayField<float>("color", color, 4);
