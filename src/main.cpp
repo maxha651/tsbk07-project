@@ -70,6 +70,7 @@ Radiosity radiosity;
 void initGameObjects()
 {
     game = std::unique_ptr<Game>(new Game(TSBK07_GAMEOBJECTS_PATH));
+	game->Awake();
 	game->Start();
 
 	//return;
