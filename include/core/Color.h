@@ -15,6 +15,7 @@ using Eigen::Vector4f;
 class Color {
 
 public:
+	Color();
 	Color(float r, float g, float b, float a);
 	virtual ~Color();
 	Vector3f toVector3f();

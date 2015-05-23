@@ -4,6 +4,13 @@
 
 #include <Color.h>
 
+Color::Color() {
+	this->a = 0.0f;
+	this->r = 0.0f;
+	this->g = 0.0f;
+	this->b = 0.0f;
+}
+
 Color::Color(float r, float g, float b, float a) {
 	this->a = a;
 	this->r = r;
