@@ -17,7 +17,7 @@ using Eigen::Translation3f;
 // frustum parameters
 static const float FRUSTUM_LEFT = -1.0f, FRUSTUM_RIGHT = 1.0f, FRUSTUM_BOTTOM = -1.0f,
 				FRUSTUM_TOP = 1.0f, FRUSTUM_NEAR = 1.0f, FRUSTUM_FAR = 100.0f;
-static const float MOUSE_MOVE_SCALER = 0.01f;
+static const float MOUSE_MOVE_SCALER = 0.0007f;
 
 Camera::Camera()
 {

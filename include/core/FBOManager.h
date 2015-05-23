@@ -42,7 +42,6 @@ private:
 
     FBOManager();
 
-    std::vector<GLuint> drawbuffer;
     std::map<unsigned int, struct FBOData> fboMap;
     GLuint current_fbo;
 

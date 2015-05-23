@@ -11,13 +11,14 @@
 #include <BaseComponent.h>
 #include <JSONLoader.h>
 #include <Camera.h>
+#include <Color.h>
 
 class Mirror : public BaseComponent {
 
 public:
     Mirror();
-    Mirror(float width, float height, const Eigen::Vector3f& normal,
-           const Eigen::Vector3f& start, const Eigen::Vector3f& left, Eigen::Vector3f& right);
+    Mirror(float width, float height, const Eigen::Vector3f& normal, const Eigen::Vector3f& start,
+           const Eigen::Vector3f& left, Eigen::Vector3f& right, const Color& color);
     Mirror(const std::string& jsonPath);
     void Init();
 
@@ -39,6 +40,7 @@ private:
     std::vector<unsigned int> indices;
     Eigen::Vector3f start, right, left;
     Eigen::Vector3f normal;
+    Color color;
 
     Camera camera;
     // Keep last

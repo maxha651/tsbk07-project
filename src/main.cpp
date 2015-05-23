@@ -24,7 +24,7 @@
  * classes. Or not.
  */
 
-static const int UPDATE_TIME_MS = 100;
+static const int UPDATE_TIME_MS = 15; // > 60 fps
 
 // Test triangle
 static GLfloat vertices[] =
