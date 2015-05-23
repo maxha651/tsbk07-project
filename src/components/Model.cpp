@@ -328,7 +328,7 @@ void Model::Start() {
 
 }
 
-
+/* Updates the vertices and normals with the transform. */
 void Model::UpdateVerticesAndNormals(){
 	Eigen::Matrix4f mat4 = GetGameObject()->transform.GetMatrix();
 
@@ -355,6 +355,41 @@ void Model::UpdateVerticesAndNormals(){
 	}
 }
 
+/* Correct energy so that vertices at the same position has the same energy. */
+void Model::CorrectEnergy(){
+	Vector3f verticeToCheck;
+	// Find all vertices with the same position
+	for (int i = 0; i < patchedVertices.size() / 3; i++){
+		std::vector<Vector4f> colorsToChange;
+		std::vector<int> colorIdx;
+		verticeToCheck = Vector3f(patchedVertices[i * 3], patchedVertices[i * 3 + 1], patchedVertices[i * 3 + 2]);
+		for (int j = 0; j < patchedVertices.size() / 3; j++){
+			if (i != j &&
+				(int)(verticeToCheck.x() * 1000) == (int)(patchedVertices[j * 3] * 1000) &&
+				(int)(verticeToCheck.y() * 1000) == (int)(patchedVertices[j * 3 + 1] * 1000) &&
+				(int)(verticeToCheck.z() * 1000) == (int)(patchedVertices[j * 3 + 2] * 1000)){
+				colorsToChange.push_back(Vector4f(energy[j * 4], energy[j * 4 + 1], energy[j * 4 + 2], energy[j * 4 + 3]));
+				colorIdx.push_back(j);
+			}
+		}
+		// Add all colors together and divide
+		for (int k = 0; k < colorsToChange.size(); k++){
+			energy[i * 4] += colorsToChange[k].x();
+			energy[i * 4 + 1] += colorsToChange[k].y();
+			energy[i * 4 + 2] += colorsToChange[k].z();
+		}
+
+		energy[i * 4] /= (colorsToChange.size() + 1);
+		energy[i * 4 + 1] /= (colorsToChange.size() + 1);
+		energy[i * 4 + 2] /= (colorsToChange.size() + 1);
+
+		for (int l = 0; l < colorIdx.size(); l++){
+			energy[colorIdx[l] * 4] = energy[i * 4];
+			energy[colorIdx[l] * 4 + 1] = energy[i * 4 + 1];
+			energy[colorIdx[l] * 4 + 2] = energy[i * 4 + 2];
+		}
+	}
+}
 
 void Model::LoadVBOAndVAO(){
 	unsigned int program = Context::Instance().program;
@@ -379,18 +414,18 @@ void Model::LoadVBOAndVAO(){
 		glEnableVertexAttribArray(glGetAttribLocation(program, "in_Normal"));
 
 		for (int i = 0; i < patchedVertices.size() / 3; i++){
-			colors.push_back(color[0]);
-			colors.push_back(color[1]);
-			colors.push_back(color[2]);
-			colors.push_back(color[3]);
+			energy.push_back(0);
+			energy.push_back(0);
+			energy.push_back(0);
+			energy.push_back(0);
 		}
 		unsigned int colorsBufferObjIDCube;
 		glGenBuffers(1, &colorsBufferObjIDCube);
 		glBindBuffer(GL_ARRAY_BUFFER, colorsBufferObjIDCube);
-		glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(GLfloat), &colors[0], GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, energy.size() * sizeof(GLfloat), &energy[0], GL_STATIC_DRAW);
 
-		glVertexAttribPointer(glGetAttribLocation(program, "in_Color"), 4, GL_FLOAT, GL_FALSE, 0, 0);
-		glEnableVertexAttribArray(glGetAttribLocation(program, "in_Color"));
+		glVertexAttribPointer(glGetAttribLocation(program, "in_Energy"), 4, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(glGetAttribLocation(program, "in_Energy"));
 
 		/*
 		unsigned int colorBufferObjID;
@@ -424,14 +459,8 @@ void Model::Render() {
 	glUniformMatrix4fv(glGetUniformLocation(Context::Instance().program, "projectionMatrix"), 1, GL_FALSE, Context::Instance().camera->projectionMatrix.data());
 	glUniformMatrix4fv(glGetUniformLocation(Context::Instance().program, "worldToViewMatrix"), 1, GL_FALSE, Context::Instance().camera->worldToViewMatrix.data());
 	glUniformMatrix4fv(glGetUniformLocation(Context::Instance().program, "transform"), 1, GL_FALSE, GetTransform()->GetMatrix().data());
-	//glProgramUniform4fv(Context::Instance().program, glGetUniformLocation(Context::Instance().program, "uni_Color"), 1, color);
+	glProgramUniform4fv(Context::Instance().program, glGetUniformLocation(Context::Instance().program, "uni_Color"), 1, color);
 
 	glDrawArrays(GL_TRIANGLES, 0, patchedVertices.size() / 3); // use GL_LINE_STRIP to kind of see the grid, not totaly correct
 }
 
-void Model::SetColor(GLfloat c1, GLfloat c2, GLfloat c3, GLfloat c4) {
-	colors[0] = c1;
-	colors[1] = c2;
-	colors[2] = c3;
-	colors[3] = c4;
-}

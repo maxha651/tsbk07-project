@@ -100,7 +100,7 @@ void initGameObjects()
 		RmReal to[3] = { (plate->patchedVertices[n] + plate->patchedVertices[n + 3] + plate->patchedVertices[n + 6]) / 3,
 			(plate->patchedVertices[n + 1] + plate->patchedVertices[n + 4] + plate->patchedVertices[n + 7]) / 3,
 			(plate->patchedVertices[n + 2] + plate->patchedVertices[n + 5] + plate->patchedVertices[n + 8]) / 3 };
-		RmReal from[3] = { 3, 0, 2 };
+		RmReal from[3] = { 0, 6, 0 };
 		to[0] = 2*to[0] - from[0];
 		to[1] = 2*to[1] - from[1];
 		to[2] = 2*to[2] - from[2];
@@ -115,67 +115,32 @@ void initGameObjects()
 			triangleIndex *= 3;
 			Vector3f rayCastLineBackward = Vector3f(from[0] - to[0], from[1] - to[1], from[2] - to[2]);
 			Vector3f normals1 = Vector3f(plate->patchedNormals[triangleIndex], plate->patchedNormals[triangleIndex + 1], plate->patchedNormals[triangleIndex + 2]);
-			float angle = acos(rayCastLineBackward.dot(normals1) / rayCastLineBackward.norm()*normals1.norm());
 			float fi1 = rayCastLineBackward.dot(normals1) / rayCastLineBackward.norm()*normals1.norm();
-			float deg = angle * 180 / M_PI;
 			//std::cout << fi1 << std::endl;
 
 			Vector3f rayCastLine = Vector3f(to[0] - from[0], to[1] - from[1], to[2] - from[2]);
-			Vector3f normals2 = Vector3f(1, 0, 0);
-			float angle2 = acos(rayCastLine.dot(normals2) / rayCastLine.norm()*normals2.norm());
+			Vector3f normals2 = Vector3f(0, -1, 0);
 			float fi2 = rayCastLine.dot(normals2) / rayCastLine.norm()*normals2.norm();
-			float deg2 = angle2 * 180 / M_PI;
 			//std::cout << fi2 << std::endl;
 
 			// Calculate radiosity
 			Vector3f B = Vector3f(0.7f, 0.7f, 0.7f);
 			Vector3f E = Vector3f(0.1f, 0.1f, 0.1f); //Emitted energy
-			float p = 10.0f; // Reflectivity
+			float p = 100.0f; // Reflectivity
 			int vis = 1; // visible
 
 			Vector3f totalEnergy = E + p*B*(1 / (M_PI*hitDistance*hitDistance))*fi1*fi2*vis;
 
 			for (int i = 0; i < 12; i += 4){
-				plate->colors[triangleIndex * 4 + i] = plate->colors[triangleIndex * 4 + i] + totalEnergy.x();// min(plate->colors[triangleIndex * 4 + i] + totalEnergy.x(), 1.0f);
-				plate->colors[triangleIndex * 4 + 1 + i] = plate->colors[triangleIndex * 4 + 1 + i] + totalEnergy.y();// min(plate->colors[triangleIndex * 4 + 1 + i] + totalEnergy.y(), 1.0f);
-				plate->colors[triangleIndex * 4 + 2 + i] = plate->colors[triangleIndex * 4 + 2 + i] + totalEnergy.z();// min(plate->colors[triangleIndex * 4 + 2 + i] + totalEnergy.z(), 1.0f);
+				plate->energy[triangleIndex * 4 + i] = plate->energy[triangleIndex * 4 + i] + totalEnergy.x();
+				plate->energy[triangleIndex * 4 + 1 + i] = plate->energy[triangleIndex * 4 + 1 + i] + totalEnergy.y();
+				plate->energy[triangleIndex * 4 + 2 + i] = plate->energy[triangleIndex * 4 + 2 + i] + totalEnergy.z();
 			}
 			//l->AddLine(Vector3f(from[0], from[1], from[2]), Vector3f(to[0], to[1], to[2]));
 		}
 	}
 	// Make sure all the same vertices has the same colors
-	Vector3f verticeToCheck;
-	for (int i = 0; i < plate->patchedVertices.size()/3; i++){
-		std::vector<Vector4f> colorsToChange;
-		std::vector<int> colorIdx;
-		verticeToCheck = Vector3f(plate->patchedVertices[i*3], plate->patchedVertices[i*3 + 1], plate->patchedVertices[i*3 + 2]);
-		for (int j = 0; j < plate->patchedVertices.size()/3; j++){
-			if (i != j &&
-				(int)(verticeToCheck.x() * 1000) == (int)(plate->patchedVertices[j * 3] * 1000) &&
-				(int)(verticeToCheck.y() * 1000) == (int)(plate->patchedVertices[j * 3 + 1] * 1000) &&
-				(int)(verticeToCheck.z() * 1000) == (int)(plate->patchedVertices[j * 3 + 2] * 1000)){
-				colorsToChange.push_back(Vector4f(plate->colors[j * 4], plate->colors[j * 4 + 1], plate->colors[j * 4 + 2], plate->colors[j * 4 + 3]));
-				colorIdx.push_back(j);
-			}
-		}
-		// Add all colors together and divide
-		for (int k = 0; k < colorsToChange.size(); k++){
-			plate->colors[i*4] += colorsToChange[k].x();
-			plate->colors[i*4 + 1] += colorsToChange[k].y();
-			plate->colors[i*4 + 2] += colorsToChange[k].z();
-		}
-
-		plate->colors[i*4] /= (colorsToChange.size() + 1);
-		plate->colors[i*4 + 1] /= (colorsToChange.size() + 1);
-		plate->colors[i*4 + 2] /= (colorsToChange.size() + 1);
-
-		for (int l = 0; l < colorIdx.size(); l++){
-			plate->colors[colorIdx[l] * 4] = plate->colors[i * 4];
-			plate->colors[colorIdx[l] * 4 + 1] = plate->colors[i * 4 + 1];
-			plate->colors[colorIdx[l] * 4 + 2] = plate->colors[i * 4 + 2];
-		}
-
-	}
+	plate->CorrectEnergy();
 	plate->LoadVBOAndVAO();
 
 	// normals
