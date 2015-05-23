@@ -13,6 +13,7 @@ class Color : public Eigen::Vector4f {
 
 public:
 	Color() : Eigen::Vector4f() {}
+	Color(const Eigen::Vector4f& vec) : Eigen::Vector4f(vec) {}
 	Color(float r, float g, float b, float a) : Eigen::Vector4f(r, g, b, a) {}
 	float r() { return x(); }
 	float g() { return y(); }
