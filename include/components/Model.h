@@ -12,7 +12,6 @@
 #include <fstream>
 #include <cstdio>
 #include <iostream>
-#include <memory>
 
 // Third party
 #include <GL/glew.h>
