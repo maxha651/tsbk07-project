@@ -28,7 +28,7 @@ Mirror::Mirror(float width, float height, const Eigen::Vector3f& normal,
     this->normal.normalize();
 }
 
-Mirror::Mirror(GameObject* gameObject, const std::string& jsonPath) : jsonLoader(jsonPath),
+Mirror::Mirror(GameObject* gameObject, const std::string& jsonPath) : BaseComponent(gameObject), jsonLoader(jsonPath),
     start(-1, -1, 0), left(-1, 1, 0), right(1, -1, 0) {
     jsonLoader.AddDataField("width", &width);
     jsonLoader.AddDataField("height", &height);
@@ -64,11 +64,10 @@ void Mirror::Render() {
 }
 
 void Mirror::Awake() {
-	GetTransform()->SetPosition(start);
 	camera.lookDir = normal;
 	//camera.projectionMatrix = Camera::Frustum(-1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 100.0f);
 	GameObject *cameraObject = new GameObject();
-	cameraObject->transform = *this->GetTransform();
+	cameraObject->transform = *GetTransform();
 	cameraObject->AddComponent(&camera);
 	Context::Instance().game->AddGameObject(cameraObject);
 }
