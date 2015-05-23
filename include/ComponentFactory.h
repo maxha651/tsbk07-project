@@ -55,9 +55,13 @@ private:
 		else if (name.compare("LineRenderer") == 0) {
 			return _NewComponent<LineRenderer>(name, args...);
 		}
+		else if (name.compare("MirrorContainer") == 0) {
+			return _NewComponent<LineRenderer>(name, args...);
+		}
         /* ADD NEW CLASSES HERE */
         else {
-            std::cerr << "ComponentFactory: Couldn't find class" << std::endl;
+            std::cerr << "ComponentFactory: Couldn't find class " << name << std::endl;
+            assert(false);
             return nullptr;
         }
     }
