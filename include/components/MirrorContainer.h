@@ -22,6 +22,8 @@ private:
 
     std::vector<Mirror> mirrors;
     float width, height, res;
+    Eigen::Vector3f normal;
+    Color color;
 
     // Keep last
     JSONLoader jsonLoader;
