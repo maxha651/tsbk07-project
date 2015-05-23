@@ -18,13 +18,14 @@
 #include <RaycastMesh.h>
 #include <math.h>
 #include <Radiosity.h>
+#include <Model.h>
 
 /*
  * Just put stuff here until we can refactor it into
  * classes. Or not.
  */
 
-static const int UPDATE_TIME_MS = 15; // > 60 fps
+static const int UPDATE_TIME_MS = 30; // > 60 fps
 
 // Test triangle
 static GLfloat vertices[] =

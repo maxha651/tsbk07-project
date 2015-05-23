@@ -15,12 +15,13 @@ public:
 
     virtual void Start() override;
     virtual void Update() override;
-    void virtual Render() override;
+    virtual void Render() override;
 
 private:
     void Init();
 
     std::vector<Mirror> mirrors;
+    std::vector<GameObject> mirrorObjects;
     float width, height, res;
     Eigen::Vector3f normal;
     Color color;

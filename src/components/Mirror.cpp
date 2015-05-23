@@ -6,6 +6,7 @@
 #include <FBOManager.h>
 #include <Context.h>
 #include <Game.h>
+#include <ShaderLoader.h>
 
 using Eigen::Vector3f;
 
@@ -45,8 +46,6 @@ void Mirror::Init() {
     static unsigned int rendererRef = 0;
     this->rendererRef = ++rendererRef;
     fboRef = FBOManager::Instance().AddFBO((unsigned int) width, (unsigned int) height);
-    camera.SetGameObject(GetGameObject());
-    camera.lookDir = normal;
 	//camera.projectionMatrix = Camera::Frustum(-1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 100.0f);
 
 	ShaderLoader shaderLoader;
@@ -67,6 +66,9 @@ void Mirror::Render() {
 void Mirror::Start() {
 	BaseComponent::Start();
 	Init();
+	cameraObject.transform.SetPosition(start);
+	camera.SetGameObject(&cameraObject);
+	camera.lookDir = normal;
 	camera.Start();
 }
 
