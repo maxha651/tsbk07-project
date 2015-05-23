@@ -92,8 +92,9 @@ void Camera::UpdateUpVector(){
 
 void Camera::UpdateWorldToView() {
 	GameObject *go = this->gameObject;
-	Vector3f position =  this->GetTransform()->GetPosition();
-    Vector3f target = position + lookDir;
+    Eigen::Affine3f aff(this->GetTransform()->GetMatrix());
+	Vector3f position =  aff * Vector3f(0, 0, 0);
+    Vector3f target = position + aff.rotation() * lookDir;
     worldToViewMatrix = LookAt(position, target, up);
 }
 
