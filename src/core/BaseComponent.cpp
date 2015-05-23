@@ -36,3 +36,7 @@ void BaseComponent::Start() {
 GOTransform* BaseComponent::GetTransform() {
     return &this->gameObject->transform;
 }
+
+void BaseComponent::Awake() {
+
+}

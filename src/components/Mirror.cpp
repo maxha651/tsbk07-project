@@ -19,7 +19,7 @@ Mirror::Mirror() : width(0), height(0), normal(1, 0, 0), start(0, 0, 0),
 
 Mirror::Mirror(float width, float height, const Eigen::Vector3f& normal,
                const Eigen::Vector3f &start, const Eigen::Vector3f &left,
-               Eigen::Vector3f &right, const Color& color) : width(width), height(height),
+               const Eigen::Vector3f &right, const Color& color) : width(width), height(height),
                 normal(normal), start(start), left(left), right(right), color(color) {
     this->width = (int) width;
     this->height = (int) height;

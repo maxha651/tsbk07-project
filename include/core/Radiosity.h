@@ -8,6 +8,7 @@
 #include <cstdlib>
 #include <vector>
 #include <cstdio>
+#include <iostream>
 
 // Third party
 #include <Eigen/Geometry>

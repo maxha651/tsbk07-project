@@ -32,6 +32,7 @@ public:
 
     void Update();
     void Render();
+    void Awake();
 	void Start();
     void SetSaveOnExit(bool value);
 private:

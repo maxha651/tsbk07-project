@@ -16,6 +16,8 @@ Model::Model(const std::string& jsonPath) :
 
     jsonLoader.AddDataField<std::string>("model", &model);
 	jsonLoader.AddArrayField<float>("color", color, 4);
+	jsonLoader.AddDataField<float>("reflectivity", &reflectivity);
+	jsonLoader.AddArrayField<float>("emitted_energy", emitted_energy.data(), 3);
     //jsonLoader.AddDataField<std::string>("vertshader", &vertshader);
 	//jsonLoader.AddDataField<std::string>("fragshader", &fragshader);
     jsonLoader.Read();
@@ -290,7 +292,10 @@ void Model::SplitTriangles() {
 			}
 			else{ // Add complete triangle to patchedVertices
 				AddTriangle(&patchedVertices, p1, p2, p3);
-				patches.push_back(Patch(p1, p2, p3, n1));
+				Patch p = Patch(p1, p2, p3, n1);
+				p.emittedEnergy = emitted_energy;
+				p.reflectivity = reflectivity;
+				patches.push_back(p);
 
 				// Add normals
 				AddTriangle(&patchedNormals, n1, n2, n3);
@@ -316,19 +321,27 @@ void Model::Update() {
 }
 
 
-
-void Model::Start() {
-	BaseComponent::Start();
-
+void Model::Awake() {
+	BaseComponent::Awake();
 	SplitTriangles();
 
 	UpdateVerticesAndNormals();
 
-	// Set energy as default to 0
-	for (int i = 0; i < 4 * patchedVertices.size() / 3; i++){
-		energy.push_back(0);
+}
+
+void Model::Start() {
+	BaseComponent::Start();
+
+	for (int i = 0; i < patches.size(); i++){
+		for (int j = 0; j < 3; j++){
+			energy.push_back(patches[i].totalEnergy.x());
+			energy.push_back(patches[i].totalEnergy.y());
+			energy.push_back(patches[i].totalEnergy.z());
+			energy.push_back(1);
+		}
 	}
 
+	CorrectEnergy();
 	LoadVBOAndVAO();
 
 }

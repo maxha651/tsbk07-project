@@ -45,8 +45,4 @@ private:
 
     // Keep all dependent variables before this
     JSONLoader jsonLoader;
-
-    // We don't want any weird copy errors, should only ever be one Camera
-    Camera(const Camera&) = delete;
-    void operator=(const Camera&) = delete;
 };

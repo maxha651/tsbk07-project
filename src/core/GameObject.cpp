@@ -46,6 +46,12 @@ void GameObject::Update() {
     }
 }
 
+void GameObject::Awake() {
+	for (auto* component : components) {
+		component->Awake();
+	}
+}
+
 void GameObject::Start() {
 	for (auto* component : components) {
 		component->Start();

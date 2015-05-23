@@ -74,3 +74,10 @@ void Game::Start() {
 		go->Start();
 	}
 }
+
+void Game::Awake() {
+	for (auto& go : gameObjects) {
+		go->Awake();
+	}
+
+}
