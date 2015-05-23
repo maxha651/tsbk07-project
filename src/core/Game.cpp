@@ -51,7 +51,7 @@ void Game::AddGameObject(const std::string& name) {
 }
 
 void Game::AddGameObject(GameObject* gameObject) {
-    gameObjects.push_back(gameObject);
+    //gameObjects.push_back(gameObject);
 }
 
 void Game::Update() {
