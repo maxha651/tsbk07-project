@@ -46,7 +46,6 @@ private:
     Color color;
 
     Camera camera;
-    std::unique_ptr<GameObject> cameraObject;
     // Keep last
     JSONLoader jsonLoader;
 };

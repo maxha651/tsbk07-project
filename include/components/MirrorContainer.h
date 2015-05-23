@@ -23,8 +23,7 @@ public:
 private:
     void Init();
 
-    std::vector<Mirror> mirrors;
-    std::vector<std::unique_ptr<GameObject>> mirrorObjects;
+    std::vector<std::unique_ptr<Mirror>> mirrors;
     float width, height, res;
     Eigen::Vector3f normal;
     Color color;
