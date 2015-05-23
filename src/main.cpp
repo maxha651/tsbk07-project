@@ -84,11 +84,14 @@ void initGameObjects()
 	Model *back = goback.GetComponent<Model>();
 	GameObject &floor = game->GetGameObject("floor");
 	Model *floo = floor.GetComponent<Model>();
+	GameObject &gocube = game->GetGameObject("cube");
+	Model *cube = gocube.GetComponent<Model>();
 	radiosity.AddPatches(right->patches);
 	radiosity.AddPatches(plate->patches);
 	radiosity.AddPatches(lamp->patches);
 	radiosity.AddPatches(back->patches);
 	radiosity.AddPatches(floo->patches);
+	radiosity.AddPatches(cube->patches);
 	
 	radiosity.CreateRayCastMesh();
 	radiosity.CalculateRadiosity();

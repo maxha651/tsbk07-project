@@ -1,0 +1,17 @@
+{
+	"model" : "normalcube",
+  	"color" :
+	[
+	  	0.0,
+	  	0.0,
+	  	0.6,
+	  	1.0
+	],
+    "reflectivity" : 20,
+    "emitted_energy" :
+	[
+	    0.0,
+	    0.0,
+	    0.0
+	]
+}
