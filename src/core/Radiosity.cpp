@@ -20,13 +20,13 @@ void Radiosity::CalculateRadiosity(){
 		
 		// Grab all patches.
 		for (int i = 0; i < patches.size(); i++){
-			Patch &currentPatch = patches[i];
+			Patch & currentPatch = patches[i];
 
 			// For every patch we compare the patch with every other patch.
 			for (int j = 0; j < patches.size(); j++){
 
 				if (!(i == j)){
-					Patch targetedPatch = patches[j];
+					Patch & targetedPatch = patches[j];
 
 					// Calculate the middle position of the current patch.
 					RmReal from[3] = { (currentPatch.vert1.x() + currentPatch.vert2.x() + currentPatch.vert3.x()) / 3.0f,
@@ -78,7 +78,7 @@ void Radiosity::CalculateRadiosity(){
 
 		// For each iteration we need to zero the temp energy and set the actual total energy to the total temp energy.
 		for (int i = 0; i < patches.size(); i++){
-			Patch &currentPatch = patches[i];
+			Patch & currentPatch = patches[i];
 			currentPatch.totalEnergy =  currentPatch.totalEnergyTemp;
 			currentPatch.totalEnergyTemp = Vector3f();
 		}

@@ -3,6 +3,7 @@
 //
 
 #include <Game.h>
+#include <Context.h>
 
 Game::Game(const std::string& path) : path(path) {
     DIR *dir;

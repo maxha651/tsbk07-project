@@ -6,6 +6,7 @@
 #include <Model.h>
 
 #include <GameObject.h>
+#include <Camera.h>
 
 static const char MODEL_REL_PATH[] = TSBK07_MODELS_PATH;
 static const char SHADER_REL_PATH[] = TSBK07_SHADERS_PATH;
