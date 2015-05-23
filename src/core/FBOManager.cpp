@@ -7,9 +7,6 @@
 #include <GL/freeglut_std.h>
 
 FBOManager::FBOManager() {
-	// Save for reference
-	drawbuffer.push_back(GL_COLOR_ATTACHMENT0);
-	drawbuffer.push_back(GL_DEPTH_ATTACHMENT);
 }
 
 unsigned int FBOManager::AddFBO(unsigned int width, unsigned int height) {
@@ -49,13 +46,7 @@ bool FBOManager::ActivateFBO(unsigned int fbo) {
         // Bind us
         glBindFramebuffer(GL_FRAMEBUFFER, data.fbo);
 
-        // We're not the screen, don't want background color
-        glClearColor(0.0,0.0,0.1,1.0);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glEnable(GL_DEPTH_TEST);
-
         // Rendering to draw buffers ? I think this is location in shader. Not sure
-        glDrawBuffers(2, &drawbuffer[0]);
         glViewport(0, 0, data.width, data.height);
 
         // Check for FBO completeness
