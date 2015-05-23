@@ -29,6 +29,7 @@ using Eigen::Matrix4f;
 #include <BaseComponent.h>
 #include <ShaderLoader.h>
 #include <Context.h>
+#include <Patch.h>
 
 /**
 * Model and shader component.
@@ -41,6 +42,7 @@ public:
 	~Model();
 	std::vector<GLfloat> patchedVertices;
 	std::vector<GLfloat> patchedNormals;
+	std::vector<Patch> patches;
 	std::vector<GLfloat> vertices;
 	std::vector<GLfloat> normals;
 	std::vector<GLfloat> energy;

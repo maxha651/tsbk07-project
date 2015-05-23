@@ -250,7 +250,6 @@ void Model::SplitTriangles() {
 						splitPoint = p1 - v1 / 2;
 						// New triangle 1
 						AddTriangle(&tmpVertices, p1, splitPoint, p3);
-
 						// New triangle 2
 						AddTriangle(&tmpVertices, p2, splitPoint, p3);
 					}
@@ -291,6 +290,7 @@ void Model::SplitTriangles() {
 			}
 			else{ // Add complete triangle to patchedVertices
 				AddTriangle(&patchedVertices, p1, p2, p3);
+				patches.push_back(Patch(p1, p2, p3, n1));
 
 				// Add normals
 				AddTriangle(&patchedNormals, n1, n2, n3);
@@ -324,6 +324,11 @@ void Model::Start() {
 
 	UpdateVerticesAndNormals();
 
+	// Set energy as default to 0
+	for (int i = 0; i < 4 * patchedVertices.size() / 3; i++){
+		energy.push_back(0);
+	}
+
 	LoadVBOAndVAO();
 
 }
@@ -352,6 +357,30 @@ void Model::UpdateVerticesAndNormals(){
 		patchedNormals[i + 0] = v.x();
 		patchedNormals[i + 1] = v.y();
 		patchedNormals[i + 2] = v.z();
+	}
+
+	//------------ for patches --------------
+	Eigen::Matrix4f mats4 = GetGameObject()->transform.GetMatrix();
+
+	for (int i = 0; i < patches.size(); i++){
+		Vector4f v1 = mats4 * Vector4f(patches[i].vert1[0], patches[i].vert1[1], patches[i].vert1[2], 1);
+		Vector4f v2 = mats4 * Vector4f(patches[i].vert2[0], patches[i].vert2[1], patches[i].vert2[2], 1);
+		Vector4f v3 = mats4 * Vector4f(patches[i].vert3[0], patches[i].vert3[1], patches[i].vert3[2], 1);
+		patches[i].vert1 = v1.head<3>();
+		patches[i].vert2 = v2.head<3>();
+		patches[i].vert3 = v3.head<3>();
+	}
+
+	Eigen::Matrix3f mats3;
+	mats3 = mats4.block<3, 3>(0, 0);
+
+	mats3 = mats3.inverse().eval();
+	mats3 = mats3.transpose().eval();
+	for (int i = 0; i < patches.size(); i++){
+		Vector3f v = patches[i].normal;
+		v = mats3 * v;
+		v.normalize();
+		patches[i].normal = v;
 	}
 }
 
@@ -413,12 +442,6 @@ void Model::LoadVBOAndVAO(){
 		glVertexAttribPointer(glGetAttribLocation(program, "in_Normal"), 3, GL_FLOAT, GL_FALSE, 0, 0);
 		glEnableVertexAttribArray(glGetAttribLocation(program, "in_Normal"));
 
-		for (int i = 0; i < patchedVertices.size() / 3; i++){
-			energy.push_back(0);
-			energy.push_back(0);
-			energy.push_back(0);
-			energy.push_back(0);
-		}
 		unsigned int colorsBufferObjIDCube;
 		glGenBuffers(1, &colorsBufferObjIDCube);
 		glBindBuffer(GL_ARRAY_BUFFER, colorsBufferObjIDCube);

@@ -17,6 +17,7 @@
 #include <LineRenderer.h>
 #include <RaycastMesh.h>
 #include <math.h>
+#include <Radiosity.h>
 
 /*
  * Just put stuff here until we can refactor it into
@@ -64,6 +65,8 @@ std::vector<GLfloat> line_vertexs;
 
 GLuint vertexArrayObjIDLines;
 
+Radiosity radiosity;
+
 void initGameObjects()
 {
     game = std::unique_ptr<Game>(new Game(TSBK07_GAMEOBJECTS_PATH));
@@ -72,6 +75,8 @@ void initGameObjects()
 	//return;
 	// -------------- Test Code ----------------------
 	
+	
+
 	// LineRenderer
 	GameObject &go = game->GetGameObject("linerenderer");
 	LineRenderer *l = go.GetComponent<LineRenderer>();
@@ -86,13 +91,19 @@ void initGameObjects()
 	// Create raycast mesh for leftwall and ray cast on it
 	GameObject &got = game->GetGameObject("leftwall");
 	Model *plate = got.GetComponent<Model>();
-	std::vector<int> patchedIndices;
+	
+	
+	/*std::vector<int> patchedIndices;
 	for (int i = 0; i < plate->patchedVertices.size(); i++){
 		patchedIndices.push_back(i);
-	}
+	}*/
 
 	std::cout << "Building raycastmesh" << std::endl;
-	RaycastMesh *rm = createRaycastMesh(plate->patchedVertices.size(), &plate->patchedVertices[0], plate->patchedVertices.size() / 3, (const RmUint32 *)&patchedIndices[0]);
+	
+	radiosity.AddPatches(plate->patches);
+	radiosity.CreateRayCastMesh();
+	RaycastMesh *rm = radiosity.rm;
+	//RaycastMesh *rm = createRaycastMesh(plate->patchedVertices.size(), &plate->patchedVertices[0], plate->patchedVertices.size() / 3, (const RmUint32 *)&patchedIndices[0]);
 
 	for (int n = 0; n < plate->patchedVertices.size(); n += 9){
 		
@@ -136,7 +147,7 @@ void initGameObjects()
 				plate->energy[triangleIndex * 4 + 1 + i] = plate->energy[triangleIndex * 4 + 1 + i] + totalEnergy.y();
 				plate->energy[triangleIndex * 4 + 2 + i] = plate->energy[triangleIndex * 4 + 2 + i] + totalEnergy.z();
 			}
-			//l->AddLine(Vector3f(from[0], from[1], from[2]), Vector3f(to[0], to[1], to[2]));
+			l->AddLine(Vector3f(from[0], from[1], from[2]), Vector3f(to[0], to[1], to[2]));
 		}
 	}
 	// Make sure all the same vertices has the same colors
