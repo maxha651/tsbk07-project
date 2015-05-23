@@ -71,6 +71,17 @@ void initGameObjects()
 {
     game = std::unique_ptr<Game>(new Game(TSBK07_GAMEOBJECTS_PATH));
 	game->Awake();
+
+	// Create raycast mesh for leftwall and ray cast on it
+	GameObject &goleft = game->GetGameObject("leftwall");
+	Model *plate = goleft.GetComponent<Model>();
+	GameObject &golamp = game->GetGameObject("lamp");
+	Model *lamp = golamp.GetComponent<Model>();
+	radiosity.AddPatches(plate->patches);
+	radiosity.AddPatches(lamp->patches);
+	radiosity.CreateRayCastMesh();
+	radiosity.CalculateRadiosity();
+
 	game->Start();
 
 	//return;
@@ -89,24 +100,17 @@ void initGameObjects()
 	spline.AddSplinePoint(Vector3f(-10, 0, 0));
 	spline.AddSplinePoint(Vector3f(0, 0, -10));
 
-	// Create raycast mesh for leftwall and ray cast on it
-	GameObject &got = game->GetGameObject("leftwall");
-	Model *plate = got.GetComponent<Model>();
-	
+
 	
 	/*std::vector<int> patchedIndices;
 	for (int i = 0; i < plate->patchedVertices.size(); i++){
 		patchedIndices.push_back(i);
 	}*/
-
-	std::cout << "Building raycastmesh" << std::endl;
 	
-	radiosity.AddPatches(plate->patches);
-	radiosity.CreateRayCastMesh();
-	RaycastMesh *rm = radiosity.rm;
+
 	//RaycastMesh *rm = createRaycastMesh(plate->patchedVertices.size(), &plate->patchedVertices[0], plate->patchedVertices.size() / 3, (const RmUint32 *)&patchedIndices[0]);
 
-	for (int n = 0; n < plate->patchedVertices.size(); n += 9){
+	/*for (int n = 0; n < plate->patchedVertices.size(); n += 9){
 		
 		// Raycast
 		RmReal to[3] = { (plate->patchedVertices[n] + plate->patchedVertices[n + 3] + plate->patchedVertices[n + 6]) / 3,
@@ -153,7 +157,7 @@ void initGameObjects()
 	}
 	// Make sure all the same vertices has the same colors
 	plate->CorrectEnergy();
-	plate->LoadVBOAndVAO();
+	plate->LoadVBOAndVAO();*/
 
 	// normals
 	//l->AddLine(Vector3f(hitLocation[0], hitLocation[1], hitLocation[2]), Vector3f(hitLocation[0] + normals1.x(), hitLocation[1] + normals1.y(), hitLocation[2] + normals1.z()));

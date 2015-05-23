@@ -46,12 +46,15 @@ public:
 	std::vector<GLfloat> vertices;
 	std::vector<GLfloat> normals;
 	std::vector<GLfloat> energy;
+	float reflectivity;
+	Vector3f emitted_energy;
 	GLfloat color[4]; // A single color read from json used as base color for the object
 	GLuint vertexArrayObjID;
 
 	virtual void Update() override;
 	virtual void Render() override;
 	virtual void Start() override;
+	virtual void Awake() override;
 	void LoadVBOAndVAO();
 	void CorrectEnergy();
 
@@ -59,12 +62,11 @@ private:
     // DAVID: As it is now, these will be monitored by JSONLoader
     // Changes will be written back to JSON file on destruct
     std::string model, vertshader, fragshader;
-	float reflectivity;
-	Eigen::Vector3f emitted_energy;
+
 	// Keep all dependent variables before this
 	JSONLoader jsonLoader;
 	
-	float MIN_PATCH_AREA = 1.0f;
+	float MIN_PATCH_AREA = 20.0f;
 
 	void UpdateVerticesAndNormals();
 	void AddTriangle(std::vector<GLfloat> *ver, Vector3f vec1, Vector3f vec2, Vector3f vec3);
