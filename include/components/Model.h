@@ -59,6 +59,8 @@ private:
     // DAVID: As it is now, these will be monitored by JSONLoader
     // Changes will be written back to JSON file on destruct
     std::string model, vertshader, fragshader;
+	float reflectivity;
+	Eigen::Vector3f emitted_energy;
 	// Keep all dependent variables before this
 	JSONLoader jsonLoader;
 	

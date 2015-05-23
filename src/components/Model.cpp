@@ -16,6 +16,8 @@ Model::Model(const std::string& jsonPath) :
 
     jsonLoader.AddDataField<std::string>("model", &model);
 	jsonLoader.AddArrayField<float>("color", color, 4);
+	jsonLoader.AddDataField<float>("reflectivity", &reflectivity);
+	jsonLoader.AddArrayField<float>("emitted_energy", emitted_energy.data(), 3);
     //jsonLoader.AddDataField<std::string>("vertshader", &vertshader);
 	//jsonLoader.AddDataField<std::string>("fragshader", &fragshader);
     jsonLoader.Read();
