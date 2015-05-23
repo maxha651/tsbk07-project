@@ -23,6 +23,8 @@ MirrorContainer::MirrorContainer(const std::string &jsonPath) : jsonLoader(jsonP
     jsonLoader.AddDataField("width", &width);
     jsonLoader.AddDataField("height", &height);
     jsonLoader.AddDataField("res", &res);
+    jsonLoader.AddArrayField("normal", normal.data(), 3);
+    jsonLoader.AddArrayField("color", color.data(), 4);
     jsonLoader.Read();
 
     Init();
@@ -38,14 +40,24 @@ void MirrorContainer::Start() {
                                  localStart + GOTransform::right * res, color);
         }
     }
+    for (auto& mirror : mirrors) {
+        mirror.SetGameObject(GetGameObject());
+        mirror.Start();
+    }
 }
 
 void MirrorContainer::Update() {
     BaseComponent::Update();
+    for (auto& mirror : mirrors) {
+        mirror.Update();
+    }
 }
 
 void MirrorContainer::Render() {
     BaseComponent::Render();
+    for (auto& mirror : mirrors) {
+        mirror.Render();
+    }
 }
 
 void MirrorContainer::Init() {
