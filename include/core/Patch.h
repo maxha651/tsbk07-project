@@ -21,6 +21,7 @@ public:
 	Vector3f totalEnergyTemp;
 	Vector3f emittedEnergy;
 	float reflectivity = 0;
+	Vector3f color;
 	virtual ~Patch();
 
 private:

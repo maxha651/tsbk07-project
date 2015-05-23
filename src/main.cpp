@@ -78,8 +78,13 @@ void initGameObjects()
 	Model *plate = goleft.GetComponent<Model>();
 	GameObject &golamp = game->GetGameObject("lamp");
 	Model *lamp = golamp.GetComponent<Model>();
+
+	GameObject &goright = game->GetGameObject("rightwall");
+	Model *right = goright.GetComponent<Model>();
+
 	radiosity.AddPatches(plate->patches);
 	radiosity.AddPatches(lamp->patches);
+	radiosity.AddPatches(right->patches);
 	radiosity.CreateRayCastMesh();
 	radiosity.CalculateRadiosity();
 
@@ -163,26 +168,27 @@ void initGameObjects()
 	// normals
 	//l->AddLine(Vector3f(hitLocation[0], hitLocation[1], hitLocation[2]), Vector3f(hitLocation[0] + normals1.x(), hitLocation[1] + normals1.y(), hitLocation[2] + normals1.z()));
 	//l->AddLine(Vector3f(from[0], from[1], from[2]), Vector3f(from[0] + normals2.x(), from[1] + normals2.y(), from[2] + normals2.z()));
-	/*Vector3f v1;
-	Vector3f v2;
-	Vector3f v3;
+	/*
 	// Draw lines for all vertices on left wall to see the patches
 	GameObject &leftgo = game->GetGameObject("backwall");
 	Model *leftwall = leftgo.GetComponent<Model>();
 	Vector3f nv = Vector3f(leftwall->patchedNormals[0], leftwall->patchedNormals[1], leftwall->patchedNormals[2]);
 	Vector3f pos = Vector3f(leftwall->patchedVertices[0], leftwall->patchedVertices[1], leftwall->patchedVertices[2]);
 	Vector3f target = pos + nv;
-	l->AddLine(pos, target);
-	for (int n = 0; n < leftwall->patchedVertices.size(); n += 9){
-		v1 = Vector3f(leftwall->patchedVertices[n], leftwall->patchedVertices[n + 1], leftwall->patchedVertices[n + 2]);
-		v2 = Vector3f(leftwall->patchedVertices[n + 3], leftwall->patchedVertices[n + 4], leftwall->patchedVertices[n + 5]);
-		v3 = Vector3f(leftwall->patchedVertices[n + 6], leftwall->patchedVertices[n + 7], leftwall->patchedVertices[n + 8]);
+	l->AddLine(pos, target);*/
+	Vector3f v1;
+	Vector3f v2;
+	Vector3f v3;
+	for (int n = 0; n < plate->patchedVertices.size(); n += 9){
+		v1 = Vector3f(plate->patchedVertices[n], plate->patchedVertices[n + 1], plate->patchedVertices[n + 2]);
+		v2 = Vector3f(plate->patchedVertices[n + 3], plate->patchedVertices[n + 4], plate->patchedVertices[n + 5]);
+		v3 = Vector3f(plate->patchedVertices[n + 6], plate->patchedVertices[n + 7], plate->patchedVertices[n + 8]);
 		l->AddLine(v1, v2);
 		l->AddLine(v2, v3);
 		l->AddLine(v1, v3);
 	}
 
-	GameObject &platego = game->GetGameObject("plate");
+	GameObject &platego = game->GetGameObject("lamp");
 	Model *platecom = platego.GetComponent<Model>();
 
 	for (int n = 0; n < platecom->patchedVertices.size(); n += 9){
@@ -192,7 +198,7 @@ void initGameObjects()
 		l->AddLine(v1, v2);
 		l->AddLine(v2, v3);
 		l->AddLine(v1, v3);
-	}*/
+	}
 	
 
 	/*Vector3f oldV = Vector3f(0,0,-10);

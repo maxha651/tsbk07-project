@@ -6,6 +6,10 @@
 #include <math.h>
 #include <memory>
 
+#include <GameObject.h>
+#include <Context.h>
+#include <Game.h>
+
 Radiosity::Radiosity() {
 
 }
@@ -15,6 +19,15 @@ Radiosity::~Radiosity() {
 }
 
 void Radiosity::CalculateRadiosity(){
+	// LineRenderer
+	
+	GameObject &go = (Context::Instance().game)->GetGameObject("linerenderer");
+	LineRenderer *l = go.GetComponent<LineRenderer>();
+
+	for (int i = 0; i < patches.size(); i++){
+		Vector3f E = patches[i]->emittedEnergy;
+		patches[i]->totalEnergy += E;
+	}
 
 	// Number of iterations to calculate radiosity. This is a simplification that we use instead of solving the radiosity equation system.
 	for (int k = 0; k < iterations; k++){
@@ -44,37 +57,43 @@ void Radiosity::CalculateRadiosity(){
 					to[1] = 2 * to[1] - from[1];
 					to[2] = 2 * to[2] - from[2];
 
-					RmReal hitLocation[3] = { 0, 0, 0 }; // We probably don't need to initialize this.
-					RmReal normal[3]; // We do not use this. The library we use point the normal in wrong direction. Instead fetch normal from target patch.
-					RmReal hitDistance; // The magnitude of the raycast from the from position to where we hit the target location.
-					int triangleIndex = -1;
+					float v = currentPatch->normal.dot(targetedPatch->normal) / (currentPatch->normal.norm()*targetedPatch->normal.norm());
 
-					// Cast ray.
-					bool hit = rm->raycast(from, to, hitLocation, normal, &hitDistance, (RmUint32*)&triangleIndex);
+					if (v < 0.999){
 
-					if (hit && triangleIndex == j){ // triangleIndex == j to check if it was actually the target patch that we hit, and not some other patch.
-						
-						// Calculate angles from normal to patches.
-						Vector3f rayCastLineBackward = Vector3f(from[0] - to[0], from[1] - to[1], from[2] - to[2]);
-						float phi1 = std::fmax(0.0f, rayCastLineBackward.dot(targetedPatch->normal) / (rayCastLineBackward.norm()*targetedPatch->normal.norm()));
-				
-						Vector3f rayCastLine = Vector3f(to[0] - from[0], to[1] - from[1], to[2] - from[2]);
-						float phi2 = std::fmax(0.0f, rayCastLine.dot(currentPatch->normal) / (rayCastLine.norm()*currentPatch->normal.norm()));
+						RmReal hitLocation[3] = { 0, 0, 0 }; // We probably don't need to initialize this.
+						RmReal normal[3]; // We do not use this. The library we use point the normal in wrong direction. Instead fetch normal from target patch.
+						RmReal hitDistance; // The magnitude of the raycast from the from position to where we hit the target location.
+						int triangleIndex = -1;
 
-						// Calculate the total energy to a temp variable so that we can do multiple iterations with bouncing.
-						// Using the radiosity equation described at wikipedia: http://en.wikipedia.org/wiki/Radiosity_(computer_graphics)
-						currentPatch->totalEnergyTemp += targetedPatch->reflectivity * targetedPatch->totalEnergy * (1.0f / (M_PI*hitDistance*hitDistance)) * phi1 * phi2;
-					}
-					else {
-						// If we did not hit the patch we probably hit something else. Add no energy.
-						currentPatch->totalEnergyTemp += Vector3f(0, 0, 0);
+						// Cast ray.
+						bool hit = rm->raycast(from, to, hitLocation, normal, &hitDistance, (RmUint32*)&triangleIndex);
+						//l->AddLine(Vector3f(from[0], from[1], from[2]), Vector3f(to[0], to[1], to[2]));
+						if (hit && triangleIndex == j){ // triangleIndex == j to check if it was actually the target patch that we hit, and not some other patch.
+
+							// Calculate angles from normal to patches.
+							Vector3f rayCastLineBackward = Vector3f(from[0] - to[0], from[1] - to[1], from[2] - to[2]);
+							float phi1 = std::fmax(0.0f, rayCastLineBackward.dot(targetedPatch->normal) / (rayCastLineBackward.norm()*targetedPatch->normal.norm()));
+
+							Vector3f rayCastLine = Vector3f(to[0] - from[0], to[1] - from[1], to[2] - from[2]);
+							float phi2 = std::fmax(0.0f, rayCastLine.dot(currentPatch->normal) / (rayCastLine.norm()*currentPatch->normal.norm()));
+
+							// Calculate the total energy to a temp variable so that we can do multiple iterations with bouncing.
+							// Using the radiosity equation described at wikipedia: http://en.wikipedia.org/wiki/Radiosity_(computer_graphics)
+							float x = targetedPatch->reflectivity * targetedPatch->color.x() * targetedPatch->totalEnergy.x() * (1.0f / (M_PI*hitDistance*hitDistance)) * phi1 * phi2;
+							float y = targetedPatch->reflectivity * targetedPatch->color.y() * targetedPatch->totalEnergy.y()* (1.0f / (M_PI*hitDistance*hitDistance)) * phi1 * phi2;
+							float z = targetedPatch->reflectivity * targetedPatch->color.z() * targetedPatch->totalEnergy.z() * (1.0f / (M_PI*hitDistance*hitDistance)) * phi1 * phi2;
+							Vector3f energy = Vector3f(x, y, z);
+							currentPatch->totalEnergyTemp += energy;
+							//std::cout << "energy: " << energy << std::endl;
+						}
 					}
 				}
 			}
 
 			// Finalize current patch totanl energy temp with the emitted energy and total from earlier iterations.
-			Vector3f E = currentPatch->emittedEnergy; 
-			currentPatch->totalEnergyTemp = E + currentPatch->totalEnergy + currentPatch->totalEnergyTemp;
+ 
+			currentPatch->totalEnergyTemp = currentPatch->totalEnergy + currentPatch->totalEnergyTemp;
 		}
 
 		// For each iteration we need to zero the temp energy and set the actual total energy to the total temp energy.

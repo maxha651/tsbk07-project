@@ -38,7 +38,7 @@ public:
 	std::vector<std::shared_ptr<Patch>> patches;
 	std::vector<int> indices;
 	std::vector<float> vertices;
-	int iterations = 1;
+	int iterations = 5;
 
 private:
 

@@ -296,6 +296,8 @@ void Model::SplitTriangles() {
 				Patch* p = new Patch(p1, p2, p3, n1);
 				p->emittedEnergy = emitted_energy;
 				p->reflectivity = reflectivity;
+				p->color = Vector3f(color[0], color[1], color[2]);
+				//std::cout << p->color << std::endl;
 				patches.emplace_back(p);
 
 				// Add normals
