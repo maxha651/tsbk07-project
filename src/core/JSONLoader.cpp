@@ -71,9 +71,8 @@ void JSONLoader::Init(const Json::Value& root) {
         DataField &dataField = dataFieldVec[idx];
 
         if (dataField.jsonValue.type() != jsonValue.type()) {
-            std::cerr << "JSONLoader: Types doesn't match, trying to assign type: " <<
+            std::cout << "JSONLoader: Warning: Types doesn't match, trying to assign type: " <<
             jsonValue.type() << " to type: " << dataField.jsonValue.type() << std::endl;
-            return;
         }
         // Update JSON
         dataField.jsonValue = jsonValue;

@@ -32,14 +32,15 @@ public:
     unsigned int getColorTexture(unsigned int fbo);
     unsigned int getDepthTexture(unsigned int fbo);
 
+    static GLuint GenerateColorTexture(unsigned int width, unsigned int height);
+    static GLuint GenerateDepthTexture(unsigned int width, unsigned int height);
+
 private:
     struct FBOData {
-        GLuint fbo, colorTex, depthTex;
+        GLuint fbo, colorTex, depthTex, width, height;
     };
 
     FBOManager();
-    GLuint GenerateColorTexture(unsigned int width, unsigned int height);
-    GLuint GenerateDepthTexture(unsigned int width, unsigned int height);
 
     std::vector<GLuint> drawbuffer;
     std::map<unsigned int, struct FBOData> fboMap;

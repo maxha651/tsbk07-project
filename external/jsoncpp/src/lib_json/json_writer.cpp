@@ -323,7 +323,7 @@ void FastWriter::writeValue(const Value& value) {
     break;
   case arrayValue: {
     document_ += '[';
-    int size = value.size();
+    size_t size = value.size();
     for (int index = 0; index < size; ++index) {
       if (index > 0)
         document_ += ',';

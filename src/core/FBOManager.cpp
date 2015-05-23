@@ -3,6 +3,8 @@
 //
 
 #include <FBOManager.h>
+#include <assert.h>
+#include <GL/freeglut_std.h>
 
 FBOManager::FBOManager() {
 
@@ -11,6 +13,9 @@ FBOManager::FBOManager() {
 unsigned int FBOManager::AddFBO(unsigned int width, unsigned int height) {
     struct FBOData newData;
 
+    newData.width = width;
+    newData.height = height;
+
     // Generate an FBO and bind it to the pipeline
     glGenFramebuffers(1, &newData.fbo);
     glBindFramebuffer(GL_FRAMEBUFFER, newData.fbo);
@@ -18,43 +23,65 @@ unsigned int FBOManager::AddFBO(unsigned int width, unsigned int height) {
     newData.colorTex = GenerateColorTexture(width, height);
     newData.depthTex = GenerateDepthTexture(width, height);
 
-    // Bind textures to pipeline. texture_depth is optional
-    // 0 is the mipmap level. 0 is the heightest
+    // Attach textures
+    glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, newData.colorTex, 0);
+    glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, newData.depthTex);
 
-    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, newData.colorTex, 0);
-    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, newData.depthTex, 0);
-
-    // I don't understand this
+    // Save for reference
     drawbuffer.push_back(GL_COLOR_ATTACHMENT0);
-    glDrawBuffers(drawbuffer.size(), &drawbuffer[0]);
+    drawbuffer.push_back(GL_DEPTH_ATTACHMENT);
 
     // Check for FBO completeness
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE){
-        std::cout << "FBOManager: Error! FrameBuffer is not complete" << std::endl;
-        std::cin.get();
-        std::terminate();
+        std::cerr << "FBOManager: Error! FrameBuffer is not complete" << std::endl;
+        assert(false);
     }
 
     // Unbind buffer
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     fboMap.insert(std::pair<unsigned int, struct FBOData>(newData.fbo, newData));
+
+    return newData.fbo;
 }
 
 bool FBOManager::ActivateFBO(unsigned int fbo) {
     try {
-        FBOData data = fboMap.at(fbo);
+        FBOData data = fboMap[fbo];
+        // Bind us
         glBindFramebuffer(GL_FRAMEBUFFER, data.fbo);
+
+        // We're not the screen, don't want background color
+        glClearColor(0.0,0.0,0.1,1.0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glEnable(GL_DEPTH_TEST);
+
+        // Rendering to draw buffers ? I think this is location in shader. Not sure
+        glDrawBuffers(2, &drawbuffer[0]);
+        glViewport(0, 0, data.width, data.height);
+
+        // Check for FBO completeness
+        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+            DeactivateFBO();
+            std::cerr << "FBOManager: Error! FrameBuffer is not complete" << std::endl;
+            assert(false);
+        }
         current_fbo = data.fbo;
         return true;
     }
-    catch (...) {
-        return false;
+    catch (std::exception& e) {
+        std::cout << e.what() << std::endl;
+        assert(false);
     }
 }
 
 void FBOManager::DeactivateFBO() {
+    if (current_fbo != 0) {
+        glBindTexture(GL_TEXTURE_2D, fboMap[current_fbo].colorTex);
+    }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glClearColor(.5,.5,.5,1.0);
+    glViewport(0, 0, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
     current_fbo = 0;
 }
 
@@ -68,17 +95,19 @@ unsigned int FBOManager::getDepthTexture() {
 
 unsigned int FBOManager::getColorTexture(unsigned int fbo) {
     try {
-        return fboMap.at(current_fbo).colorTex;
-    } catch  (...) {
-        return 0;
+        return fboMap[fbo].colorTex;
+    } catch  (std::exception& e) {
+        std::cout << e.what() << std::endl;
+        assert(false);
     }
 }
 
 unsigned int FBOManager::getDepthTexture(unsigned int fbo) {
     try {
-        return fboMap.at(fbo).depthTex;
-    } catch  (...) {
-        return 0;
+        return fboMap[fbo].depthTex;
+    } catch  (std::exception& e) {
+        std::cout << e.what() << std::endl;
+        assert(false);
     }
 }
 
@@ -87,25 +116,25 @@ GLuint FBOManager::GenerateColorTexture(unsigned int width, unsigned int height)
 
     glGenTextures(1, &tex);
     glBindTexture(GL_TEXTURE_2D, tex);
+    // Specify image (most importantly, set mipmap level)
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, NULL);
+    // Generate (this allocates memory depending on glTexImage2D info, otherwise use glTexStorage)
+    glGenerateMipmap(GL_TEXTURE_2D);
+    // Set sensible paramters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 
     return tex;
 }
 
 GLuint FBOManager::GenerateDepthTexture(unsigned int width, unsigned int height) {
-    GLuint tex;
+    GLuint depth;
 
-    glGenTextures(1, &tex);
-    glBindTexture(GL_TEXTURE_2D, tex);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+    glGenRenderbuffers(1, &depth);
+    glBindRenderbuffer(GL_RENDERBUFFER, depth);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, width, height);
 
-    return tex;
+    return depth;
 }

@@ -45,7 +45,7 @@ GOTransform::GOTransform(const std::string& jsonPath)
     jsonLoader.AddArrayField("rotation", rotation.data(), 3);
     jsonLoader.AddArrayField("scale", scale.data(), 3);
     jsonLoader.Read();
-};
+}
 
 GOTransform::~GOTransform() {
 

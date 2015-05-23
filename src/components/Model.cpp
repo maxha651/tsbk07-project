@@ -15,7 +15,7 @@ Model::Model(const std::string& jsonPath) :
     BaseComponent(), jsonLoader(jsonPath) {
 
     jsonLoader.AddDataField<std::string>("model", &model);
-	jsonLoader.AddArrayField<float>("color", colors, 4);
+	jsonLoader.AddArrayField<float>("color", color, 4);
     //jsonLoader.AddDataField<std::string>("vertshader", &vertshader);
 	//jsonLoader.AddDataField<std::string>("fragshader", &fragshader);
     jsonLoader.Read();
@@ -120,9 +120,6 @@ void Model::LoadObject(const char* filename)
 								  &vertexIndex[0], &normalIndex[0], &vertexIndex[1],
 								  &normalIndex[1], &vertexIndex[2], &normalIndex[2])) {
 
-					Vector3f vi = Vector3f(2, 2, 2);
-					std::cout << vi.squaredNorm() << std::endl;
-
 					// Add vertices to final vertice list
 					for (int n = 0; n < 3; n++) {
 						if (vertexIndex[n] > vertex.size() ||
@@ -195,35 +192,42 @@ void Model::LoadObject(const char* filename)
 
 }
 
-void Model::AddVerticesFromVector3(std::vector<GLfloat> *ver, Vector3f vec){
+void Model::AddTriangle(std::vector<GLfloat> *ver, Vector3f vec1, Vector3f vec2, Vector3f vec3){
 	for (int n = 0; n < 3; n++){
-		ver->push_back(vec[n]);
+		ver->push_back(vec1[n]);
+	}
+	for (int n = 0; n < 3; n++){
+		ver->push_back(vec2[n]);
+	}
+	for (int n = 0; n < 3; n++){
+		ver->push_back(vec3[n]);
 	}
 }
 
-
 void Model::SplitTriangles() {
 	bool patchingDone = false;
+	std::vector<GLfloat> newVertices = vertices;
+	std::vector<GLfloat> newNormals = normals;
 
 	while (!patchingDone){
 
-		std::vector<GLfloat> newVertices;
-		std::vector<GLfloat> newNormals;
+		std::vector<GLfloat> tmpVertices;
+		std::vector<GLfloat> tmpNormals;
 		Vector3f scale = GetTransform()->GetScale();
 
 		//Split each triangle and add its vertices to newVertices
 
-		for (int i = 0; i < vertices.size() / 9; i++){
+		for (int i = 0; i < newVertices.size() / 9; i++){
 			// Get each vertice off triangle
 			int verticeIdx = i * 9;
-			Vector3f p1 = Vector3f(vertices[0 + verticeIdx], vertices[1 + verticeIdx], vertices[2 + verticeIdx]);
-			Vector3f p2 = Vector3f(vertices[3 + verticeIdx], vertices[4 + verticeIdx], vertices[5 + verticeIdx]);
-			Vector3f p3 = Vector3f(vertices[6 + verticeIdx], vertices[7 + verticeIdx], vertices[8 + verticeIdx]);
+			Vector3f p1 = Vector3f(newVertices[0 + verticeIdx], newVertices[1 + verticeIdx], newVertices[2 + verticeIdx]);
+			Vector3f p2 = Vector3f(newVertices[3 + verticeIdx], newVertices[4 + verticeIdx], newVertices[5 + verticeIdx]);
+			Vector3f p3 = Vector3f(newVertices[6 + verticeIdx], newVertices[7 + verticeIdx], newVertices[8 + verticeIdx]);
 
 			// Get normals for each vertice off triangle
-			Vector3f n1 = Vector3f(normals[0 + verticeIdx], normals[1 + verticeIdx], normals[2 + verticeIdx]);
-			Vector3f n2 = Vector3f(normals[3 + verticeIdx], normals[4 + verticeIdx], normals[5 + verticeIdx]);
-			Vector3f n3 = Vector3f(normals[6 + verticeIdx], normals[7 + verticeIdx], normals[8 + verticeIdx]);
+			Vector3f n1 = Vector3f(newNormals[0 + verticeIdx], newNormals[1 + verticeIdx], newNormals[2 + verticeIdx]);
+			Vector3f n2 = Vector3f(newNormals[3 + verticeIdx], newNormals[4 + verticeIdx], newNormals[5 + verticeIdx]);
+			Vector3f n3 = Vector3f(newNormals[6 + verticeIdx], newNormals[7 + verticeIdx], newNormals[8 + verticeIdx]);
 
 			// Get each side of the triangle
 			Vector3f v1 = (p1 - p2);
@@ -245,27 +249,19 @@ void Model::SplitTriangles() {
 						// v1 longest
 						splitPoint = p1 - v1 / 2;
 						// New triangle 1
-						AddVerticesFromVector3(&newVertices, p1);
-						AddVerticesFromVector3(&newVertices, splitPoint);
-						AddVerticesFromVector3(&newVertices, p3);
+						AddTriangle(&tmpVertices, p1, splitPoint, p3);
 
 						// New triangle 2
-						AddVerticesFromVector3(&newVertices, p2);
-						AddVerticesFromVector3(&newVertices, splitPoint);
-						AddVerticesFromVector3(&newVertices, p3);
+						AddTriangle(&tmpVertices, p2, splitPoint, p3);
 					}
 					else{
 						// v3 longest
 						splitPoint = p2 - v3 / 2;
 						// New triangle 1
-						AddVerticesFromVector3(&newVertices, p2);
-						AddVerticesFromVector3(&newVertices, splitPoint);
-						AddVerticesFromVector3(&newVertices, p1);
+						AddTriangle(&tmpVertices, p2, splitPoint, p1);
 
 						// New triangle 2
-						AddVerticesFromVector3(&newVertices, p3);
-						AddVerticesFromVector3(&newVertices, splitPoint);
-						AddVerticesFromVector3(&newVertices, p1);
+						AddTriangle(&tmpVertices, p3, splitPoint, p1);
 					}
 				}
 				else{
@@ -273,52 +269,38 @@ void Model::SplitTriangles() {
 						// v2 longest
 						splitPoint = p1 - v2 / 2;
 						//Triangle 1
-						AddVerticesFromVector3(&newVertices, p1);
-						AddVerticesFromVector3(&newVertices, splitPoint);
-						AddVerticesFromVector3(&newVertices, p2);
+						AddTriangle(&tmpVertices, p1, splitPoint, p2);
 						//Triangle 2
-						AddVerticesFromVector3(&newVertices, p2);
-						AddVerticesFromVector3(&newVertices, splitPoint);
-						AddVerticesFromVector3(&newVertices, p3);
+						AddTriangle(&tmpVertices, p2, splitPoint, p3);
 
 					}
 					else{
 						// v3 longest
 						splitPoint = p2 - v3 / 2;
 						// New triangle 1
-						AddVerticesFromVector3(&newVertices, p2);
-						AddVerticesFromVector3(&newVertices, splitPoint);
-						AddVerticesFromVector3(&newVertices, p1);
+						AddTriangle(&tmpVertices, p2, splitPoint, p1);
 
 						// New triangle 2
-						AddVerticesFromVector3(&newVertices, p3);
-						AddVerticesFromVector3(&newVertices, splitPoint);
-						AddVerticesFromVector3(&newVertices, p1);
+						AddTriangle(&tmpVertices, p3, splitPoint, p1);
 					}
 				}
 				// Add normals for both triangles
 				for (int k = 0; k < 2; k++){
-					AddVerticesFromVector3(&newNormals, n1);
-					AddVerticesFromVector3(&newNormals, n2);
-					AddVerticesFromVector3(&newNormals, n3);
+					AddTriangle(&tmpNormals, n1, n2, n3);
 				}
 			}
 			else{ // Add complete triangle to patchedVertices
-				AddVerticesFromVector3(&patchedVertices, p1);
-				AddVerticesFromVector3(&patchedVertices, p2);
-				AddVerticesFromVector3(&patchedVertices, p3);
+				AddTriangle(&patchedVertices, p1, p2, p3);
 
 				// Add normals
-				AddVerticesFromVector3(&patchedNormals, n1);
-				AddVerticesFromVector3(&patchedNormals, n2);
-				AddVerticesFromVector3(&patchedNormals, n3);
+				AddTriangle(&patchedNormals, n1, n2, n3);
 			}
 		}
 
 		// If there are any triangles left to patch then add em to vertices / normals
 		if (newVertices.size() > 0){
-			vertices = newVertices;
-			normals = newNormals;
+			newVertices = tmpVertices;
+			newNormals = tmpNormals;
 		}
 		// Else we're done with patching
 		else{
@@ -340,12 +322,74 @@ void Model::Start() {
 
 	SplitTriangles();
 
+	UpdateVerticesAndNormals();
+
 	LoadVBOAndVAO();
 
 }
 
-GLint attribute_v_color;
-GLuint colorBufferObjID;
+/* Updates the vertices and normals with the transform. */
+void Model::UpdateVerticesAndNormals(){
+	Eigen::Matrix4f mat4 = GetGameObject()->transform.GetMatrix();
+
+	for (int i = 0; i < patchedVertices.size(); i += 3){
+		Vector4f v = Vector4f(patchedVertices[i + 0], patchedVertices[i + 1], patchedVertices[i + 2], 1);
+		v = mat4 * v;
+		patchedVertices[i + 0] = v.x();
+		patchedVertices[i + 1] = v.y();
+		patchedVertices[i + 2] = v.z();
+	}
+
+	Eigen::Matrix3f mat3;
+	mat3 = mat4.block<3, 3>(0, 0);
+
+	mat3 = mat3.inverse().eval();
+	mat3 = mat3.transpose().eval();
+	for (int i = 0; i < patchedNormals.size(); i += 3){
+		Vector3f v = Vector3f(patchedNormals[i + 0], patchedNormals[i + 1], patchedNormals[i + 2]);
+		v = mat3 * v;
+		v.normalize();
+		patchedNormals[i + 0] = v.x();
+		patchedNormals[i + 1] = v.y();
+		patchedNormals[i + 2] = v.z();
+	}
+}
+
+/* Correct energy so that vertices at the same position has the same energy. */
+void Model::CorrectEnergy(){
+	Vector3f verticeToCheck;
+	// Find all vertices with the same position
+	for (int i = 0; i < patchedVertices.size() / 3; i++){
+		std::vector<Vector4f> colorsToChange;
+		std::vector<int> colorIdx;
+		verticeToCheck = Vector3f(patchedVertices[i * 3], patchedVertices[i * 3 + 1], patchedVertices[i * 3 + 2]);
+		for (int j = 0; j < patchedVertices.size() / 3; j++){
+			if (i != j &&
+				(int)(verticeToCheck.x() * 1000) == (int)(patchedVertices[j * 3] * 1000) &&
+				(int)(verticeToCheck.y() * 1000) == (int)(patchedVertices[j * 3 + 1] * 1000) &&
+				(int)(verticeToCheck.z() * 1000) == (int)(patchedVertices[j * 3 + 2] * 1000)){
+				colorsToChange.push_back(Vector4f(energy[j * 4], energy[j * 4 + 1], energy[j * 4 + 2], energy[j * 4 + 3]));
+				colorIdx.push_back(j);
+			}
+		}
+		// Add all colors together and divide
+		for (int k = 0; k < colorsToChange.size(); k++){
+			energy[i * 4] += colorsToChange[k].x();
+			energy[i * 4 + 1] += colorsToChange[k].y();
+			energy[i * 4 + 2] += colorsToChange[k].z();
+		}
+
+		energy[i * 4] /= (colorsToChange.size() + 1);
+		energy[i * 4 + 1] /= (colorsToChange.size() + 1);
+		energy[i * 4 + 2] /= (colorsToChange.size() + 1);
+
+		for (int l = 0; l < colorIdx.size(); l++){
+			energy[colorIdx[l] * 4] = energy[i * 4];
+			energy[colorIdx[l] * 4 + 1] = energy[i * 4 + 1];
+			energy[colorIdx[l] * 4 + 2] = energy[i * 4 + 2];
+		}
+	}
+}
 
 void Model::LoadVBOAndVAO(){
 	unsigned int program = Context::Instance().program;
@@ -369,6 +413,19 @@ void Model::LoadVBOAndVAO(){
 		glVertexAttribPointer(glGetAttribLocation(program, "in_Normal"), 3, GL_FLOAT, GL_FALSE, 0, 0);
 		glEnableVertexAttribArray(glGetAttribLocation(program, "in_Normal"));
 
+		for (int i = 0; i < patchedVertices.size() / 3; i++){
+			energy.push_back(0);
+			energy.push_back(0);
+			energy.push_back(0);
+			energy.push_back(0);
+		}
+		unsigned int colorsBufferObjIDCube;
+		glGenBuffers(1, &colorsBufferObjIDCube);
+		glBindBuffer(GL_ARRAY_BUFFER, colorsBufferObjIDCube);
+		glBufferData(GL_ARRAY_BUFFER, energy.size() * sizeof(GLfloat), &energy[0], GL_STATIC_DRAW);
+
+		glVertexAttribPointer(glGetAttribLocation(program, "in_Energy"), 4, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(glGetAttribLocation(program, "in_Energy"));
 
 		/*
 		unsigned int colorBufferObjID;
@@ -402,15 +459,8 @@ void Model::Render() {
 	glUniformMatrix4fv(glGetUniformLocation(Context::Instance().program, "projectionMatrix"), 1, GL_FALSE, Context::Instance().camera->projectionMatrix.data());
 	glUniformMatrix4fv(glGetUniformLocation(Context::Instance().program, "worldToViewMatrix"), 1, GL_FALSE, Context::Instance().camera->worldToViewMatrix.data());
 	glUniformMatrix4fv(glGetUniformLocation(Context::Instance().program, "transform"), 1, GL_FALSE, GetTransform()->GetMatrix().data());
-	GLint loc = glGetUniformLocation(Context::Instance().program, "uni_Color");
-	glProgramUniform4fv(Context::Instance().program, loc, 1, colors);
+	glProgramUniform4fv(Context::Instance().program, glGetUniformLocation(Context::Instance().program, "uni_Color"), 1, color);
 
 	glDrawArrays(GL_TRIANGLES, 0, patchedVertices.size() / 3); // use GL_LINE_STRIP to kind of see the grid, not totaly correct
 }
 
-void Model::SetColor(GLfloat c1, GLfloat c2, GLfloat c3, GLfloat c4) {
-	colors[0] = c1;
-	colors[1] = c2;
-	colors[2] = c3;
-	colors[3] = c4;
-}
