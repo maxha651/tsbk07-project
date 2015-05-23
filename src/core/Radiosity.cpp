@@ -57,6 +57,11 @@ void Radiosity::CalculateRadiosity(){
 					to[1] = 2 * to[1] - from[1];
 					to[2] = 2 * to[2] - from[2];
 
+				    // Move raycast slightly forward to not hit the patch itself
+					from[0] = currentPatch->normal.x()/5 + from[0];
+					from[1] = currentPatch->normal.y()/5 + from[1];
+					from[2] = currentPatch->normal.z()/5 + from[2];
+
 					float v = currentPatch->normal.dot(targetedPatch->normal) / (currentPatch->normal.norm()*targetedPatch->normal.norm());
 
 					if (v < 0.999){
@@ -69,7 +74,18 @@ void Radiosity::CalculateRadiosity(){
 						// Cast ray.
 						bool hit = rm->raycast(from, to, hitLocation, normal, &hitDistance, (RmUint32*)&triangleIndex);
 						//l->AddLine(Vector3f(from[0], from[1], from[2]), Vector3f(to[0], to[1], to[2]));
+						
+						/*if (i == 25){
+							Vector3f f = Vector3f(from[0], from[1], from[2]);
+							Vector3f nn = f + currentPatch->normal;
+							l->AddLine(f, nn);
+							l->AddLine(Vector3f(from[0], from[1], from[2]), Vector3f(to[0], to[1], to[2]));
+						}*/
+	
+						
 						if (hit && triangleIndex == j){ // triangleIndex == j to check if it was actually the target patch that we hit, and not some other patch.
+
+
 
 							// Calculate angles from normal to patches.
 							Vector3f rayCastLineBackward = Vector3f(from[0] - to[0], from[1] - to[1], from[2] - to[2]);
@@ -85,6 +101,7 @@ void Radiosity::CalculateRadiosity(){
 							float z = targetedPatch->reflectivity * targetedPatch->color.z() * targetedPatch->totalEnergy.z() * (1.0f / (M_PI*hitDistance*hitDistance)) * phi1 * phi2;
 							Vector3f energy = Vector3f(x, y, z);
 							currentPatch->totalEnergyTemp += energy;
+
 							//std::cout << "energy: " << energy << std::endl;
 						}
 					}

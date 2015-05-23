@@ -7,7 +7,7 @@
 	  	0.8,
 	  	1.0
 	],
-    "reflectivity" : 20,
+    "reflectivity" : 5,
     "emitted_energy" :
 	[
 	    1.0,

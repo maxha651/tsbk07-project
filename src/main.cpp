@@ -78,13 +78,18 @@ void initGameObjects()
 	Model *plate = goleft.GetComponent<Model>();
 	GameObject &golamp = game->GetGameObject("lamp");
 	Model *lamp = golamp.GetComponent<Model>();
-
 	GameObject &goright = game->GetGameObject("rightwall");
 	Model *right = goright.GetComponent<Model>();
-
+	GameObject &goback = game->GetGameObject("backwall");
+	Model *back = goback.GetComponent<Model>();
+	GameObject &floor = game->GetGameObject("floor");
+	Model *floo = floor.GetComponent<Model>();
+	radiosity.AddPatches(right->patches);
 	radiosity.AddPatches(plate->patches);
 	radiosity.AddPatches(lamp->patches);
-	radiosity.AddPatches(right->patches);
+	radiosity.AddPatches(back->patches);
+	radiosity.AddPatches(floo->patches);
+	
 	radiosity.CreateRayCastMesh();
 	radiosity.CalculateRadiosity();
 
@@ -188,7 +193,7 @@ void initGameObjects()
 		l->AddLine(v1, v3);
 	}
 
-	GameObject &platego = game->GetGameObject("lamp");
+	GameObject &platego = game->GetGameObject("rightwall");
 	Model *platecom = platego.GetComponent<Model>();
 
 	for (int n = 0; n < platecom->patchedVertices.size(); n += 9){
