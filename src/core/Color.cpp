@@ -29,3 +29,8 @@ Vector3f Color::toVector3f() {
 Vector4f Color::toVector4f() {
 	return Vector4f(this->r, this->g, this->b, this->a);
 }
+
+float *Color::data() {
+	// Hacky hack hack
+	return &r;
+}

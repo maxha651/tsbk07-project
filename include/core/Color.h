@@ -21,8 +21,9 @@ public:
 	Vector3f toVector3f();
 	Vector4f toVector4f();
 	float r, g, b, a;
+	float* data();
 
 private:
-   
+
 };
 

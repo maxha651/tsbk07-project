@@ -13,14 +13,14 @@ static const std::string SHADER = "mirror";
 static const std::string TEX_SHADER = "texture";
 
 Mirror::Mirror() : width(0), height(0), normal(1, 0, 0), start(0, 0, 0),
-                   left(0, 0, 0), right(0, 0, 0) {
+                   left(0, 0, 0), right(0, 0, 0), color(0,0,0,0) {
 
 }
 
 Mirror::Mirror(float width, float height, const Eigen::Vector3f& normal,
                const Eigen::Vector3f &start, const Eigen::Vector3f &left,
-               Eigen::Vector3f &right) : width(width), height(height),
-                normal(normal), start(start), left(left), right(right) {
+               Eigen::Vector3f &right, const Color& color) : width(width), height(height),
+                normal(normal), start(start), left(left), right(right), color(color) {
     this->width = (int) width;
     this->height = (int) height;
     this->normal.normalize();
@@ -31,6 +31,7 @@ Mirror::Mirror(const std::string& jsonPath) : jsonLoader(jsonPath),
     jsonLoader.AddDataField("width", &width);
     jsonLoader.AddDataField("height", &height);
     jsonLoader.AddArrayField("normal", normal.data(), 3);
+	jsonLoader.AddArrayField("color", color.data(), 4);
     jsonLoader.Read();
 
     // no fractal part
