@@ -21,6 +21,11 @@ void main(void)
 	float shade;
 
 	shade = clamp(dot(normalize(ex_Normal), light), 0.0, 1.0);
+	float intensity = length(ex_Energy);
+	vec4 tmp_Color1 = clamp(uni_Color, 0.0, 1.0);
+	vec4 tmp_Energy = clamp(ex_Energy, 0.0, 1.0);
 
-	out_Color = vec4(uni_Color.x*ex_Energy.x, uni_Color.y*ex_Energy.y, uni_Color.z*ex_Energy.z, uni_Color.w);
+	vec3 tmp_Color2 = vec3(uni_Color.x + tmp_Energy.x, uni_Color.y + tmp_Energy.y, uni_Color.z + tmp_Energy.z) * intensity/2.0;
+
+	out_Color = vec4(tmp_Color2, uni_Color.w);
 }
