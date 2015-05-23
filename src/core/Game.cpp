@@ -47,11 +47,11 @@ GameObject& Game::GetGameObject(const std::string& name) {
 
 void Game::AddGameObject(const std::string& name) {
     std::string goPath(path + "/" + name);
-    gameObjects.emplace_back(new GameObject(name, goPath));
+    gameObjects.push_back(new GameObject(name, goPath));
 }
 
 void Game::AddGameObject(GameObject* gameObject) {
-    gameObjects.emplace_back(gameObject);
+    gameObjects.push_back(gameObject);
 }
 
 void Game::Update() {
