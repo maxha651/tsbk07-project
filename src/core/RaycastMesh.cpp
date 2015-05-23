@@ -2,6 +2,9 @@
 #include <math.h>
 #include <assert.h>
 #include <vector>
+#include <stddef.h>
+#include <stdlib.h>
+#include <string.h>
 
 // This code snippet allows you to create an axis aligned bounding volume tree for a triangle mesh so that you can do
 // high-speed raycasting.

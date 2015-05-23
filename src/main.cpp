@@ -16,7 +16,7 @@
 #include <Context.h>
 #include <LineRenderer.h>
 #include <RaycastMesh.h>
-#include <Math.h>
+#include <math.h>
 
 /*
  * Just put stuff here until we can refactor it into
