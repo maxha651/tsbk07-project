@@ -242,8 +242,16 @@ void Model::SplitTriangles() {
 			Vector3f sv2 = Vector3f(scale.x()*v2.x(), scale.y()*v2.y(), scale.z()*v2.z());
 			Vector3f sv3 = Vector3f(scale.x()*v3.x(), scale.y()*v3.y(), scale.z()*v3.z());
 
+			// Heron's formula for area of patch
+			float l1 = sv1.norm();
+			float l2 = sv2.norm();
+			float l3 = sv3.norm();
+			float s = (l1 + l2 + l3) / 2;
+			float area = sqrt(s*(s - l1)*(s - l2)*(s - l3));
+
 			// Only split if triangle area is greater than MIN_PATCH_AREA
-			if (sv1.norm()*sv2.norm() >= MIN_PATCH_AREA){
+			if (area > MIN_PATCH_AREA*2){
+
 				patchingDone = false;
 				// Get the longest side
 				Vector3f splitPoint;
@@ -297,7 +305,8 @@ void Model::SplitTriangles() {
 				p->emittedEnergy = emitted_energy;
 				p->reflectivity = reflectivity;
 				p->color = Vector3f(color[0], color[1], color[2]);
-				//std::cout << p->color << std::endl;
+
+				p->area = area;
 				patches.emplace_back(p);
 
 				// Add normals
@@ -345,6 +354,7 @@ void Model::Start() {
 	}
 
 	CorrectEnergy();
+
 	LoadVBOAndVAO();
 
 }

@@ -3,6 +3,8 @@
 //
 // Created by Fredrik on 2015-05-23.
 //
+#include <memory>
+#include <vector>
 
 #include <Eigen/Geometry>
 #include <Color.h>
@@ -21,7 +23,9 @@ public:
 	Vector3f totalEnergyTemp;
 	Vector3f emittedEnergy;
 	float reflectivity = 0;
+	float area = 0;
 	Vector3f color;
+	std::vector<std::shared_ptr<Patch>> raycastingPatches;
 	virtual ~Patch();
 
 private:

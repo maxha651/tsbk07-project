@@ -2,16 +2,16 @@
 	"model" : "plate",
   	"color" :
 	[
-	  	0.8,
-	  	0.8,
-	  	0.8,
+	  	1.0,
+	  	1.0,
+	  	1.0,
 	  	1.0
 	],
-    "reflectivity" : 5,
+    "reflectivity" : 2,
     "emitted_energy" :
 	[
-	    1.0,
-	    1.0,
-	    1.0
+	    60,
+	    60,
+	    60
 	]
 }
