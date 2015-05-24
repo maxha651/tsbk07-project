@@ -156,6 +156,9 @@ void Radiosity::AddPatches(std::vector<std::shared_ptr<Patch>> p){
 }
 
 void Radiosity::CreateRayCastMesh(){
+	if (!usingRaycast) {
+		return;
+	}
 
 	for (int i = 0; i < patches.size(); i++){
 		for (int j = 0; j < 3; j++){
