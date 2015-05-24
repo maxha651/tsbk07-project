@@ -54,8 +54,5 @@ private:
 
     // Keep all dependent variables before this
     JSONLoader jsonLoader;
-
-    GameObject(const GameObject&) = delete;
-    GameObject& operator=(const GameObject&) = delete;
 };
 

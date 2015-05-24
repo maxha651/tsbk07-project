@@ -75,8 +75,6 @@ void Mirror::Awake() {
 void Mirror::Start() {
 	BaseComponent::Start();
 	Init();
-	//cameraObject->transform.SetPosition(start);
-	//camera.SetGameObject(cameraObject.get());
 }
 
 void Mirror::Update() {
