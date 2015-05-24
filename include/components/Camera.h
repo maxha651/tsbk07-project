@@ -31,6 +31,9 @@ public:
     Eigen::Matrix4f worldToViewMatrix;
     Eigen::Matrix4f projectionMatrix;
 
+    Eigen::Vector3f cullFwd = 1000.0f * lookDir;
+    Eigen::Vector3f cullWidth = 500.0f * lookDir.cross(up);
+
     static Eigen::Matrix4f LookAt(const Eigen::Vector3f& position,
                                   const Eigen::Vector3f& target, const Eigen::Vector3f& up);
     static Eigen::Matrix4f Perspective(float fovyInDegrees, float aspectRatio,
@@ -39,6 +42,7 @@ public:
                             float znear, float zfar);
 private:
     void Init();
+    void UpdateCullingBox();
     void UpdateInput();
     void UpdateUpVector();
     void UpdateWorldToView();

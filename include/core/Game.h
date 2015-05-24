@@ -37,6 +37,7 @@ public:
 	void Start();
     void SetSaveOnExit(bool value);
 private:
+    bool InsideCulling(GameObject* gameObject);
     std::string path;
     std::vector<GameObject*> gameObjects;
 
