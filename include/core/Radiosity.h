@@ -38,7 +38,8 @@ public:
 	std::vector<std::shared_ptr<Patch>> patches;
 	std::vector<int> indices;
 	std::vector<float> vertices;
-	int iterations = 20;
+	int iterations = 10;
+	bool usingRaycast = true;
 
 private:
 

@@ -59,14 +59,21 @@ void Radiosity::CalculateRadiosity(){
 
 					if (v < 0.999){
 
-						RmReal hitLocation[3] = { 0, 0, 0 }; // We probably don't need to initialize this.
-						RmReal normal[3]; // We do not use this. The library we use point the normal in wrong direction. Instead fetch normal from target patch.
-						RmReal hitDistance; // The magnitude of the raycast from the from position to where we hit the target location.
-						int triangleIndex = -1;
-
-						// Cast ray.
-						bool hit = rm->raycast(from, to, hitLocation, normal, &hitDistance, (RmUint32*)&triangleIndex);
-
+						if (usingRaycast){
+							// Cast ray.
+							RmReal hitLocation[3] = { 0, 0, 0 }; // We probably don't need to initialize this.
+							RmReal normal[3]; // We do not use this. The library we use point the normal in wrong direction. Instead fetch normal from target patch.
+							RmReal hitDistance; // The magnitude of the raycast from the from position to where we hit the target location.
+							int triangleIndex = -1;
+							bool hit = rm->raycast(from, to, hitLocation, normal, &hitDistance, (RmUint32*)&triangleIndex);
+							if (hit && triangleIndex == j){ // triangleIndex == j to check if it was actually the target patch that we hit, and not some other patch.
+								currentPatch->raycastingPatches.emplace_back(targetedPatch);
+							}
+						}
+						else{
+							currentPatch->raycastingPatches.emplace_back(targetedPatch);
+						}
+					
 						// Debug.
 						//l->AddLine(Vector3f(from[0], from[1], from[2]), Vector3f(to[0], to[1], to[2]));
 						/*if (i == 25){
@@ -77,9 +84,7 @@ void Radiosity::CalculateRadiosity(){
 						}*/
 	
 						
-						if (hit && triangleIndex == j){ // triangleIndex == j to check if it was actually the target patch that we hit, and not some other patch.
-							currentPatch->raycastingPatches.emplace_back(targetedPatch);
-						}
+
 					}
 				}
 			}

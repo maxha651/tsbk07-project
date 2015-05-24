@@ -413,20 +413,26 @@ void Model::UpdateVerticesAndNormals(){
 /* Correct energy so that vertices at the same position has the same energy. */
 void Model::CorrectEnergy(){
 	Vector3f verticeToCheck;
-	// Find all vertices with the same position
+	Vector3f normalToCheck;
+	// Find all vertices with the same position and same normal
 	for (int i = 0; i < patchedVertices.size() / 3; i++){
 		std::vector<Vector4f> colorsToChange;
 		std::vector<int> colorIdx;
 		verticeToCheck = Vector3f(patchedVertices[i * 3], patchedVertices[i * 3 + 1], patchedVertices[i * 3 + 2]);
+		normalToCheck = Vector3f(patchedNormals[i * 3], patchedNormals[i * 3 + 1], patchedNormals[i * 3 + 2]);
 		for (int j = 0; j < patchedVertices.size() / 3; j++){
 			if (i != j &&
 				(int)(verticeToCheck.x() * 1000) == (int)(patchedVertices[j * 3] * 1000) &&
 				(int)(verticeToCheck.y() * 1000) == (int)(patchedVertices[j * 3 + 1] * 1000) &&
-				(int)(verticeToCheck.z() * 1000) == (int)(patchedVertices[j * 3 + 2] * 1000)){
+				(int)(verticeToCheck.z() * 1000) == (int)(patchedVertices[j * 3 + 2] * 1000) &&
+				normalToCheck.x() == patchedNormals[j * 3] &&
+				normalToCheck.y() == patchedNormals[j * 3 + 1] &&
+				normalToCheck.z() == patchedNormals[j * 3 + 2]){
 				colorsToChange.push_back(Vector4f(energy[j * 4], energy[j * 4 + 1], energy[j * 4 + 2], energy[j * 4 + 3]));
 				colorIdx.push_back(j);
 			}
 		}
+		
 		// Add all colors together and divide
 		for (int k = 0; k < colorsToChange.size(); k++){
 			energy[i * 4] += colorsToChange[k].x();
