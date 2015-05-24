@@ -69,6 +69,7 @@ std::vector<GLfloat> line_vertexs;
 GLuint vertexArrayObjIDLines;
 
 Radiosity radiosity;
+bool useCameraSpline = false;
 
 void initGameObjects()
 {
@@ -108,11 +109,11 @@ void initGameObjects()
 	
 
 	// LineRenderer
-	/*GameObject &go = game->GetGameObject("linerenderer");
+	GameObject &go = game->GetGameObject("linerenderer");
 	LineRenderer *l = go.GetComponent<LineRenderer>();
 
 
-
+	/*
 	Vector3f v1;
 	Vector3f v2;
 	Vector3f v3;
@@ -137,23 +138,34 @@ void initGameObjects()
 		l->AddLine(v1, v3);
 	}*/
 	
-	//spline
-	/*spline.AddSplinePoint(Vector3f(0, 0, -10));
-	spline.AddSplinePoint(Vector3f(10, 0, 0));
-	spline.AddSplinePoint(Vector3f(0, 0, 10));
-	spline.AddSplinePoint(Vector3f(-10, 0, 0));
-	spline.AddSplinePoint(Vector3f(0, 0, -10));
+	if (useCameraSpline){
+		//spline
+		spline.AddSplinePoint(Vector3f(0, 0, -15));
+		spline.AddSplinePoint(Vector3f(0, 0, -6));
+		spline.AddSplinePoint(Vector3f(-6, 10, 0));
+		spline.AddSplinePoint(Vector3f(0, 10, 6));
+		spline.AddSplinePoint(Vector3f(6, 10, 0));
+		spline.AddSplinePoint(Vector3f(0, 5, -8));
+		spline.AddSplinePoint(Vector3f(0, 0, -5));
+		spline.AddSplinePoint(Vector3f(5, 0, 0));
+		spline.AddSplinePoint(Vector3f(0, 0, 5));
+		spline.AddSplinePoint(Vector3f(-5, 0, 0));
+		spline.AddSplinePoint(Vector3f(0, 0, -5));
+		spline.AddSplinePoint(Vector3f(0, 0, -15));
 
-	Vector3f oldV = Vector3f(0,0,-10);
-	Vector3f v = Vector3f(0, 0, -10);
-	for (int i = 50; i < 100; i++){
+		Vector3f oldV = spline.GetInterpolatedSplinePoint(0);
+		Vector3f v;
+		for (int i = 1; i < 100; i++){
 
-		v = spline.GetInterpolatedSplinePoint(i / 99.0f);
-		l->AddLine(oldV, v);
-		oldV = v;
-	}*/
+			v = spline.GetInterpolatedSplinePoint((float)i / 100.0f);
+			l->AddLine(oldV, v);
+			oldV = v;
+		}
+	}
 
 }
+
+int t = 0;
 
 void update(int val)
 {
@@ -161,11 +173,20 @@ void update(int val)
     game->Update();
     glutPostRedisplay();
     glutTimerFunc(UPDATE_TIME_MS, update, 0);
+
 }
 
-float t = 0;
-
-
+void CalculateCameraSpline(){
+	if (useCameraSpline){
+		Vector3f pos = spline.GetInterpolatedSplinePoint((t % 800) / 800.0f);
+		Vector3f target = Vector3f(0, 0, 0);
+		Vector3f up = Vector3f(0, 1, 0);
+		Vector3f lookDir = target - pos;
+		Context::Instance().camera->lookDir = lookDir;
+		Context::Instance().camera->GetTransform()->SetPosition(pos);
+		t += 1;
+	}
+}
 
 void display(void)
 {
