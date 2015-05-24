@@ -47,6 +47,8 @@ static CatSpline spline;
 
 void init() 
 {
+	Context::Instance().preBaked = false;
+
 	char fragmentShader[128], vertexShader[128];
 	sprintf(vertexShader, "%s/VertexShader.glsl", TSBK07_SHADERS_PATH);
 	sprintf(fragmentShader, "%s/FragmentShader.glsl", TSBK07_SHADERS_PATH);
@@ -73,28 +75,30 @@ void initGameObjects()
     game = std::unique_ptr<Game>(new Game(TSBK07_GAMEOBJECTS_PATH));
 	game->Awake();
 
-	// Create raycast mesh for leftwall and ray cast on it
-	GameObject &goleft = game->GetGameObject("leftwall");
-	Model *plate = goleft.GetComponent<Model>();
-	GameObject &golamp = game->GetGameObject("lamp");
-	Model *lamp = golamp.GetComponent<Model>();
-	GameObject &goright = game->GetGameObject("rightwall");
-	Model *right = goright.GetComponent<Model>();
-	GameObject &goback = game->GetGameObject("backwall");
-	Model *back = goback.GetComponent<Model>();
-	GameObject &floor = game->GetGameObject("floor");
-	Model *floo = floor.GetComponent<Model>();
-	GameObject &gocube = game->GetGameObject("cube");
-	Model *cube = gocube.GetComponent<Model>();
-	radiosity.AddPatches(right->patches);
-	radiosity.AddPatches(plate->patches);
-	radiosity.AddPatches(lamp->patches);
-	radiosity.AddPatches(back->patches);
-	radiosity.AddPatches(floo->patches);
-	radiosity.AddPatches(cube->patches);
-	
-	radiosity.CreateRayCastMesh();
-	radiosity.CalculateRadiosity();
+	if (!Context::Instance().preBaked) {
+		// Create raycast mesh for leftwall and ray cast on it
+		GameObject &goleft = game->GetGameObject("leftwall");
+		Model *plate = goleft.GetComponent<Model>();
+		GameObject &golamp = game->GetGameObject("lamp");
+		Model *lamp = golamp.GetComponent<Model>();
+		GameObject &goright = game->GetGameObject("rightwall");
+		Model *right = goright.GetComponent<Model>();
+		GameObject &goback = game->GetGameObject("backwall");
+		Model *back = goback.GetComponent<Model>();
+		GameObject &floor = game->GetGameObject("floor");
+		Model *floo = floor.GetComponent<Model>();
+		GameObject &gocube = game->GetGameObject("cube");
+		Model *cube = gocube.GetComponent<Model>();
+		radiosity.AddPatches(right->patches);
+		radiosity.AddPatches(plate->patches);
+		radiosity.AddPatches(lamp->patches);
+		radiosity.AddPatches(back->patches);
+		radiosity.AddPatches(floo->patches);
+		radiosity.AddPatches(cube->patches);
+
+		radiosity.CreateRayCastMesh();
+		radiosity.CalculateRadiosity();
+	}
 
 	game->Start();
 

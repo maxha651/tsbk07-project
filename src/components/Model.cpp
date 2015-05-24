@@ -5,6 +5,8 @@
 
 #include <Model.h>
 
+#include <fstream>
+#include <iostream>
 #include <GameObject.h>
 #include <Camera.h>
 
@@ -19,6 +21,7 @@ Model::Model(GameObject* gameObject, const std::string& jsonPath) :
 	jsonLoader.AddArrayField<float>("color", color, 4);
 	jsonLoader.AddDataField<float>("reflectivity", &reflectivity);
 	jsonLoader.AddArrayField<float>("emitted_energy", emitted_energy.data(), 3);
+	jsonLoader.AddDataField<std::string>("baked_path", &bakedPath);
     //jsonLoader.AddDataField<std::string>("vertshader", &vertshader);
 	//jsonLoader.AddDataField<std::string>("fragshader", &fragshader);
     jsonLoader.Read();
@@ -32,6 +35,8 @@ Model::Model(const char *model) : BaseComponent()
 }
 
 void Model::init(const char *model) {
+	isBaked = Context::Instance().preBaked;
+
     std::string _model(MODEL_REL_PATH);
    // std::string vertShader(SHADER_REL_PATH);
     //std::string fragShader(SHADER_REL_PATH);
@@ -53,6 +58,38 @@ void Model::init(const char *model) {
     // e.g. keep separate entries in JSON.
     vertShader.append(".glsl");
     fragShader.append(".glsl");*/
+}
+
+void Model::LoadBaked(const std::string& path) {
+	std::string fullPath(std::string(TSBK07_BAKED_PATH) + "/" + path);
+	
+	std::ifstream inFileV(fullPath + ".vertices", std::ios::out | std::ios::binary);
+	inFileV.seekg(0, std::ios::end);
+	long fileSizeV = inFileV.tellg();
+	inFileV.seekg(0, std::ios::beg);
+	patchedVertices.resize(fileSizeV / sizeof(GLfloat));
+	inFileV.read((char*)&patchedVertices[0], fileSizeV);
+	
+	std::ifstream inFileN(fullPath + ".energy", std::ios::out | std::ios::binary);
+	inFileN.seekg(0, std::ios::end);
+	long fileSizeN = inFileN.tellg();
+	inFileN.seekg(0, std::ios::beg);
+	energy.resize(fileSizeN / sizeof(GLfloat));
+	inFileN.read((char*)&energy[0], fileSizeN);
+}
+
+void Model::SaveBaked(const std::string& path) {
+	std::string fullPath(std::string(TSBK07_BAKED_PATH) + "/" + path);
+	
+	std::ofstream outFileV(fullPath + ".vertices", std::ios::out | std::ios::binary);
+	outFileV.seekp(0, std::ios::beg);
+	long fileSizeV = patchedVertices.size() * sizeof(GLfloat);
+	outFileV.write((char*)&patchedVertices[0], fileSizeV);
+
+	std::ofstream outFileN(fullPath + ".energy", std::ios::out | std::ios::binary);
+	outFileN.seekp(0, std::ios::beg);
+	long fileSizeN = energy.size() * sizeof(GLfloat);
+	outFileN.write((char*)&energy[0], fileSizeN);
 }
 
 Model::~Model()
@@ -335,6 +372,8 @@ void Model::Update() {
 
 void Model::Awake() {
 	BaseComponent::Awake();
+	if (isBaked) { return; }
+
 	SplitTriangles();
 
 	UpdateVerticesAndNormals();
@@ -344,19 +383,26 @@ void Model::Awake() {
 void Model::Start() {
 	BaseComponent::Start();
 
-	for (int i = 0; i < patches.size(); i++){
-		for (int j = 0; j < 3; j++){
-			energy.push_back(patches[i]->totalEnergy.x());
-			energy.push_back(patches[i]->totalEnergy.y());
-			energy.push_back(patches[i]->totalEnergy.z());
-			energy.push_back(1);
+	if (!isBaked) {
+		for (int i = 0; i < patches.size(); i++){
+			for (int j = 0; j < 3; j++){
+				energy.push_back(patches[i]->totalEnergy.x());
+				energy.push_back(patches[i]->totalEnergy.y());
+				energy.push_back(patches[i]->totalEnergy.z());
+				energy.push_back(1);
+			}
+		}
+
+		CorrectEnergy();
+		if (bakedPath.compare("") != 0) {
+			SaveBaked(bakedPath);
 		}
 	}
-
-	CorrectEnergy();
+	else {
+		LoadBaked(bakedPath);
+	}
 
 	LoadVBOAndVAO();
-
 }
 
 /* Updates the vertices and normals with the transform. */
@@ -466,13 +512,13 @@ void Model::LoadVBOAndVAO(){
 		glVertexAttribPointer(glGetAttribLocation(program, "in_Position"), 3, GL_FLOAT, GL_FALSE, 0, 0);
 		glEnableVertexAttribArray(glGetAttribLocation(program, "in_Position"));
 
-		unsigned int normalsBufferObjIDCube;
+		/*unsigned int normalsBufferObjIDCube;
 		glGenBuffers(1, &normalsBufferObjIDCube);
 		glBindBuffer(GL_ARRAY_BUFFER, normalsBufferObjIDCube);
 		glBufferData(GL_ARRAY_BUFFER, patchedNormals.size() * sizeof(GLfloat), &patchedNormals[0], GL_STATIC_DRAW);
 
 		glVertexAttribPointer(glGetAttribLocation(program, "in_Normal"), 3, GL_FLOAT, GL_FALSE, 0, 0);
-		glEnableVertexAttribArray(glGetAttribLocation(program, "in_Normal"));
+		glEnableVertexAttribArray(glGetAttribLocation(program, "in_Normal"));*/
 
 		unsigned int colorsBufferObjIDCube;
 		glGenBuffers(1, &colorsBufferObjIDCube);

@@ -8,10 +8,10 @@
 	  	1.0
 	],
     "reflectivity" : 2,
-    "emitted_energy" :
-	[
-	    60,
-	    60,
-	    60
-	]
+    "emitted_energy": [
+        60,
+        60,
+        60
+    ],
+    "baked_path" : "model1"
 }
