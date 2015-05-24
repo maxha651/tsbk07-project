@@ -14,22 +14,21 @@ using Eigen::Vector3f;
 static const std::string SHADER = "lab1-1";
 static const std::string TEX_SHADER = "texture";
 
-Mirror::Mirror() : width(0), height(0), normal(1, 0, 0), start(0, 0, 0),
-                   left(0, 0, 0), right(0, 0, 0), color(0,0,0,0) {
+Mirror::Mirror() : width(0), height(0), normal(1, 0, 0), left(0, 0, 0), right(0, 0, 0), color(0,0,0,0) {
 
 }
 
-Mirror::Mirror(float width, float height, const Eigen::Vector3f& normal,
-               const Eigen::Vector3f &start, const Eigen::Vector3f &left,
-               const Eigen::Vector3f &right, const Color& color) : width(width), height(height),
-                normal(normal), start(start), left(left), right(right), color(color) {
+Mirror::Mirror(GameObject* gameObject, float width, float height, const Eigen::Vector3f& normal,
+               const Eigen::Vector3f &left, const Eigen::Vector3f &right, const Color& color)
+		: BaseComponent(gameObject), width(width), height(height), normal(normal), left(left),
+		  right(right), color(color) {
     this->width = (int) width;
     this->height = (int) height;
     this->normal.normalize();
 }
 
 Mirror::Mirror(GameObject* gameObject, const std::string& jsonPath) : BaseComponent(gameObject), jsonLoader(jsonPath),
-    start(-1, -1, 0), left(-1, 1, 0), right(1, -1, 0) {
+    left(0, 1, 0), right(1, 0, 0) {
     jsonLoader.AddDataField("width", &width);
     jsonLoader.AddDataField("height", &height);
     jsonLoader.AddArrayField("normal", normal.data(), 3);
@@ -134,6 +133,8 @@ void Mirror::RenderTexture() {
 void Mirror::LoadVBOAndVAO() {
 	glGenVertexArrays(1, &vertexArrayObjID);
 	glBindVertexArray(vertexArrayObjID);
+
+	Vector3f start = Vector3f(0,0,0);
 
     vertices.insert(vertices.end(), start.data(), start.data() + 3);
     vertices.insert(vertices.end(), left.data(), left.data() + 3);

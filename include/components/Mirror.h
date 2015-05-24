@@ -19,7 +19,7 @@ class Mirror : public BaseComponent {
 
 public:
     Mirror();
-    Mirror(float width, float height, const Eigen::Vector3f& normal, const Eigen::Vector3f& start,
+    Mirror(GameObject* gameObject, float width, float height, const Eigen::Vector3f& normal,
            const Eigen::Vector3f& left, const Eigen::Vector3f& right, const Color& color);
     Mirror(GameObject* gameObject, const std::string& jsonPath);
     void Init();
@@ -41,7 +41,7 @@ private:
     float width, height;
     std::vector<float> vertices, texCoords;
     std::vector<unsigned int> indices;
-    Eigen::Vector3f start, right, left;
+    Eigen::Vector3f right, left;
     Eigen::Vector3f normal;
     Color color;
 

@@ -5,9 +5,13 @@
 #include <Game.h>
 #include <Context.h>
 
+// XXX: HACK because we have problems when std::vector reallocates
+const int GAMEOBJECTS_RESERVED = 1024;
+
 Game::Game(const std::string& path) : path(path) {
     DIR *dir;
     struct dirent *ent;
+    gameObjects.reserve(GAMEOBJECTS_RESERVED);
 
     if (Context::Instance().game == nullptr) {
         Context::Instance().game = this;
