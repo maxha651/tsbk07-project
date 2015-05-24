@@ -17,7 +17,7 @@ using Eigen::Translation3f;
 
 // frustum parameters
 static const float FRUSTUM_LEFT = -1.0f, FRUSTUM_RIGHT = 1.0f, FRUSTUM_BOTTOM = -1.0f,
-				FRUSTUM_TOP = 1.0f, FRUSTUM_NEAR = 0.1f, FRUSTUM_FAR = 10000.0f;
+				FRUSTUM_TOP = 1.0f, FRUSTUM_NEAR = 1.0f, FRUSTUM_FAR = 10000.0f;
 static const float MOUSE_MOVE_SCALER = 0.0007f;
 // Expose in JSON and/or add as ctr param if wanted
 static const float CULL_WIDTH = 70.0f;
