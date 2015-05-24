@@ -94,12 +94,8 @@ bool Game::InsideCulling(GameObject* gameObject) {
     Vector3f relPos = gameObjectPos - cameraPos;
     Vector3f cullFwd = Context::Instance().camera->cullFwd;
     Vector3f cullWidth = Context::Instance().camera->cullWidth;
-    // Behind camera (way behind)
-    if (relPos.dot(cullFwd) < -20.0f) {
-        return false;
-    }
-    // Too far away
-    if (relPos.dot(cullFwd.normalized()) > cullFwd.norm()) {
+    // Not within viewing distance
+    if (std::abs(relPos.dot(cullFwd.normalized())) > cullFwd.norm()) {
         return false;
     }
     // Not within width
