@@ -9,6 +9,11 @@ Game::Game(const std::string& path) : path(path) {
     DIR *dir;
     struct dirent *ent;
 
+    if (Context::Instance().game == nullptr) {
+        Context::Instance().game = this;
+        std::cout << "Game: Added ourselves to Context" << std::endl;
+    }
+
     // All directories in path should be a GameObject instance
     if ((dir = opendir(path.c_str())) != NULL) {
         while ((ent = readdir(dir)) != NULL) {
@@ -26,14 +31,13 @@ Game::Game(const std::string& path) : path(path) {
         /* could not open directory */
         std::cerr << "Game: Couldn't open directory " << path << std::endl;
     }
-
-    if (Context::Instance().game == nullptr) {
-        Context::Instance().game = this;
-        std::cout << "Game: Added ourselves to Context" << std::endl;
-    }
 }
 
 Game::~Game() {
+    std::cout << "!!! Deleting Game class !!!" << std::endl;
+    for (auto* go : gameObjects) {
+        delete go;
+    }
 }
 
 GameObject& Game::GetGameObject(const std::string& name) {
@@ -47,41 +51,41 @@ GameObject& Game::GetGameObject(const std::string& name) {
 
 void Game::AddGameObject(const std::string& name) {
     std::string goPath(path + "/" + name);
-    gameObjects.emplace_back(new GameObject(name, goPath));
+    gameObjects.push_back(new GameObject(name, goPath));
 }
 
 void Game::AddGameObject(GameObject* gameObject) {
-    gameObjects.emplace_back(gameObject);
+    gameObjects.push_back(gameObject);
 }
 
 void Game::Update() {
-    for (auto& go : gameObjects) {
+    for (auto* go : gameObjects) {
         go->Update();
     }
 }
 
 void Game::SetSaveOnExit(bool value) {
-    for (auto& go : gameObjects) {
+    for (auto* go : gameObjects) {
         go->SetSaveOnExit(value);
     }
 }
 
 
 void Game::Render() {
-    for (auto& go : gameObjects) {
+    for (auto* go : gameObjects) {
         go->Render();
     }
 }
 
 
 void Game::Start() {
-	for (auto& go : gameObjects) {
+	for (auto* go : gameObjects) {
 		go->Start();
 	}
 }
 
 void Game::Awake() {
-	for (auto& go : gameObjects) {
+	for (auto* go : gameObjects) {
 		go->Awake();
 	}
 

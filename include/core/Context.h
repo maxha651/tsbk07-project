@@ -27,7 +27,7 @@ public:
         return instance;
     }
 private:
-    Context() : game(nullptr), camera(nullptr), renderer(0) {};
+    Context() : game(nullptr), camera(nullptr), program(0), renderer(0) {};
 
     // Make sure no copy constructors are implemented
     // Compiler will create these for us otherwise

@@ -23,6 +23,12 @@
  *
  */
 class Game {
+private:
+    std::string path;
+    std::vector<GameObject*> gameObjects;
+
+    Game(const Game&) = delete;
+    Game& operator=(const Game&) = delete;
 public:
     Game(const std::string& path);
     ~Game();
@@ -36,9 +42,5 @@ public:
     void Awake();
 	void Start();
     void SetSaveOnExit(bool value);
-private:
-    std::string path;
-    std::vector<std::unique_ptr<GameObject>> gameObjects;
-
 };
 
