@@ -1,7 +1,7 @@
 {
-  	"width" : 512,
-  	"height" : 512,
-    "res" : 256,
+  	"width" : 16,
+  	"height" : 16,
+    "res" : 16,
   	"normal" :
 	[
 	  	0.0,

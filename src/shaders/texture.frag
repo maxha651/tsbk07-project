@@ -4,6 +4,8 @@ layout(location = 0) out vec4 out_Color;
 
 in vec3 ex_Normal;
 in vec2 ex_TexCoord;
+in vec4 ex_Color;
+in vec4 ex_AvgTex;
 
 uniform sampler2D texUnit;
 
