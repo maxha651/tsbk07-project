@@ -7,6 +7,7 @@
 #include <Context.h>
 #include <Input.h>
 #include <GameObject.h>
+#include <GOTransform.h>
 
 using Eigen::Vector3f;
 using Eigen::Vector2f;
@@ -18,6 +19,9 @@ using Eigen::Translation3f;
 static const float FRUSTUM_LEFT = -1.0f, FRUSTUM_RIGHT = 1.0f, FRUSTUM_BOTTOM = -1.0f,
 				FRUSTUM_TOP = 1.0f, FRUSTUM_NEAR = 1.0f, FRUSTUM_FAR = 10000.0f;
 static const float MOUSE_MOVE_SCALER = 0.0007f;
+// Expose in JSON and/or add as ctr param if wanted
+static const float CULL_WIDTH = 70.0f;
+static const float CULL_FWD = 100.0f;
 
 Camera::Camera()
 {
@@ -49,8 +53,14 @@ Camera::~Camera()
 
 void Camera::Update() {
     UpdateInput();
+    UpdateCullingBox();
     UpdateUpVector();
     UpdateWorldToView();
+}
+
+void Camera::UpdateCullingBox() {
+    cullFwd = CULL_FWD * lookDir;
+    cullWidth = CULL_WIDTH * lookDir.cross(up);
 }
 
 void Camera::UpdateInput() {

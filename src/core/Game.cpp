@@ -69,7 +69,8 @@ void Game::SetSaveOnExit(bool value) {
 
 void Game::Render() {
     for (auto& go : gameObjects) {
-        go->Render();
+        if (InsideCulling(go))
+            go->Render();
     }
 }
 
@@ -85,4 +86,25 @@ void Game::Awake() {
 		go->Awake();
 	}
 
+}
+
+bool Game::InsideCulling(GameObject* gameObject) {
+    Vector3f cameraPos = Context::Instance().camera->GetTransform()->GetPosition();
+    Vector3f gameObjectPos = gameObject->transform.GetPosition();
+    Vector3f relPos = gameObjectPos - cameraPos;
+    Vector3f cullFwd = Context::Instance().camera->cullFwd;
+    Vector3f cullWidth = Context::Instance().camera->cullWidth;
+    // Behind camera
+    if (relPos.dot(cullFwd) < 0.0f) {
+        return false;
+    }
+    // Too far away
+    if (relPos.dot(cullFwd.normalized()) > cullFwd.norm()) {
+        return false;
+    }
+    // Not within width
+    if (std::abs(relPos.dot(cullWidth.normalized())) > cullWidth.norm() * 0.5f) {
+        return false;
+    }
+    return true;
 }
