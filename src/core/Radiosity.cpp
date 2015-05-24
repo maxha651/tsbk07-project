@@ -46,14 +46,20 @@ void Radiosity::CalculateRadiosity(){
 						(targetedPatch->vert1.z() + targetedPatch->vert2.z() + targetedPatch->vert3.z()) / 3.0f };
 
 					// Need to overshoot.
-					to[0] = 2 * to[0] - from[0];
+					/*to[0] = 2 * to[0] - from[0];
 					to[1] = 2 * to[1] - from[1];
-					to[2] = 2 * to[2] - from[2];
+					to[2] = 2 * to[2] - from[2];*/
+					to[0] = from[0] + 1.1f * (to[0] - from[0]);
+					to[1] = from[1] + 1.1f * (to[1] - from[1]);
+					to[2] = from[2] + 1.1f * (to[2] - from[2]);
 
 				    // Move raycast slightly forward to not hit the patch itself
-					from[0] = currentPatch->normal.x()/5 + from[0];
-					from[1] = currentPatch->normal.y()/5 + from[1];
-					from[2] = currentPatch->normal.z()/5 + from[2];
+					/*from[0] = currentPatch->normal.x()/50 + from[0];
+					from[1] = currentPatch->normal.y()/50 + from[1];
+					from[2] = currentPatch->normal.z()/50 + from[2];*/
+					from[0] = from[0] + 0.01f * (to[0] - from[0]);
+					from[1] = from[1] + 0.01f * (to[1] - from[1]);
+					from[2] = from[2] + 0.01f * (to[2] - from[2]);
 
 					float v = currentPatch->normal.dot(targetedPatch->normal) / (currentPatch->normal.norm()*targetedPatch->normal.norm());
 
