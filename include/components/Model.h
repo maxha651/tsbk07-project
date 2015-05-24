@@ -61,13 +61,16 @@ public:
 private:
     // DAVID: As it is now, these will be monitored by JSONLoader
     // Changes will be written back to JSON file on destruct
-    std::string model, vertshader, fragshader;
+    std::string model, vertshader, fragshader, bakedPath;
+	bool isBaked;
 
 	// Keep all dependent variables before this
 	JSONLoader jsonLoader;
 	
 	float MIN_PATCH_AREA = 2.0f;
 
+	void LoadBaked(const std::string& path);
+	void SaveBaked(const std::string& path);
 	void UpdateVerticesAndNormals();
 	void AddTriangle(std::vector<GLfloat> *ver, Vector3f vec1, Vector3f vec2, Vector3f vec3);
 	void SplitTriangles();
