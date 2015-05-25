@@ -69,7 +69,7 @@ std::vector<GLfloat> line_vertexs;
 GLuint vertexArrayObjIDLines;
 
 Radiosity radiosity;
-bool useCameraSpline = false;
+bool useCameraSpline = true;
 
 void initGameObjects()
 {
@@ -90,12 +90,15 @@ void initGameObjects()
 		Model *floo = floor.GetComponent<Model>();
 		GameObject &gocube = game->GetGameObject("cube");
 		Model *cube = gocube.GetComponent<Model>();
+		/*GameObject &gocube2 = game->GetGameObject("cube2");
+		Model *cube2 = gocube2.GetComponent<Model>();*/
 		radiosity.AddPatches(right->patches);
 		radiosity.AddPatches(plate->patches);
 		radiosity.AddPatches(lamp->patches);
 		radiosity.AddPatches(back->patches);
 		radiosity.AddPatches(floo->patches);
 		radiosity.AddPatches(cube->patches);
+		//radiosity.AddPatches(cube2->patches);
 
 		radiosity.CreateRayCastMesh();
 		radiosity.CalculateRadiosity();
@@ -111,16 +114,19 @@ void initGameObjects()
 	// LineRenderer
 	GameObject &go = game->GetGameObject("linerenderer");
 	LineRenderer *l = go.GetComponent<LineRenderer>();
-
-
 	/*
+
+	
 	Vector3f v1;
 	Vector3f v2;
 	Vector3f v3;
-	for (int n = 0; n < plate->patchedVertices.size(); n += 9){
-		v1 = Vector3f(plate->patchedVertices[n], plate->patchedVertices[n + 1], plate->patchedVertices[n + 2]);
-		v2 = Vector3f(plate->patchedVertices[n + 3], plate->patchedVertices[n + 4], plate->patchedVertices[n + 5]);
-		v3 = Vector3f(plate->patchedVertices[n + 6], plate->patchedVertices[n + 7], plate->patchedVertices[n + 8]);
+
+	GameObject &goleft = game->GetGameObject("leftwall");
+	Model *leftwall = goleft.GetComponent<Model>();
+	for (int n = 0; n < leftwall->patchedVertices.size(); n += 9){
+		v1 = Vector3f(leftwall->patchedVertices[n], leftwall->patchedVertices[n + 1], leftwall->patchedVertices[n + 2]);
+		v2 = Vector3f(leftwall->patchedVertices[n + 3], leftwall->patchedVertices[n + 4], leftwall->patchedVertices[n + 5]);
+		v3 = Vector3f(leftwall->patchedVertices[n + 6], leftwall->patchedVertices[n + 7], leftwall->patchedVertices[n + 8]);
 		l->AddLine(v1, v2);
 		l->AddLine(v2, v3);
 		l->AddLine(v1, v3);
@@ -133,6 +139,41 @@ void initGameObjects()
 		v1 = Vector3f(platecom->patchedVertices[n], platecom->patchedVertices[n + 1], platecom->patchedVertices[n + 2]);
 		v2 = Vector3f(platecom->patchedVertices[n + 3], platecom->patchedVertices[n + 4], platecom->patchedVertices[n + 5]);
 		v3 = Vector3f(platecom->patchedVertices[n + 6], platecom->patchedVertices[n + 7], platecom->patchedVertices[n + 8]);
+		l->AddLine(v1, v2);
+		l->AddLine(v2, v3);
+		l->AddLine(v1, v3);
+	}
+
+	GameObject &goback = game->GetGameObject("backwall");
+	Model *backwall = goback.GetComponent<Model>();
+
+	for (int n = 0; n < backwall->patchedVertices.size(); n += 9){
+		v1 = Vector3f(backwall->patchedVertices[n], backwall->patchedVertices[n + 1], backwall->patchedVertices[n + 2]);
+		v2 = Vector3f(backwall->patchedVertices[n + 3], backwall->patchedVertices[n + 4], backwall->patchedVertices[n + 5]);
+		v3 = Vector3f(backwall->patchedVertices[n + 6], backwall->patchedVertices[n + 7], backwall->patchedVertices[n + 8]);
+		l->AddLine(v1, v2);
+		l->AddLine(v2, v3);
+		l->AddLine(v1, v3);
+	}
+
+	GameObject &gofloor = game->GetGameObject("floor");
+	Model *floor = gofloor.GetComponent<Model>();
+
+	for (int n = 0; n < floor->patchedVertices.size(); n += 9){
+		v1 = Vector3f(floor->patchedVertices[n], floor->patchedVertices[n + 1], floor->patchedVertices[n + 2]);
+		v2 = Vector3f(floor->patchedVertices[n + 3], floor->patchedVertices[n + 4], floor->patchedVertices[n + 5]);
+		v3 = Vector3f(floor->patchedVertices[n + 6], floor->patchedVertices[n + 7], floor->patchedVertices[n + 8]);
+		l->AddLine(v1, v2);
+		l->AddLine(v2, v3);
+		l->AddLine(v1, v3);
+	}
+	GameObject &gocube = game->GetGameObject("cube");
+	Model *cube = gocube.GetComponent<Model>();
+
+	for (int n = 0; n < cube->patchedVertices.size(); n += 9){
+		v1 = Vector3f(cube->patchedVertices[n], cube->patchedVertices[n + 1], cube->patchedVertices[n + 2]);
+		v2 = Vector3f(cube->patchedVertices[n + 3], cube->patchedVertices[n + 4], cube->patchedVertices[n + 5]);
+		v3 = Vector3f(cube->patchedVertices[n + 6], cube->patchedVertices[n + 7], cube->patchedVertices[n + 8]);
 		l->AddLine(v1, v2);
 		l->AddLine(v2, v3);
 		l->AddLine(v1, v3);
@@ -166,16 +207,6 @@ void initGameObjects()
 }
 
 int t = 0;
-
-void update(int val)
-{
-    Input::Update();
-    game->Update();
-    glutPostRedisplay();
-    glutTimerFunc(UPDATE_TIME_MS, update, 0);
-
-}
-
 void CalculateCameraSpline(){
 	if (useCameraSpline){
 		Vector3f pos = spline.GetInterpolatedSplinePoint((t % 800) / 800.0f);
@@ -187,6 +218,17 @@ void CalculateCameraSpline(){
 		t += 1;
 	}
 }
+
+void update(int val)
+{
+    Input::Update();
+    game->Update();
+    glutPostRedisplay();
+    glutTimerFunc(UPDATE_TIME_MS, update, 0);
+	CalculateCameraSpline();
+}
+
+
 
 void display(void)
 {
