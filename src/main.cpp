@@ -170,6 +170,9 @@ int t = 0;
 void update(int val)
 {
     Input::Update();
+    if (Input::IsKeyDown('o')) {
+        useCameraSpline = !useCameraSpline;
+    }
     game->Update();
     glutPostRedisplay();
     glutTimerFunc(UPDATE_TIME_MS, update, 0);
