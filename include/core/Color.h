@@ -19,6 +19,5 @@ public:
 	float g() { return y(); }
 	float b() { return z(); }
 	float a() { return w(); }
-
 };
 

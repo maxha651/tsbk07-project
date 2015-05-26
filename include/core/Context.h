@@ -24,7 +24,8 @@ public:
     static Context& Instance()
     {
         static Context instance; // Guaranteed to be destroyed.
-        // Instantiated on first use.
+        
+		// Instantiated on first use.
         return instance;
     }
 private:
