@@ -1,7 +1,7 @@
 {
   "shaders" :
   [
-	"lab1-1",
+	"radiosity",
     "invertcolor"
   ]
 }

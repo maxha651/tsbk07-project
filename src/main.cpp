@@ -49,18 +49,9 @@ void init()
 {
 	Context::Instance().preBaked = false;
 
-	char fragmentShader[128], vertexShader[128];
-	sprintf(vertexShader, "%s/VertexShader.glsl", TSBK07_SHADERS_PATH);
-	sprintf(fragmentShader, "%s/FragmentShader.glsl", TSBK07_SHADERS_PATH);
-	ShaderLoader shaderLoader;
-	Context::Instance().program = shaderLoader.CreateProgram(vertexShader, fragmentShader);
-
-
     // GL inits
     glClearColor(0.5f,0.5f,0.5f,1.0f);
     glEnable(GL_DEPTH_TEST);
-
-
 }
 
 
@@ -235,15 +226,10 @@ void update(int val)
 
 void display(void)
 {
-    // clear the screen
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    //glClearColor(1.0, 0.5, 0.0, 1.0);//clear red
-    //glMatrixMode(GL_MODELVIEW);
-    // glLoadIdentity();
 
 	game->Render();
 
-    // Swap buffers
     glutSwapBuffers();
 }
 

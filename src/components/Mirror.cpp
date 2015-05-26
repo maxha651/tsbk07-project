@@ -11,7 +11,7 @@
 
 using Eigen::Vector3f;
 
-static const std::string SHADER = "lab1-1";
+static const std::string SHADER = "radiosity";
 static const std::string TEX_SHADER = "texture";
 
 Mirror::Mirror() : width(0), height(0), normal(1, 0, 0), start(0, 0, 0),
