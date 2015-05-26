@@ -55,9 +55,6 @@ void Radiosity::CalculateRadiosity(){
 					to[2] = from[2] + 1.1f * (to[2] - from[2]);
 
 				    // Move raycast slightly forward to not hit the patch itself
-					/*from[0] = currentPatch->normal.x()/50 + from[0];
-					from[1] = currentPatch->normal.y()/50 + from[1];
-					from[2] = currentPatch->normal.z()/50 + from[2];*/
 					from[0] = from[0] + 0.01f * (to[0] - from[0]);
 					from[1] = from[1] + 0.01f * (to[1] - from[1]);
 					from[2] = from[2] + 0.01f * (to[2] - from[2]);
